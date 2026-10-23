@@ -14,7 +14,7 @@ import { Scene4OrangLain } from "./components/scenes/Scene4OrangLain";
 import { Scene5Robot } from "./components/scenes/Scene5Robot";
 import { Scene6Penutup } from "./components/scenes/Scene6Penutup";
 import { SoundEffects } from "./components/SoundEffects";
-import { BackgroundMusic } from "@shared/components/BackgroundMusic";
+import { BackgroundMusic } from "../../src/shared/components/BackgroundMusic";
 import voiceoverAudio from "./voiceover.mp3";
 
 export const MainVideo: React.FC = () => {

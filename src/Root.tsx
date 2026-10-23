@@ -4,18 +4,21 @@ import { Composition } from "remotion";
 // =========================================================================
 // REGISTRY KONTEN VIDEO
 // =========================================================================
-// Konten 1: Kenapa Tidak Bisa Menggelitik Diri Sendiri? (9:16 vertical ~59.4s)
-import { MainVideo as VideoGelitik } from "@konten/01-gelitik/MainVideo";
-import { THEME as GELITIK_THEME } from "@konten/01-gelitik/theme";
+
+// 1. KONTEN 1: Video Gelitik (Arsip / Pembelajaran Awal)
+import { MainVideo as VideoGelitik } from "../konten/01-gelitik/MainVideo";
+import { THEME as GELITIK_THEME } from "../konten/01-gelitik/theme";
+
+// 2. BASE ENGINE: Episode 00 Test ("Ada di Quran" Base Engine)
+import { Ep00TestVideo } from "./episodes/Ep00-Test/MainVideo";
+import { DIMENSIONS } from "./theme/tokens";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
       {/* -------------------------------------------------------------
           1. KONTEN 1: VIDEO GELITIK (Edukasi Pop-Science)
-             Folder: konten/01-gelitik/
              ID: VideoGelitik
-             Output Render: npx remotion render VideoGelitik out/gelitik.mp4
          ------------------------------------------------------------- */}
       <Composition
         id="VideoGelitik"
@@ -27,11 +30,18 @@ export const RemotionRoot: React.FC = () => {
       />
 
       {/* -------------------------------------------------------------
-          2. KONTEN 2: (Siap ditambahkan)
-             Folder: konten/02-.../
-             ID: VideoKonten2
-             Tinggal daftarkan <Composition /> di sini.
+          2. EPISODE 00 TEST: UJI COBA BASE ENGINE "ADA DI QURAN"
+             ID: Ep00Test
+             Total frames: 240 (VO) + 300 (Ayat) + 90 (CTA) = 630 frames (21s)
          ------------------------------------------------------------- */}
+      <Composition
+        id="Ep00Test"
+        component={Ep00TestVideo}
+        durationInFrames={630}
+        fps={DIMENSIONS.fps}
+        width={DIMENSIONS.width}
+        height={DIMENSIONS.height}
+      />
     </>
   );
 };

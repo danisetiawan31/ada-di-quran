@@ -26,6 +26,8 @@ export interface EpisodeLayoutProps {
   ayahAudioSrc: string;
   ayahImageSrc: string;
   ayahFrames?: number; // Default: Math.min(durasi, 300)
+  ayahAudioDurationInFrames?: number;
+  ayahHasFadeOut?: boolean;
 
   // Part 3: Reusable Outro & CTA
   voCtaSrc?: string;
@@ -50,6 +52,8 @@ export const EpisodeLayout: React.FC<EpisodeLayoutProps> = ({
   ayahAudioSrc,
   ayahImageSrc,
   ayahFrames = DIMENSIONS.maxAyahFrames,
+  ayahAudioDurationInFrames,
+  ayahHasFadeOut,
 
   voCtaSrc,
   voCtaFrames = 0,
@@ -128,6 +132,8 @@ export const EpisodeLayout: React.FC<EpisodeLayoutProps> = ({
               imageSrc={ayahImageSrc}
               audioSrc={ayahAudioSrc}
               durationInFrames={effectiveAyahFrames}
+              audioDurationInFrames={ayahAudioDurationInFrames}
+              hasFadeOut={ayahHasFadeOut}
             />
           </Series.Sequence>
 

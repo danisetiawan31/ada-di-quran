@@ -20,9 +20,20 @@ export interface AyahCardProps {
   imageSrc: string;
   audioSrc: string;
   /**
-   * Durasi tampilan kartu ayat dalam frame (maksimal 300 frames / 10 detik sesuai SSOT)
+   * Durasi tampilan kartu ayat dalam frame.
+   * - Jika durasi asli ayat <= 10 detik (<= 300 frames), diputar penuh TANPA FADE OUT (volume 100%).
+   * - Jika durasi asli ayat > 10 detik (> 300 frames), dibatasi maksimal 300 frames dengan fade out halus di frame 270-300.
    */
   durationInFrames?: number;
+  /**
+   * Durasi asli file audio ayat (dalam frame @ 30fps).
+   * Digunakan untuk memastikan apakah ayat melebihi 10 detik atau tidak.
+   */
+  audioDurationInFrames?: number;
+  /**
+   * Opsi eksplisit untuk memaksa / mematikan fade-out.
+   */
+  hasFadeOut?: boolean;
 }
 
 export const AyahCard: React.FC<AyahCardProps> = ({
@@ -32,12 +43,32 @@ export const AyahCard: React.FC<AyahCardProps> = ({
   imageSrc,
   audioSrc,
   durationInFrames = DIMENSIONS.maxAyahFrames,
+  audioDurationInFrames,
+  hasFadeOut,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Durasi efektif dibatasi maksimal 300 frames (10 detik)
-  const effectiveDuration = Math.min(durationInFrames, DIMENSIONS.maxAyahFrames);
+  // 1. Audio Data untuk Waveform Visualizer & Deteksi Durasi Asli
+  const audioData = useAudioData(audioSrc);
+  const detectedDurationInFrames = audioData?.durationInSeconds
+    ? Math.round(audioData.durationInSeconds * fps)
+    : undefined;
+
+  // Tentukan durasi asli audio (dari prop eksplisit, dari audioData, atau dari durationInFrames)
+  const actualAudioFrames =
+    audioDurationInFrames ?? detectedDurationInFrames ?? durationInFrames;
+
+  // ATURAN MUTLAK SSOT:
+  // - Jika audio ayat <= 10 detik (<= 300 frames): TIDAK ADA FADE OUT SAMA SEKALI (volume = 1)
+  // - Jika audio ayat > 10 detik (> 300 frames): Batasi 300 frames & Fade Out halus di 1 detik terakhir (270-300)
+  const isOver10Seconds = actualAudioFrames > DIMENSIONS.maxAyahFrames;
+  const shouldFadeOut = hasFadeOut ?? isOver10Seconds;
+
+  const effectiveDuration = isOver10Seconds
+    ? DIMENSIONS.maxAyahFrames
+    : Math.min(actualAudioFrames, DIMENSIONS.maxAyahFrames);
+
   const fadeOutStart = Math.max(0, effectiveDuration - DIMENSIONS.ayahFadeOutFrames);
 
   // Ambil data nama surah otomatis dari kamus 114 Surah
@@ -59,8 +90,7 @@ export const AyahCard: React.FC<AyahCardProps> = ({
     extrapolateRight: "clamp",
   });
 
-  // 1. Audio Data untuk Waveform Visualizer
-  const audioData = useAudioData(audioSrc);
+  // 2. Waveform Visualizer
   const numberOfBars = 32;
   let waveValues: number[] = [];
 
@@ -103,14 +133,17 @@ export const AyahCard: React.FC<AyahCardProps> = ({
         justifyContent: "center",
       }}
     >
-      {/* Audio Murattal dengan batasan maksimal 10s & Fade Out halus di 1s terakhir */}
+      {/* Audio Murattal: Fade Out HANYA jika durasi ayat > 10 detik sesuai aturan SSOT. Jika <= 10 detik, diputar 100% penuh tanpa fade-out */}
       <Audio
         src={audioSrc}
-        volume={(f) =>
-          interpolate(f, [0, fadeOutStart, effectiveDuration], [1, 1, 0], {
-            extrapolateLeft: "clamp",
-            extrapolateRight: "clamp",
-          })
+        volume={
+          shouldFadeOut
+            ? (f) =>
+                interpolate(f, [0, fadeOutStart, effectiveDuration], [1, 1, 0], {
+                  extrapolateLeft: "clamp",
+                  extrapolateRight: "clamp",
+                })
+            : 1
         }
       />
 

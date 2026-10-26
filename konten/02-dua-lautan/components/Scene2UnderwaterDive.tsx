@@ -354,22 +354,22 @@ export const Scene2UnderwaterDive: React.FC = () => {
               {/* Kartu Informasi Gibraltar */}
               <div
                 style={{
-                  backgroundColor: "rgba(10, 19, 44, 0.92)",
+                  backgroundColor: "rgba(10, 19, 44, 0.94)",
                   backdropFilter: "blur(14px)",
-                  padding: "18px 26px",
+                  padding: "20px 28px",
                   borderRadius: 24,
                   border: "2.5px solid #F59E0B",
                   boxShadow: "0 14px 40px rgba(0,0,0,0.65), 0 0 25px rgba(245, 158, 11, 0.3)",
-                  width: 380,
+                  width: 420,
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <span style={{ fontSize: 28 }}>🪨</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ fontSize: 34 }}>🪨</span>
                   <div>
                     <span
                       style={{
                         color: "#FBBF24",
-                        fontSize: 13,
+                        fontSize: 15,
                         fontWeight: 900,
                         letterSpacing: "2px",
                         textTransform: "uppercase",
@@ -381,7 +381,7 @@ export const Scene2UnderwaterDive: React.FC = () => {
                     <h4
                       style={{
                         color: "#FFFFFF",
-                        fontSize: 24,
+                        fontSize: 28,
                         fontWeight: 900,
                         margin: "2px 0 0 0",
                         fontFamily: "Plus Jakarta Sans, sans-serif",
@@ -393,12 +393,12 @@ export const Scene2UnderwaterDive: React.FC = () => {
                 </div>
                 <div
                   style={{
-                    marginTop: 10,
-                    paddingTop: 8,
+                    marginTop: 12,
+                    paddingTop: 10,
                     borderTop: "1px solid rgba(255, 255, 255, 0.15)",
-                    color: "rgba(255, 255, 255, 0.8)",
-                    fontSize: 14,
-                    fontWeight: 600,
+                    color: "rgba(255, 255, 255, 0.85)",
+                    fontSize: 16,
+                    fontWeight: 700,
                   }}
                 >
                   Mediterania Bertemu Atlantik
@@ -467,23 +467,23 @@ export const Scene2UnderwaterDive: React.FC = () => {
               {/* Kartu Informasi Alaska */}
               <div
                 style={{
-                  backgroundColor: "rgba(6, 38, 36, 0.92)",
+                  backgroundColor: "rgba(6, 38, 36, 0.94)",
                   backdropFilter: "blur(14px)",
-                  padding: "18px 26px",
+                  padding: "20px 28px",
                   borderRadius: 24,
                   border: "2.5px solid #14B8A6",
                   boxShadow: "0 14px 40px rgba(0,0,0,0.65), 0 0 25px rgba(20, 184, 166, 0.3)",
-                  width: 380,
+                  width: 420,
                   textAlign: "right",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10, flexDirection: "row-reverse" }}>
-                  <span style={{ fontSize: 28 }}>🏔️</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flexDirection: "row-reverse" }}>
+                  <span style={{ fontSize: 34 }}>🏔️</span>
                   <div>
                     <span
                       style={{
                         color: "#5EEAD4",
-                        fontSize: 13,
+                        fontSize: 15,
                         fontWeight: 900,
                         letterSpacing: "2px",
                         textTransform: "uppercase",
@@ -495,7 +495,7 @@ export const Scene2UnderwaterDive: React.FC = () => {
                     <h4
                       style={{
                         color: "#FFFFFF",
-                        fontSize: 24,
+                        fontSize: 28,
                         fontWeight: 900,
                         margin: "2px 0 0 0",
                         fontFamily: "Plus Jakarta Sans, sans-serif",
@@ -507,12 +507,12 @@ export const Scene2UnderwaterDive: React.FC = () => {
                 </div>
                 <div
                   style={{
-                    marginTop: 10,
-                    paddingTop: 8,
+                    marginTop: 12,
+                    paddingTop: 10,
                     borderTop: "1px solid rgba(255, 255, 255, 0.15)",
-                    color: "rgba(255, 255, 255, 0.8)",
-                    fontSize: 14,
-                    fontWeight: 600,
+                    color: "rgba(255, 255, 255, 0.85)",
+                    fontSize: 16,
+                    fontWeight: 700,
                   }}
                 >
                   Samudra Pasifik & Lelehan Es
@@ -551,10 +551,10 @@ export const Scene2UnderwaterDive: React.FC = () => {
                 </filter>
               </defs>
 
-              {/* Latar Belakang Kiri (Biru Padat) */}
-              <rect x="0" y="0" width="540" height="1920" fill="url(#deepSalineGrad)" />
+              {/* 1. Latar Belakang Kiri (Biru Padat): Melingkupi seluruh kanvas 1080x1920 agar tidak ada celah hitam */}
+              <rect x="0" y="0" width="1080" height="1920" fill="url(#deepSalineGrad)" />
 
-              {/* Latar Belakang Kanan (Toska Segar): Dipotong Kurva Halocline Dinamis */}
+              {/* 2. Latar Belakang Kanan (Toska Segar): Dipotong Kurva Halocline Dinamis */}
               <path
                 d={`${haloclineWavePath} L 1080 1920 L 1080 0 Z`}
                 fill="url(#deepWarmTealGrad)"
@@ -713,31 +713,31 @@ export const Scene2UnderwaterDive: React.FC = () => {
                 {/* KARTU KIRI: Laut Dingin & Salinitas Tinggi */}
                 <div
                   style={{
-                    backgroundColor: "rgba(5, 21, 50, 0.92)",
+                    backgroundColor: "rgba(5, 21, 50, 0.94)",
                     backdropFilter: "blur(14px)",
-                    padding: "20px 26px",
+                    padding: "22px 28px",
                     borderRadius: 24,
-                    border: "2px solid rgba(96, 165, 250, 0.7)",
+                    border: "2px solid rgba(96, 165, 250, 0.75)",
                     boxShadow: "0 12px 30px rgba(0, 0, 0, 0.6)",
-                    width: 420,
+                    width: 430,
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <span style={{ fontSize: 32 }}>❄️</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                    <span style={{ fontSize: 36 }}>❄️</span>
                     <div>
-                      <div style={{ color: "#93C5FD", fontSize: 14, fontWeight: 800, textTransform: "uppercase" }}>
+                      <div style={{ color: "#93C5FD", fontSize: 16, fontWeight: 900, textTransform: "uppercase" }}>
                         Karakter Laut Kiri
                       </div>
-                      <div style={{ color: "#FFFFFF", fontSize: 22, fontWeight: 900, marginTop: 2 }}>
+                      <div style={{ color: "#FFFFFF", fontSize: 26, fontWeight: 900, marginTop: 2 }}>
                         Massa Air Padat
                       </div>
                     </div>
                   </div>
-                  <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 6 }}>
-                    <div style={{ color: "#BFDBFE", fontSize: 15, fontWeight: 600 }}>
+                  <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+                    <div style={{ color: "#BFDBFE", fontSize: 17, fontWeight: 700 }}>
                       🧂 Salinitas Tinggi (~3.8%)
                     </div>
-                    <div style={{ color: "#60A5FA", fontSize: 15, fontWeight: 600 }}>
+                    <div style={{ color: "#60A5FA", fontSize: 17, fontWeight: 700 }}>
                       🌡️ Suhu Dingin Berat (Tenggelam)
                     </div>
                   </div>
@@ -746,32 +746,32 @@ export const Scene2UnderwaterDive: React.FC = () => {
                 {/* KARTU KANAN: Laut Hangat & Rendah Garam */}
                 <div
                   style={{
-                    backgroundColor: "rgba(4, 46, 43, 0.92)",
+                    backgroundColor: "rgba(4, 46, 43, 0.94)",
                     backdropFilter: "blur(14px)",
-                    padding: "20px 26px",
+                    padding: "22px 28px",
                     borderRadius: 24,
-                    border: "2px solid rgba(45, 212, 191, 0.7)",
+                    border: "2px solid rgba(45, 212, 191, 0.75)",
                     boxShadow: "0 12px 30px rgba(0, 0, 0, 0.6)",
-                    width: 420,
+                    width: 430,
                     textAlign: "right",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 12, flexDirection: "row-reverse" }}>
-                    <span style={{ fontSize: 32 }}>💧</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, flexDirection: "row-reverse" }}>
+                    <span style={{ fontSize: 36 }}>💧</span>
                     <div>
-                      <div style={{ color: "#5EEAD4", fontSize: 14, fontWeight: 800, textTransform: "uppercase" }}>
+                      <div style={{ color: "#5EEAD4", fontSize: 16, fontWeight: 900, textTransform: "uppercase" }}>
                         Karakter Laut Kanan
                       </div>
-                      <div style={{ color: "#FFFFFF", fontSize: 22, fontWeight: 900, marginTop: 2 }}>
+                      <div style={{ color: "#FFFFFF", fontSize: 26, fontWeight: 900, marginTop: 2 }}>
                         Massa Air Ringan
                       </div>
                     </div>
                   </div>
-                  <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 6 }}>
-                    <div style={{ color: "#A7F3D0", fontSize: 15, fontWeight: 600 }}>
+                  <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+                    <div style={{ color: "#A7F3D0", fontSize: 17, fontWeight: 700 }}>
                       🧊 Salinitas Rendah (~0.2%)
                     </div>
-                    <div style={{ color: "#F97316", fontSize: 15, fontWeight: 600 }}>
+                    <div style={{ color: "#F97316", fontSize: 17, fontWeight: 700 }}>
                       ☀️ Suhu Lebih Hangat (Mengapung)
                     </div>
                   </div>

@@ -642,7 +642,7 @@ export const Scene2UnderwaterDive: React.FC = () => {
             <div
               style={{
                 position: "absolute",
-                top: 230,
+                top: 280,
                 left: "50%",
                 transform: `translateX(-50%) scale(${hudSpring})`,
                 opacity: hudOpacity,

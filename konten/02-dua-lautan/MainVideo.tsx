@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, Audio, Freeze, Series, useCurrentFrame } from "remotion";
 import { EP01_THEME } from "./theme";
 import { AyahCard } from "../../src/components/AyahCard";
+import { DualAyahCard } from "../../src/components/DualAyahCard";
 import { DynamicSubtitle } from "../../src/components/DynamicSubtitle";
 import { BackgroundMusic } from "../../src/shared/components/BackgroundMusic";
 import { generateProportionalSubtitles } from "../../src/utils/subtitleTiming";
@@ -76,27 +77,31 @@ export const MainVideo: React.FC = () => {
             <DynamicSubtitle subtitles={mainSubtitles} />
           </Series.Sequence>
 
-          {/* SEKUENS 2A: Ayat 19 (QS. Ar-Rahman: 19) */}
-          <Series.Sequence durationInFrames={ayah19Frames} name="Sekuens 2A: Ayat 19">
-            <AyahCard
+          {/* SEKUENS 2: Ayat 19 & 20 (QS. Ar-Rahman: 19–20) Tanpa Jeda / Seamless */}
+          <Series.Sequence
+            durationInFrames={ayah19Frames + ayah20Frames}
+            name="Sekuens 2: Ayat 19-20"
+          >
+            <DualAyahCard
               surahNumber={55}
-              ayahNumber={19}
-              translationText="Dia membiarkan dua laut mengalir yang (kemudian) keduanya bertemu."
-              imageSrc={ayah19Img}
-              audioSrc={ayah19Audio}
-              durationInFrames={ayah19Frames}
-            />
-          </Series.Sequence>
-
-          {/* SEKUENS 2B: Ayat 20 (QS. Ar-Rahman: 20) */}
-          <Series.Sequence durationInFrames={ayah20Frames} name="Sekuens 2B: Ayat 20">
-            <AyahCard
-              surahNumber={55}
-              ayahNumber={20}
-              translationText="Di antara keduanya ada batas yang tidak dilampaui masing-masing."
-              imageSrc={ayah20Img}
-              audioSrc={ayah20Audio}
-              durationInFrames={ayah20Frames}
+              ayahs={[
+                {
+                  ayahNumber: 19,
+                  translationText:
+                    "Dia membiarkan dua laut mengalir yang (kemudian) keduanya bertemu.",
+                  imageSrc: ayah19Img,
+                  audioSrc: ayah19Audio,
+                  durationInFrames: ayah19Frames,
+                },
+                {
+                  ayahNumber: 20,
+                  translationText:
+                    "Di antara keduanya ada batas yang tidak dilampaui masing-masing.",
+                  imageSrc: ayah20Img,
+                  audioSrc: ayah20Audio,
+                  durationInFrames: ayah20Frames,
+                },
+              ]}
             />
           </Series.Sequence>
 

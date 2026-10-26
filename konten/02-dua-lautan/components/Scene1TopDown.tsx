@@ -17,6 +17,7 @@ import sfxPopBadge2 from "../../../public/sfx/btn_pop.wav";
 import sfxCuriosity from "../../../public/sfx/question2.wav";
 import sfxGlassSlide from "../../../public/sfx/slide1.mp3";
 import sfxGlassTing from "../../../public/sfx/ting.wav";
+import sfxGlassCrack from "../../../public/sfx/scratch.wav";
 import sfxGlassShatter from "../../../public/sfx/punch_snap.mp3";
 import sfxExplosion from "../../../public/sfx/explosion.wav";
 
@@ -27,9 +28,6 @@ export const Scene1TopDown: React.FC = () => {
   // =========================================================================
   // 1. KAMERA DINAMIS: Punch-In pada "Kok Bisa?" & Micro-Shake pada Kaca Pecah
   // =========================================================================
-  // Frame 0-84: Zoom perlahan masuk
-  // Frame 84-115: Punch-in dramatis saat narator bertanya "Kok bisa?"
-  // Frame 238-255: Micro-shake saat kaca dipecahkan
   const baseZoom = interpolate(
     frame,
     [0, 84, 110, 186, 238, 294],
@@ -38,7 +36,7 @@ export const Scene1TopDown: React.FC = () => {
   );
 
   // Micro-shake saat kaca pecah di frame 238 - 258
-  const shakeIntensity = interpolate(frame, [238, 243, 258], [0, 8, 0], {
+  const shakeIntensity = interpolate(frame, [238, 243, 258], [0, 9, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -51,10 +49,9 @@ export const Scene1TopDown: React.FC = () => {
   const wavePoints = useMemo(() => {
     const points: { x: number; y: number }[] = [];
     const height = 1920;
-    const steps = 24; // Resolusi lebih mulus
+    const steps = 24;
     for (let i = 0; i <= steps; i++) {
       const y = (height / steps) * i;
-      // Kombinasi sinewaves multi-frekuensi untuk fluida alami saling dorong
       const w1 = Math.sin(frame * 0.045 + i * 0.38) * 38;
       const w2 = Math.cos(frame * 0.022 + i * 0.22) * 22;
       const w3 = Math.sin(frame * 0.08 + i * 0.65) * 12;
@@ -82,11 +79,9 @@ export const Scene1TopDown: React.FC = () => {
       const pointIdx = Math.min(24, Math.floor(yRatio * 24));
       const targetPoint = wavePoints[pointIdx] || { x: 540 };
 
-      // Getaran turbulensi mikro di garis batas
       const eddyX = Math.sin(frame * 0.07 + i) * 28 + Math.cos(frame * 0.12 + i * 2) * 12;
       const currentX = targetPoint.x + eddyX;
 
-      // Animasi kembang-kempis/popping buih
       const popCycle = (frame * 0.06 + i * 0.8) % (Math.PI * 2);
       const sizePulse = 1 + Math.sin(popCycle) * 0.45;
       const baseSize = 6 + (i % 6) * 4.5;
@@ -118,18 +113,18 @@ export const Scene1TopDown: React.FC = () => {
   }, [frame]);
 
   // =========================================================================
-  // 4. BADGE INFORMASI PLAYFUL (Pop-in Spring)
+  // 4. BADGE INFORMASI PLAYFUL (Ukuran Lebih Besar & Gagah)
   // =========================================================================
   const badge1Spring = spring({
-    frame: frame - 20,
+    frame: frame - 18,
     fps,
-    config: { damping: 12, stiffness: 140 },
+    config: { damping: 11, stiffness: 130 },
   });
 
   const badge2Spring = spring({
-    frame: frame - 42,
+    frame: frame - 38,
     fps,
-    config: { damping: 12, stiffness: 140 },
+    config: { damping: 11, stiffness: 130 },
   });
 
   // =========================================================================
@@ -148,30 +143,33 @@ export const Scene1TopDown: React.FC = () => {
   });
 
   // =========================================================================
-  // 6. PANEL KACA DINAMIS & EFEK PECAH NYATA (Frame 186 - 294)
+  // 6. TEMBOK KACA AKUARIUM TEBAL & RETAKAN NYATA (Frame 186 - 294)
   // =========================================================================
-  const glassProgress = spring({
+  // Animasi turun/slam dari atas layar
+  const glassDropProgress = spring({
     frame: frame - 186,
     fps,
-    config: { damping: 13, stiffness: 110 },
+    config: { damping: 14, stiffness: 120 },
   });
+  const glassYOffset = interpolate(glassDropProgress, [0, 1], [-1920, 0]);
 
-  // Kilau cahaya kaca (Sheen sweep Frame 205-235)
-  const glassSheenY = interpolate(frame, [202, 232], [-200, 2120], {
+  // Kemunculan retakan jaring laba-laba (Frame 228 - 238)
+  const crackProgress = interpolate(frame, [228, 237], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // Momen kaca hancur (Frame 238 - 285)
-  const shatterProgress = interpolate(frame, [238, 276], [0, 1], {
+  // Momen hancur & ledakan (Frame 238 - 275)
+  const shatterProgress = interpolate(frame, [238, 275], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const glassOpacity = interpolate(
+  // Opasitas panel kaca utama
+  const glassPanelOpacity = interpolate(
     frame,
-    [186, 198, 238, 268],
-    [0, 0.9, 0.9, 0],
+    [186, 196, 238, 245],
+    [0, 0.95, 0.95, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
 
@@ -182,16 +180,19 @@ export const Scene1TopDown: React.FC = () => {
     config: { damping: 9, stiffness: 180 },
   });
 
-  // Pecahan Kaca Poligonal (16 Shards Meledak)
+  // Titik klem logam industri penjepit kaca
+  const clampYPositions = [380, 720, 1140, 1520];
+
+  // Pecahan Kaca Poligonal (20 Shards Meledak Dinamis)
   const glassShards = useMemo(() => {
-    return Array.from({ length: 16 }).map((_, idx) => {
-      const angle = (idx / 16) * Math.PI * 2;
-      const speed = 220 + (idx % 4) * 90;
+    return Array.from({ length: 20 }).map((_, idx) => {
+      const angle = (idx / 20) * Math.PI * 2 + (idx % 3) * 0.2;
+      const speed = 250 + (idx % 5) * 110;
       const rotDir = idx % 2 === 0 ? 1 : -1;
-      const rotSpeed = rotDir * (260 + idx * 45);
-      const w = 18 + (idx % 3) * 14;
-      const h = 26 + (idx % 4) * 16;
-      const originY = 600 + ((idx * 83) % 720);
+      const rotSpeed = rotDir * (320 + idx * 55);
+      const w = 22 + (idx % 4) * 18;
+      const h = 32 + (idx % 3) * 22;
+      const originY = 880 + ((idx * 67) % 360) - 180;
       return { id: idx, angle, speed, rotSpeed, w, h, originY };
     });
   }, []);
@@ -207,13 +208,13 @@ export const Scene1TopDown: React.FC = () => {
           <Audio src={sfxWhooshIn} volume={0.22} />
         </Sequence>
 
-        {/* 2. Pop Badge Laut Kiri (Frame 20) */}
-        <Sequence from={20} durationInFrames={30}>
+        {/* 2. Pop Badge Laut Kiri (Frame 18) */}
+        <Sequence from={18} durationInFrames={30}>
           <Audio src={sfxPopBadge1} volume={0.28} />
         </Sequence>
 
-        {/* 3. Pop Badge Laut Kanan (Frame 42) */}
-        <Sequence from={42} durationInFrames={30}>
+        {/* 3. Pop Badge Laut Kanan (Frame 38) */}
+        <Sequence from={38} durationInFrames={30}>
           <Audio src={sfxPopBadge2} volume={0.28} />
         </Sequence>
 
@@ -224,18 +225,23 @@ export const Scene1TopDown: React.FC = () => {
 
         {/* 5. Tembok Kaca Slide-in (Frame 186) */}
         <Sequence from={186} durationInFrames={45}>
-          <Audio src={sfxGlassSlide} volume={0.2} />
+          <Audio src={sfxGlassSlide} volume={0.28} />
         </Sequence>
 
-        {/* 6. Kilau Pantulan Kaca (Frame 212) */}
-        <Sequence from={212} durationInFrames={35}>
+        {/* 6. Kilau Pantulan Kaca (Frame 208) */}
+        <Sequence from={208} durationInFrames={35}>
           <Audio src={sfxGlassTing} volume={0.25} />
         </Sequence>
 
-        {/* 7. Kaca Pecah & Hantaman Stempel Merah (Frame 238) */}
+        {/* 7. Kaca Retak Menjalar (Frame 229) */}
+        <Sequence from={229} durationInFrames={25}>
+          <Audio src={sfxGlassCrack} volume={0.22} />
+        </Sequence>
+
+        {/* 8. Kaca Pecah & Hantaman Stempel Merah (Frame 238) */}
         <Sequence from={238} durationInFrames={50}>
-          <Audio src={sfxGlassShatter} volume={0.38} />
-          <Audio src={sfxExplosion} volume={0.16} />
+          <Audio src={sfxGlassShatter} volume={0.4} />
+          <Audio src={sfxExplosion} volume={0.18} />
         </Sequence>
 
         {/* ===================================================================
@@ -269,11 +275,21 @@ export const Scene1TopDown: React.FC = () => {
               </feMerge>
             </filter>
 
-            {/* Kilau Kaca Reflektif */}
-            <linearGradient id="glassSheenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="rgba(255,255,255,0)" />
-              <stop offset="50%" stopColor="rgba(255,255,255,0.85)" />
-              <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+            {/* Gradasi Kaca Akuarium Tebal (Frosted Ice Cyan) */}
+            <linearGradient id="aquariumGlassGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(255, 255, 255, 0.75)" />
+              <stop offset="12%" stopColor="rgba(165, 243, 252, 0.45)" />
+              <stop offset="50%" stopColor="rgba(224, 242, 254, 0.28)" />
+              <stop offset="88%" stopColor="rgba(165, 243, 252, 0.45)" />
+              <stop offset="100%" stopColor="rgba(255, 255, 255, 0.75)" />
+            </linearGradient>
+
+            {/* Gradasi Logam Klem Penjepit (Titanium Chrome) */}
+            <linearGradient id="metalClampGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#F8FAFC" />
+              <stop offset="45%" stopColor="#CBD5E1" />
+              <stop offset="75%" stopColor="#64748B" />
+              <stop offset="100%" stopColor="#334155" />
             </linearGradient>
           </defs>
 
@@ -292,7 +308,6 @@ export const Scene1TopDown: React.FC = () => {
             const waveDrift = Math.sin(frame * 0.03 + idx) * 20;
             return (
               <g key={`caustic-${idx}`} opacity={0.16}>
-                {/* Riak Kiri */}
                 <path
                   d={`M 60 ${yPos + waveDrift} Q 200 ${yPos - 25 + waveDrift} 380 ${yPos + waveDrift}`}
                   fill="none"
@@ -300,7 +315,6 @@ export const Scene1TopDown: React.FC = () => {
                   strokeWidth="3.5"
                   strokeLinecap="round"
                 />
-                {/* Riak Kanan */}
                 <path
                   d={`M 680 ${yPos - waveDrift} Q 840 ${yPos + 30 - waveDrift} 1020 ${yPos - waveDrift}`}
                   fill="none"
@@ -369,7 +383,6 @@ export const Scene1TopDown: React.FC = () => {
                 opacity={bubble.opacity}
                 filter="url(#foamGlowFilter)"
               />
-              {/* Cincin meletus mikro untuk buih besar */}
               {bubble.size > 8 && (
                 <circle
                   cx={bubble.x}
@@ -385,67 +398,155 @@ export const Scene1TopDown: React.FC = () => {
           ))}
 
           {/* ===============================================================
-              8. PANEL KACA DINAMIS: Fleksibel Mengikuti Gelombang Air
+              8. TEMBOK KACA AKUARIUM TEBAL NYATA (Frame 186 - 238)
              =============================================================== */}
-          {frame >= 186 && glassOpacity > 0 && shatterProgress < 0.95 && (
-            <g opacity={glassOpacity * (1 - shatterProgress)}>
-              {/* Lapisan Kaca Tebal Mengikuti Batas Ombak */}
-              <path
-                d={waveSvgPath}
-                fill="none"
-                stroke="rgba(255, 255, 255, 0.32)"
-                strokeWidth={26 * glassProgress}
-                strokeLinecap="round"
-                style={{
-                  filter: "drop-shadow(0 0 12px rgba(255,255,255,0.7))",
-                }}
-              />
-              {/* Refleksi Tepi Kaca Dalam (Glossy Edge) */}
-              <path
-                d={waveSvgPath}
-                fill="none"
-                stroke="rgba(255, 255, 255, 0.85)"
-                strokeWidth="4"
-                strokeDasharray="40 90"
-                strokeLinecap="round"
+          {frame >= 186 && glassPanelOpacity > 0 && (
+            <g
+              opacity={glassPanelOpacity}
+              transform={`translate(0, ${glassYOffset})`}
+              style={{
+                filter: "drop-shadow(0 0 24px rgba(56, 189, 248, 0.55)) drop-shadow(0 0 50px rgba(0, 0, 0, 0.7))",
+              }}
+            >
+              {/* Balok Kaca Akuarium Tebal (Width: 84px, Center: 540) */}
+              <rect
+                x="498"
+                y="0"
+                width="84"
+                height="1920"
+                fill="url(#aquariumGlassGrad)"
+                stroke="rgba(255, 255, 255, 0.9)"
+                strokeWidth="3.5"
               />
 
-              {/* Garis Kilau Spekular Menyapu dari Atas ke Bawah */}
-              {frame >= 202 && frame <= 235 && (
-                <rect
-                  x="480"
-                  y={glassSheenY}
-                  width="120"
-                  height="160"
-                  fill="url(#glassSheenGrad)"
-                  transform="rotate(25, 540, 960)"
-                  opacity={0.8}
-                />
+              {/* Garis Kilau Refleksi Diagonal Khas Kaca Akuarium */}
+              {Array.from({ length: 8 }).map((_, i) => {
+                const startY = 120 + i * 230;
+                return (
+                  <line
+                    key={`glass-sheen-${i}`}
+                    x1="504"
+                    y1={startY}
+                    x2="576"
+                    y2={startY + 70}
+                    stroke="rgba(255, 255, 255, 0.75)"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    opacity={0.65}
+                  />
+                );
+              })}
+
+              {/* Garis Kilau Utama Sepanjang Kaca */}
+              <line
+                x1="512"
+                y1="0"
+                x2="512"
+                y2="1920"
+                stroke="rgba(255, 255, 255, 0.85)"
+                strokeWidth="4"
+                strokeDasharray="90 140"
+              />
+              <line
+                x1="568"
+                y1="0"
+                x2="568"
+                y2="1920"
+                stroke="rgba(255, 255, 255, 0.65)"
+                strokeWidth="2.5"
+                strokeDasharray="60 120"
+              />
+
+              {/* Klem Penjepit Baja Industri (Industrial Glass Mounting Brackets) */}
+              {clampYPositions.map((cy, idx) => (
+                <g key={`clamp-${idx}`}>
+                  {/* Plat Klem */}
+                  <rect
+                    x="484"
+                    y={cy - 16}
+                    width="112"
+                    height="32"
+                    rx="8"
+                    fill="url(#metalClampGrad)"
+                    stroke="#FFFFFF"
+                    strokeWidth="2"
+                    style={{ filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.6))" }}
+                  />
+                  {/* Baut Kiri & Kanan */}
+                  <circle cx="498" cy={cy} r="4.5" fill="#1E293B" stroke="#94A3B8" strokeWidth="1.5" />
+                  <circle cx="582" cy={cy} r="4.5" fill="#1E293B" stroke="#94A3B8" strokeWidth="1.5" />
+                  {/* Aksen Label Mini pada Klem Tengah */}
+                  {idx === 1 && (
+                    <text
+                      x="540"
+                      y={cy + 5}
+                      fill="#0F172A"
+                      fontSize="10"
+                      fontWeight="900"
+                      fontFamily="Arial, sans-serif"
+                      textAnchor="middle"
+                      letterSpacing="1"
+                    >
+                      GLASS BARRIER
+                    </text>
+                  )}
+                </g>
+              ))}
+
+              {/* =============================================================
+                  RETAKAN KACA JARING LABA-LABA (Frame 228 - 238)
+                 ============================================================= */}
+              {crackProgress > 0 && (
+                <g opacity={crackProgress}>
+                  {/* Titik Pusat Retakan di Y: 920 */}
+                  {/* Garis Retakan Radial Tajam */}
+                  <path
+                    d={`M 540 920 L 510 880 L 500 840 M 540 920 L 570 870 L 580 820 M 540 920 L 502 940 L 498 980 M 540 920 L 575 950 L 582 1010 M 540 920 L 525 990 L 515 1060 M 540 920 L 555 1000 L 565 1070 M 540 920 L 538 820 L 544 750 M 540 920 L 536 1020 L 542 1100`}
+                    fill="none"
+                    stroke="#FFFFFF"
+                    strokeWidth="3.5"
+                    strokeLinecap="round"
+                    style={{ filter: "drop-shadow(0 0 6px #67E8F9)" }}
+                  />
+                  {/* Lingkaran Fraktur Zigzag */}
+                  <polygon
+                    points="540,860 565,885 575,920 560,955 540,970 515,950 505,920 520,875"
+                    fill="none"
+                    stroke="#FFFFFF"
+                    strokeWidth="2.5"
+                  />
+                  <polygon
+                    points="540,810 580,850 584,920 575,980 540,1010 500,975 498,920 508,840"
+                    fill="none"
+                    stroke="rgba(255, 255, 255, 0.75)"
+                    strokeWidth="2"
+                  />
+                </g>
               )}
             </g>
           )}
 
           {/* ===============================================================
-              9. PECAHAN KACA POLIGONAL NYATA SAAT PECAH (Glass Shards)
+              9. PECAHAN KACA POLIGONAL NYATA SAAT PECAH (Glass Shards Explosion)
              =============================================================== */}
           {shatterProgress > 0 &&
             glassShards.map((shard) => {
               const distance = shard.speed * shatterProgress;
               const px = 540 + Math.cos(shard.angle) * distance;
-              // Efek gravitasi jatuh ke bawah sedikit
-              const py = shard.originY + Math.sin(shard.angle) * distance + 140 * Math.pow(shatterProgress, 2);
+              const py = shard.originY + Math.sin(shard.angle) * distance + 160 * Math.pow(shatterProgress, 2);
               const rotation = shard.rotSpeed * shatterProgress;
-              const shardOpacity = Math.max(0, 1 - shatterProgress * 1.1);
+              const shardOpacity = Math.max(0, 1 - shatterProgress * 1.15);
 
               return (
                 <polygon
                   key={`shard-${shard.id}`}
                   points={`${px},${py - shard.h / 2} ${px + shard.w / 2},${py + shard.h / 2} ${px - shard.w / 2},${py + shard.h / 3}`}
-                  fill="rgba(255, 255, 255, 0.9)"
-                  stroke="#67E8F9"
-                  strokeWidth="2"
+                  fill="rgba(224, 242, 254, 0.95)"
+                  stroke="#FFFFFF"
+                  strokeWidth="2.5"
                   opacity={shardOpacity}
                   transform={`rotate(${rotation}, ${px}, ${py})`}
+                  style={{ filter: "drop-shadow(0 0 10px rgba(56, 189, 248, 0.8))" }}
                 />
               );
             })}
@@ -469,7 +570,6 @@ export const Scene1TopDown: React.FC = () => {
               pointerEvents: "none",
             }}
           >
-            {/* Lingkaran Glow Emas */}
             <div
               style={{
                 width: 140,
@@ -497,7 +597,6 @@ export const Scene1TopDown: React.FC = () => {
               </span>
             </div>
 
-            {/* Pill Teks "Kok Bisa?" */}
             <div
               style={{
                 marginTop: 14,
@@ -524,7 +623,7 @@ export const Scene1TopDown: React.FC = () => {
         )}
 
         {/* ===================================================================
-            11. STEMPEL SILANG MERAH TEBAL (🚫 / "X" Stamp - "TIDAK ADA")
+            11. STEMPEL SILANG MERAH TEBAL (🚫 / "X" Stamp - "NGGAK ADA KACA!")
            =================================================================== */}
         {frame >= 238 && stampSpring > 0.05 && (
           <div
@@ -544,29 +643,27 @@ export const Scene1TopDown: React.FC = () => {
               pointerEvents: "none",
             }}
           >
-            {/* Lingkaran Silang Merah Menyala */}
             <div
               style={{
-                width: 170,
-                height: 170,
+                width: 175,
+                height: 175,
                 borderRadius: "50%",
-                backgroundColor: "rgba(239, 68, 68, 0.95)",
+                backgroundColor: "rgba(239, 68, 68, 0.96)",
                 border: "6px solid #FFFFFF",
-                boxShadow: "0 14px 45px rgba(239, 68, 68, 0.7), 0 0 25px rgba(255, 255, 255, 0.5)",
+                boxShadow: "0 14px 45px rgba(239, 68, 68, 0.75), 0 0 30px rgba(255, 255, 255, 0.6)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
               }}
             >
-              {/* Dua Garis X Tebal Menyilang Sempurna */}
               <div
                 style={{
                   position: "absolute",
-                  width: 110,
-                  height: 14,
+                  width: 116,
+                  height: 16,
                   backgroundColor: "#FFFFFF",
-                  borderRadius: 7,
+                  borderRadius: 8,
                   transform: "rotate(45deg)",
                   boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
                 }}
@@ -574,30 +671,29 @@ export const Scene1TopDown: React.FC = () => {
               <div
                 style={{
                   position: "absolute",
-                  width: 110,
-                  height: 14,
+                  width: 116,
+                  height: 16,
                   backgroundColor: "#FFFFFF",
-                  borderRadius: 7,
+                  borderRadius: 8,
                   transform: "rotate(-45deg)",
                   boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
                 }}
               />
             </div>
 
-            {/* Label "TIDAK ADA TEMBOK" */}
             <div
               style={{
                 marginTop: 14,
                 backgroundColor: "#DC2626",
                 color: "#FFFFFF",
                 fontFamily: "Plus Jakarta Sans, sans-serif",
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: 900,
                 letterSpacing: "2px",
-                padding: "8px 22px",
-                borderRadius: 16,
+                padding: "10px 26px",
+                borderRadius: 18,
                 border: "3px solid #FFFFFF",
-                boxShadow: "0 8px 25px rgba(0,0,0,0.5)",
+                boxShadow: "0 8px 30px rgba(0,0,0,0.6)",
                 textTransform: "uppercase",
               }}
             >
@@ -607,36 +703,36 @@ export const Scene1TopDown: React.FC = () => {
         )}
 
         {/* ===================================================================
-            12. BADGE INFORMASI PLAYFUL KURZGESAGT STYLE
+            12. BADGE INFORMASI PLAYFUL KURZGESAGT STYLE (DIPERBESAR & GAGAH)
            =================================================================== */}
         {/* BADGE LAUT A (KIRI: SAMUDRA ATLANTIK) */}
         <div
           style={{
             position: "absolute",
-            top: 240,
-            left: 55,
+            top: 220,
+            left: 45,
             transform: `scale(${badge1Spring})`,
             transformOrigin: "top left",
-            backgroundColor: "rgba(5, 21, 50, 0.75)",
-            backdropFilter: "blur(12px)",
-            padding: "16px 22px",
-            borderRadius: 22,
-            border: "2px solid rgba(96, 165, 250, 0.6)",
-            boxShadow: "0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.25)",
+            backgroundColor: "rgba(5, 21, 50, 0.85)",
+            backdropFilter: "blur(14px)",
+            padding: "22px 30px",
+            borderRadius: 26,
+            border: "3px solid rgba(96, 165, 250, 0.75)",
+            boxShadow: "0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(59, 130, 246, 0.35)",
             zIndex: 30,
-            maxWidth: 360,
+            minWidth: 380,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span style={{ fontSize: 26 }}>🧂</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <span style={{ fontSize: 38 }}>🧂</span>
             <div>
               <span
                 style={{
                   fontFamily: "Plus Jakarta Sans, sans-serif",
-                  fontSize: 20,
+                  fontSize: 26,
                   fontWeight: 900,
                   color: "#FFFFFF",
-                  letterSpacing: "1.5px",
+                  letterSpacing: "2px",
                   textTransform: "uppercase",
                   display: "block",
                 }}
@@ -646,11 +742,12 @@ export const Scene1TopDown: React.FC = () => {
               <span
                 style={{
                   fontFamily: "Plus Jakarta Sans, sans-serif",
-                  fontSize: 14,
+                  fontSize: 17,
                   fontWeight: 700,
                   color: "#93C5FD",
                   display: "block",
-                  marginTop: 2,
+                  marginTop: 4,
+                  letterSpacing: "0.5px",
                 }}
               >
                 Salinitas Tinggi · Padat
@@ -663,31 +760,31 @@ export const Scene1TopDown: React.FC = () => {
         <div
           style={{
             position: "absolute",
-            top: 240,
-            right: 55,
+            top: 220,
+            right: 45,
             transform: `scale(${badge2Spring})`,
             transformOrigin: "top right",
-            backgroundColor: "rgba(4, 46, 43, 0.75)",
-            backdropFilter: "blur(12px)",
-            padding: "16px 22px",
-            borderRadius: 22,
-            border: "2px solid rgba(45, 212, 191, 0.6)",
-            boxShadow: "0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(20, 184, 166, 0.25)",
+            backgroundColor: "rgba(4, 46, 43, 0.85)",
+            backdropFilter: "blur(14px)",
+            padding: "22px 30px",
+            borderRadius: 26,
+            border: "3px solid rgba(45, 212, 191, 0.75)",
+            boxShadow: "0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(20, 184, 166, 0.35)",
             zIndex: 30,
-            maxWidth: 360,
+            minWidth: 380,
             textAlign: "right",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexDirection: "row-reverse" }}>
-            <span style={{ fontSize: 26 }}>💧</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 14, flexDirection: "row-reverse" }}>
+            <span style={{ fontSize: 38 }}>💧</span>
             <div>
               <span
                 style={{
                   fontFamily: "Plus Jakarta Sans, sans-serif",
-                  fontSize: 20,
+                  fontSize: 26,
                   fontWeight: 900,
                   color: "#FFFFFF",
-                  letterSpacing: "1.5px",
+                  letterSpacing: "2px",
                   textTransform: "uppercase",
                   display: "block",
                 }}
@@ -697,11 +794,12 @@ export const Scene1TopDown: React.FC = () => {
               <span
                 style={{
                   fontFamily: "Plus Jakarta Sans, sans-serif",
-                  fontSize: 14,
+                  fontSize: 17,
                   fontWeight: 700,
                   color: "#5EEAD4",
                   display: "block",
-                  marginTop: 2,
+                  marginTop: 4,
+                  letterSpacing: "0.5px",
                 }}
               >
                 Air Segar · Rendah Garam
@@ -721,7 +819,7 @@ export const Scene1TopDown: React.FC = () => {
             width: "100%",
             height: 380,
             background:
-              "linear-gradient(to top, rgba(6, 19, 37, 0.88) 0%, rgba(6, 19, 37, 0.5) 60%, rgba(6, 19, 37, 0) 100%)",
+              "linear-gradient(to top, rgba(6, 19, 37, 0.92) 0%, rgba(6, 19, 37, 0.55) 60%, rgba(6, 19, 37, 0) 100%)",
             pointerEvents: "none",
             zIndex: 15,
           }}

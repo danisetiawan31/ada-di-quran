@@ -58,7 +58,7 @@ export const MainVideo: React.FC = () => {
       {currentFrame < voMainFrames && (
         <BackgroundMusic
           track="bossa"
-          volume={0.15}
+          volume={0.23}
           durationInFrames={voMainFrames}
           fadeOutFrames={30}
         />

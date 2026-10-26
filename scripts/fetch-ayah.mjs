@@ -64,10 +64,11 @@ async function main() {
   const ep = args.ep ? String(args.ep).padStart(2, "0") : null;
   const surah = args.surah ? parseInt(args.surah, 10) : null;
   const ayah = args.ayah ? parseInt(args.ayah, 10) : null;
+  const suffix = args.suffix ? `_${args.suffix}` : "";
 
   if (!ep || !surah || !ayah) {
     console.error("❌ Argumen tidak lengkap!");
-    console.error("👉 Penggunaan: node scripts/fetch-ayah.mjs --ep=01 --surah=49 --ayah=9");
+    console.error("👉 Penggunaan: node scripts/fetch-ayah.mjs --ep=01 --surah=49 --ayah=9 [--suffix=19]");
     process.exit(1);
   }
 
@@ -81,8 +82,8 @@ async function main() {
   const imageUrl = `https://everyayah.com/data/images_png/${imageFileName}`;
 
   const targetDir = path.join(projectRoot, "public", "assets", `ep${ep}`);
-  const destAudio = path.join(targetDir, "ayah.mp3");
-  const destImage = path.join(targetDir, "ayah.png");
+  const destAudio = path.join(targetDir, `ayah${suffix}.mp3`);
+  const destImage = path.join(targetDir, `ayah${suffix}.png`);
 
   console.log(`\n======================================================`);
   console.log(`📥 MENGUNDUH ASET AYAT UNTUK EPISODE ${ep}`);

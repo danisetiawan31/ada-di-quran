@@ -475,21 +475,6 @@ export const Scene1TopDown: React.FC = () => {
                   {/* Baut Kiri & Kanan */}
                   <circle cx="498" cy={cy} r="4.5" fill="#1E293B" stroke="#94A3B8" strokeWidth="1.5" />
                   <circle cx="582" cy={cy} r="4.5" fill="#1E293B" stroke="#94A3B8" strokeWidth="1.5" />
-                  {/* Aksen Label Mini pada Klem Tengah */}
-                  {idx === 1 && (
-                    <text
-                      x="540"
-                      y={cy + 5}
-                      fill="#0F172A"
-                      fontSize="10"
-                      fontWeight="900"
-                      fontFamily="Arial, sans-serif"
-                      textAnchor="middle"
-                      letterSpacing="1"
-                    >
-                      GLASS BARRIER
-                    </text>
-                  )}
                 </g>
               ))}
 
@@ -710,17 +695,17 @@ export const Scene1TopDown: React.FC = () => {
           style={{
             position: "absolute",
             top: 220,
-            left: 45,
+            left: 50,
             transform: `scale(${badge1Spring})`,
             transformOrigin: "top left",
-            backgroundColor: "rgba(5, 21, 50, 0.85)",
+            backgroundColor: "rgba(5, 21, 50, 0.88)",
             backdropFilter: "blur(14px)",
-            padding: "22px 30px",
+            padding: "22px 28px",
             borderRadius: 26,
-            border: "3px solid rgba(96, 165, 250, 0.75)",
+            border: "3px solid rgba(96, 165, 250, 0.8)",
             boxShadow: "0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(59, 130, 246, 0.35)",
             zIndex: 30,
-            minWidth: 380,
+            minWidth: 360,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -742,8 +727,8 @@ export const Scene1TopDown: React.FC = () => {
               <span
                 style={{
                   fontFamily: "Plus Jakarta Sans, sans-serif",
-                  fontSize: 17,
-                  fontWeight: 700,
+                  fontSize: 19,
+                  fontWeight: 800,
                   color: "#93C5FD",
                   display: "block",
                   marginTop: 4,
@@ -761,17 +746,17 @@ export const Scene1TopDown: React.FC = () => {
           style={{
             position: "absolute",
             top: 220,
-            right: 45,
+            right: 75,
             transform: `scale(${badge2Spring})`,
             transformOrigin: "top right",
-            backgroundColor: "rgba(4, 46, 43, 0.85)",
+            backgroundColor: "rgba(4, 46, 43, 0.88)",
             backdropFilter: "blur(14px)",
-            padding: "22px 30px",
+            padding: "22px 28px",
             borderRadius: 26,
-            border: "3px solid rgba(45, 212, 191, 0.75)",
+            border: "3px solid rgba(45, 212, 191, 0.8)",
             boxShadow: "0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(20, 184, 166, 0.35)",
             zIndex: 30,
-            minWidth: 380,
+            minWidth: 360,
             textAlign: "right",
           }}
         >
@@ -794,8 +779,8 @@ export const Scene1TopDown: React.FC = () => {
               <span
                 style={{
                   fontFamily: "Plus Jakarta Sans, sans-serif",
-                  fontSize: 17,
-                  fontWeight: 700,
+                  fontSize: 19,
+                  fontWeight: 800,
                   color: "#5EEAD4",
                   display: "block",
                   marginTop: 4,

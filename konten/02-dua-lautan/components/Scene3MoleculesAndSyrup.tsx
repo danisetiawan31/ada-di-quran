@@ -319,8 +319,8 @@ export const Scene3MoleculesAndSyrup: React.FC = () => {
                 <div
                   style={{
                     color: "#38BDF8",
-                    fontSize: 13,
-                    fontWeight: 800,
+                    fontSize: 16,
+                    fontWeight: 900,
                     letterSpacing: "2.5px",
                     textTransform: "uppercase",
                     fontFamily: FONTS.title,
@@ -835,7 +835,7 @@ export const Scene3MoleculesAndSyrup: React.FC = () => {
                 <div>
                   <div
                     style={{
-                      fontSize: 13,
+                      fontSize: 16,
                       fontWeight: 900,
                       letterSpacing: "1.5px",
                       textTransform: "uppercase",
@@ -892,7 +892,7 @@ export const Scene3MoleculesAndSyrup: React.FC = () => {
                   padding: "6px 22px",
                   borderRadius: 16,
                   color: "#FB923C",
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: 900,
                   letterSpacing: "3px",
                   textTransform: "uppercase",
@@ -970,8 +970,8 @@ export const Scene3MoleculesAndSyrup: React.FC = () => {
                   <div style={{ width: 28, height: 2.5, backgroundColor: "rgba(255, 255, 255, 0.45)" }} />
                   <span
                     style={{
-                      color: "rgba(255, 255, 255, 0.6)",
-                      fontSize: 13,
+                      color: "rgba(255, 255, 255, 0.75)",
+                      fontSize: 16,
                       fontWeight: 800,
                       fontFamily: "monospace",
                     }}
@@ -1076,7 +1076,7 @@ export const Scene3MoleculesAndSyrup: React.FC = () => {
                     </div>
                     <div
                       style={{
-                        fontSize: 15,
+                        fontSize: 18,
                         color: "#FFFFFF",
                         fontWeight: 800,
                         marginTop: 4,
@@ -1176,7 +1176,7 @@ export const Scene3MoleculesAndSyrup: React.FC = () => {
                     </div>
                     <div
                       style={{
-                        fontSize: 15,
+                        fontSize: 18,
                         color: "#FFFFFF",
                         fontWeight: 800,
                         marginTop: 4,
@@ -1490,8 +1490,8 @@ export const Scene3MoleculesAndSyrup: React.FC = () => {
               <div
                 style={{
                   color: "#FFFFFF",
-                  fontSize: 16,
-                  fontWeight: 700,
+                  fontSize: 18,
+                  fontWeight: 800,
                   marginTop: 6,
                   fontFamily: FONTS.body,
                 }}

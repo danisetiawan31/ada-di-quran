@@ -365,18 +365,18 @@ export const Scene5SonarToAyah: React.FC = () => {
                 <rect
                   x="0"
                   y="0"
-                  width="200"
-                  height="52"
-                  rx="14"
-                  fill="rgba(10, 20, 45, 0.88)"
-                  stroke="rgba(45, 212, 191, 0.6)"
-                  strokeWidth="1.5"
+                  width="240"
+                  height="64"
+                  rx="16"
+                  fill="rgba(10, 20, 45, 0.9)"
+                  stroke="rgba(45, 212, 191, 0.7)"
+                  strokeWidth="2"
                 />
                 <text
-                  x="14"
-                  y="22"
+                  x="16"
+                  y="26"
                   fill="#2DD4BF"
-                  fontSize="12"
+                  fontSize="15"
                   fontWeight="900"
                   fontFamily={FONTS.title}
                   letterSpacing="1px"
@@ -384,10 +384,10 @@ export const Scene5SonarToAyah: React.FC = () => {
                   ROV SENSOR CTD
                 </text>
                 <text
-                  x="14"
-                  y="40"
+                  x="16"
+                  y="48"
                   fill="#FFFFFF"
-                  fontSize="13"
+                  fontSize="17"
                   fontWeight="800"
                   fontFamily={FONTS.body}
                 >
@@ -505,16 +505,16 @@ export const Scene5SonarToAyah: React.FC = () => {
               style={{
                 display: "inline-block",
                 backgroundColor: "rgba(45, 212, 191, 0.18)",
-                border: "1px solid #2DD4BF",
-                padding: "4px 18px",
-                borderRadius: 14,
+                border: "1.5px solid #2DD4BF",
+                padding: "6px 22px",
+                borderRadius: 16,
                 color: "#2DD4BF",
-                fontSize: 13,
+                fontSize: 16,
                 fontWeight: 900,
                 letterSpacing: "3px",
                 textTransform: "uppercase",
                 fontFamily: FONTS.title,
-                marginBottom: 6,
+                marginBottom: 8,
               }}
             >
               📡 TEKNOLOGI OSEANOGRAFI
@@ -522,7 +522,7 @@ export const Scene5SonarToAyah: React.FC = () => {
             <h2
               style={{
                 color: "#FFFFFF",
-                fontSize: 34,
+                fontSize: 36,
                 fontWeight: 900,
                 margin: 0,
                 fontFamily: FONTS.title,
@@ -534,8 +534,8 @@ export const Scene5SonarToAyah: React.FC = () => {
             <p
               style={{
                 color: "#CBD5E1",
-                fontSize: 16,
-                fontWeight: 700,
+                fontSize: 18,
+                fontWeight: 800,
                 margin: "6px 0 0 0",
                 fontFamily: FONTS.body,
               }}
@@ -578,7 +578,7 @@ export const Scene5SonarToAyah: React.FC = () => {
                 padding: "6px 22px",
                 borderRadius: 16,
                 color: "#FBBF24",
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: 900,
                 letterSpacing: "3.5px",
                 textTransform: "uppercase",
@@ -626,8 +626,8 @@ export const Scene5SonarToAyah: React.FC = () => {
             {/* Teaser Terjemahan Singkat */}
             <div
               style={{
-                color: "rgba(255, 255, 255, 0.9)",
-                fontSize: 17,
+                color: "rgba(255, 255, 255, 0.92)",
+                fontSize: 20,
                 fontWeight: 700,
                 marginTop: 14,
                 fontFamily: FONTS.body,

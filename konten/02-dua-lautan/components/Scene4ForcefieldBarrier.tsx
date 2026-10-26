@@ -588,7 +588,7 @@ export const Scene4ForcefieldBarrier: React.FC = () => {
             <div>
               <div
                 style={{
-                  fontSize: 12,
+                  fontSize: 16,
                   fontWeight: 900,
                   letterSpacing: "1.5px",
                   textTransform: "uppercase",
@@ -640,7 +640,7 @@ export const Scene4ForcefieldBarrier: React.FC = () => {
               padding: "4px 20px",
               borderRadius: 14,
               color: "#FBBF24",
-              fontSize: 14,
+              fontSize: 16,
               fontWeight: 900,
               letterSpacing: "3px",
               textTransform: "uppercase",
@@ -665,8 +665,8 @@ export const Scene4ForcefieldBarrier: React.FC = () => {
           <p
             style={{
               color: "#E2E8F0",
-              fontSize: 17,
-              fontWeight: 700,
+              fontSize: 19,
+              fontWeight: 800,
               margin: "6px 0 0 0",
               fontFamily: FONTS.body,
             }}

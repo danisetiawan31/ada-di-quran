@@ -738,8 +738,8 @@ export const Scene2UnderwaterDive: React.FC = () => {
                       <div
                         style={{
                           color: "#93C5FD",
-                          fontSize: 15,
-                          fontWeight: 800,
+                          fontSize: 17,
+                          fontWeight: 900,
                           textTransform: "uppercase",
                           letterSpacing: "1.5px",
                         }}
@@ -818,8 +818,8 @@ export const Scene2UnderwaterDive: React.FC = () => {
                       <div
                         style={{
                           color: "#5EEAD4",
-                          fontSize: 15,
-                          fontWeight: 800,
+                          fontSize: 17,
+                          fontWeight: 900,
                           textTransform: "uppercase",
                           letterSpacing: "1.5px",
                         }}
@@ -915,7 +915,7 @@ export const Scene2UnderwaterDive: React.FC = () => {
               <div
                 style={{
                   color: "#38BDF8",
-                  fontSize: 13,
+                  fontSize: 16,
                   fontWeight: 900,
                   letterSpacing: "1.5px",
                   textTransform: "uppercase",

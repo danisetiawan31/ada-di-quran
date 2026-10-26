@@ -67,7 +67,7 @@ export const DynamicSubtitle: React.FC<DynamicSubtitleProps> = ({
       <div
         style={{
           position: "absolute",
-          bottom: 220, // Posisi aman di atas caption TikTok / nama audio
+          bottom: 270, // Posisi aman di atas caption TikTok / nama audio
           left: "50%",
           transform: `translateX(-50%) scale(${popScale})`,
           opacity: popOpacity,

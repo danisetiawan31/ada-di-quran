@@ -9,6 +9,7 @@ import { generateProportionalSubtitles } from "../../src/utils/subtitleTiming";
 import { COLORS } from "../../src/theme/tokens";
 import { FONTS } from "../../src/theme/fonts";
 import { StoryScenes } from "./components/StoryScenes";
+import { ClosingCta } from "./components/ClosingCta";
 import { Watermark } from "../../src/components/SacredLight";
 
 // Audio & Image Assets (Self-contained di dalam folder konten/02-dua-lautan/)
@@ -117,27 +118,7 @@ export const MainVideo: React.FC = () => {
               }}
             />
             <DynamicSubtitle subtitles={ctaSubtitles} />
-            <div
-              style={{
-                position: "absolute",
-                top: "45%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                backgroundColor: "rgba(10, 17, 40, 0.85)",
-                padding: "32px 56px",
-                borderRadius: 32,
-                border: `2px solid ${COLORS.amber}`,
-                boxShadow: `0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(251, 191, 36, 0.3)`,
-                textAlign: "center",
-              }}
-            >
-              <h2 style={{ fontFamily: FONTS.title, color: COLORS.amber, fontSize: 52, margin: 0 }}>
-                ADA DI QURAN
-              </h2>
-              <p style={{ fontFamily: FONTS.body, color: COLORS.textWhite, fontSize: 24, marginTop: 12, opacity: 0.9 }}>
-                Edukasi Tadabbur Visual 2D
-              </p>
-            </div>
+            <ClosingCta />
           </Series.Sequence>
         </Series>
       </AbsoluteFill>

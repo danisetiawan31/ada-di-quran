@@ -853,13 +853,13 @@ export const Scene4ForcefieldBarrier: React.FC = () => {
               top: 1130,
               left: "50%",
               transform: `translateX(-50%) scale(${bottomHookSpring})`,
-              width: 820,
+              width: 860,
               backgroundColor: "rgba(10, 20, 45, 0.95)",
-              backdropFilter: "blur(14px)",
-              padding: "18px 36px",
-              borderRadius: 24,
-              border: "2px solid rgba(251, 191, 36, 0.75)",
-              boxShadow: "0 14px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(251, 191, 36, 0.3)",
+              backdropFilter: "blur(16px)",
+              padding: "24px 44px",
+              borderRadius: 26,
+              border: "2.5px solid rgba(251, 191, 36, 0.85)",
+              boxShadow: "0 16px 45px rgba(0, 0, 0, 0.85), 0 0 30px rgba(251, 191, 36, 0.35)",
               textAlign: "center",
               zIndex: 22,
             }}
@@ -868,12 +868,13 @@ export const Scene4ForcefieldBarrier: React.FC = () => {
               style={{
                 color: "#FBBF24",
                 fontWeight: 900,
-                fontSize: 24,
+                fontSize: 28,
                 fontFamily: FONTS.title,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 10,
+                letterSpacing: "0.5px",
               }}
             >
               <span>✨</span> QS. Ar-Rahman: 20
@@ -881,10 +882,11 @@ export const Scene4ForcefieldBarrier: React.FC = () => {
             <div
               style={{
                 color: "#FFFFFF",
-                fontSize: 17,
+                fontSize: 24,
                 fontWeight: 700,
-                marginTop: 6,
+                marginTop: 8,
                 fontFamily: FONTS.body,
+                lineHeight: 1.45,
               }}
             >
               "Di antara keduanya ada batas yang tidak dilampaui masing-masing."

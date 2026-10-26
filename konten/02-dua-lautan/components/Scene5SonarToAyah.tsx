@@ -557,11 +557,11 @@ export const Scene5SonarToAyah: React.FC = () => {
               left: "50%",
               transform: `translateX(-50%) scale(${surahCardSpring})`,
               opacity: sacredPhaseProgress,
-              width: 860,
+              width: 890,
               backgroundColor: "rgba(10, 18, 42, 0.95)",
               backdropFilter: "blur(18px)",
-              padding: "28px 46px",
-              borderRadius: 30,
+              padding: "32px 48px",
+              borderRadius: 32,
               border: "2.5px solid #F59E0B",
               boxShadow:
                 "0 20px 60px rgba(0,0,0,0.85), 0 0 50px rgba(245, 158, 11, 0.45)",
@@ -593,7 +593,7 @@ export const Scene5SonarToAyah: React.FC = () => {
             <h2
               style={{
                 color: "#FFFFFF",
-                fontSize: 48,
+                fontSize: 50,
                 fontWeight: 900,
                 margin: "4px 0",
                 fontFamily: FONTS.title,
@@ -611,9 +611,9 @@ export const Scene5SonarToAyah: React.FC = () => {
                 backgroundColor: "rgba(245, 158, 11, 0.28)",
                 border: "1px solid rgba(253, 230, 138, 0.6)",
                 color: "#FEF08A",
-                padding: "6px 26px",
-                borderRadius: 16,
-                fontSize: 22,
+                padding: "8px 28px",
+                borderRadius: 18,
+                fontSize: 24,
                 fontWeight: 900,
                 fontFamily: FONTS.title,
                 marginTop: 8,
@@ -626,12 +626,12 @@ export const Scene5SonarToAyah: React.FC = () => {
             {/* Teaser Terjemahan Singkat */}
             <div
               style={{
-                color: "rgba(255, 255, 255, 0.92)",
-                fontSize: 20,
+                color: "#FFFFFF",
+                fontSize: 25,
                 fontWeight: 700,
-                marginTop: 14,
+                marginTop: 16,
                 fontFamily: FONTS.body,
-                lineHeight: 1.5,
+                lineHeight: 1.45,
               }}
             >
               "Dia membiarkan dua laut mengalir berdampingan... di antara keduanya ada batas."

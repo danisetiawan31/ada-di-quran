@@ -30,7 +30,7 @@ Topik konten mencakup seluruh dimensi ilmu dan kehidupan yang disinggung di dala
 1. Wajib memiliki *visual & audio hook* di 3 detik pertama.
 2. Klaim fakta dan konteks tafsir ayat wajib diverifikasi minimal dari 2 sumber kredibel (Tafsir muktabar + referensi ilmiah/sejarah yang sahih).
 3. Menghindari perdebatan *khilafiyah* yang rumit atau klaim cocoklogi tanpa dasar.
-4. Sumber rujukan wajib dicantumkan di dokumen brief (`BRIEF_EPXX.md`) dan caption video.
+4. Sumber rujukan wajib dicantumkan di dokumen brief (`BRIEF.md` di tiap folder konten) dan caption video.
 
 ---
 
@@ -42,20 +42,19 @@ Setiap video disusun menggunakan 3 komponen audio vokal berurutan (linear), didu
   - **BGM Adaptif (Opsional & Kondisional):** BGM instrumental/lo-fi lembut dengan volume **15–20%** dapat digunakan apabila cocok dengan suasana cerita.
   - **Kekhusyukan Ayat (Bagian 2):** Saat masuk ke pembacaan ayat Al-Qur'an, BGM/ambience wajib diheningkan total (*full mute*) atau diturunkan drastis (*ducking*) agar murattal terdengar jernih, agung, dan khusyuk.
 
-1. **Bagian 1 — Narasi Utama (`vo_main.mp3`):**
+1. **Bagian 1 — Narasi Utama (`vo_main.wav` / `vo_main.mp3`):**
    - Berisi: Hook (0–3 detik) + Penjelasan fakta/cerita + Kalimat jembatan menuju ayat Al-Qur'an.
    - Diproduksi menggunakan **Google AI Studio Voiceover** berdasarkan naskah yang disusun pada tahap *planning*.
-   - **Sinkronisasi Subtitle (Auto-Proportional + Manual Offset):** Perhitungan rasio panjang karakter teks terhadap total durasi `vo_main.mp3` dijadikan sebagai *baseline* otomatis. Namun, karena rekaman suara narator memiliki dinamika tempo, jeda nafas, dan jeda dramatis, utilitas `subtitleTiming.ts` wajib mendukung parameter **`manualOffsets` (toleransi pergeseran frame per baris kalimat)** agar sinkronisasi teks dan suara bisa disempurnakan secara presisi saat preview tanpa meleset.
+   - **Sinkronisasi Subtitle (Auto-Proportional + Manual Offset):** Perhitungan rasio panjang karakter teks terhadap total durasi vokal narasi dijadikan sebagai *baseline* otomatis. Namun, karena rekaman suara narator memiliki dinamika tempo, jeda nafas, dan jeda dramatis, utilitas `subtitleTiming.ts` wajib mendukung parameter **`manualOffsets` (toleransi pergeseran frame per baris kalimat)** agar sinkronisasi teks dan suara bisa disempurnakan secara presisi saat preview tanpa meleset.
 2. **Bagian 2 — Murattal & Visual Ayat (`ayah.mp3` & `ayah.png`):**
-   - **Sumber Audio (`ayah.mp3`):** Qari **Abu Bakr Ash-Shaatree** dari EveryAyah.com (`https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_128kbps/{3_digit_surah}{3_digit_ayat}.mp3`, contoh: `022012.mp3`).
-   - **Sumber Gambar Kaligrafi (`ayah.png`):** Gambar resmi dari EveryAyah.com (`https://everyayah.com/data/images_png/{surah}_{ayat}.png` tanpa *leading zero*, contoh: `22_12.png`).
+   - **Sumber Audio (`ayah.mp3`):** Qari **Abu Bakr Ash-Shaatree** dari EveryAyah.com (`https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_128kbps/{3_digit_surah}{3_digit_ayat}.mp3`).
+   - **Sumber Gambar Kaligrafi (`ayah.png`):** Gambar resmi dari EveryAyah.com (`https://everyayah.com/data/images_png/{surah}_{ayat}.png`).
    - **Aturan Durasi & Pemotongan (Maksimal 10 Detik / 300 Frames):**
      - Jika durasi asli `ayah.mp3` ≤ 10 detik, putar penuh sesuai durasi aslinya tanpa *fade-out* (volume 100% tuntas).
      - Jika durasi asli `ayah.mp3` > 10 detik (ayat panjang), batasi durasi tampil maksimal **10 detik (300 frames pada 30fps)** dan lakukan *audio fade-out* halus di 1 detik terakhir (frame 270–300).
    - **Aturan Panjang Teks Terjemahan:** Untuk ayat yang panjang, gunakan kutipan inti terjemahan Kemenag yang paling relevan (maksimal 25–30 kata) dengan tanda elipsis (`"..."`) agar nyaman dibaca dalam 10 detik dan tidak meluber (*overflow*) dari kartu.
-3. **Bagian 3 — Penutup / CTA (`vo_cta.mp3`):**
+3. **Bagian 3 — Penutup / CTA (`vo_cta.wav` / `vo_cta.mp3`):**
    - Berisi: Ajakan penutup standar (contoh: *"Follow Ada di Quran buat tahu fakta menarik lainnya, ya!"*).
-   - Merupakan aset *reusable* global hasil Google AI Studio Voiceover yang dipakai berulang di setiap episode.
 
 ---
 
@@ -80,31 +79,47 @@ Agar penonton betah menonton hingga akhir, setiap episode wajib dibagi menjadi *
 ### C. Desain `<AyahCard />` (Seamless Mushaf Overlay & Freeze Background)
 - Saat masuk Bagian 2, adegan ilustrasi terakhir dari Bagian 1 **tetap dipertahankan di layar bawah dalam kondisi dibekukan (`<Freeze />`)**, lalu dilapisi *overlay* gelap transparan dan *blur* (`backdropFilter: 'blur(12px)'`, `backgroundColor: 'rgba(10, 17, 40, 0.75)'`).
 - Di tengah layar muncul kartu Mushaf berwarna **Warm Cream (`#FDFBF7`)** dengan aksen bingkai Amber (`#FBBF24`).
-- Gambar `ayah.png` dirender dengan `width: 100%`, `maxHeight: 420px`, `objectFit: 'contain'`, dan properti CSS **`mixBlendMode: 'multiply'`** agar latar putih/abu-abu bawaan EveryAyah menyatu 100% dengan warna kertas kartu.
-- Dilengkapi **Audio Waveform Visualizer** berwarna Amber di bawah kaligrafi serta teks terjemahan Kemenag dengan fitur **Auto-Scale Font Size** (ukuran font otomatis mengecil jika panjang teks > 180 karakter agar tidak pernah *overflow*).
+- Gambar `ayah.png` dirender dengan properti CSS **`mixBlendMode: 'multiply'`** agar latar putih bawaan EveryAyah menyatu 100% dengan warna kertas kartu.
+- Dilengkapi **Audio Waveform Visualizer** berwarna Amber di bawah kaligrafi serta teks terjemahan Kemenag dengan fitur **Auto-Scale Font Size** agar terjemahan tidak pernah *overflow*.
 
 ### D. Aturan Tipografi & Subtitle (`<DynamicSubtitle />`)
 - Gunakan font sans-serif modern (`Plus Jakarta Sans` atau `Inter`).
 - Berikan *dark vignette* (gradasi gelap halus) di bagian bawah layar agar teks selalu kontras di atas ilustrasi apa pun.
-- Tampilkan maksimal 1–2 baris pendek di sepertiga bawah layar dengan *highlight* warna aksen (Teal `#14B8A6`, Orange `#F97316`, atau Amber `#FBBF24`) pada kata kunci. Teks narasi dilarang dimasukkan ke dalam ilustrasi SVG.
+- Tampilkan maksimal 1–2 baris pendek di sepertiga bawah layar dengan *highlight* warna aksen pada kata kunci. Teks narasi dilarang dimasukkan ke dalam ilustrasi SVG.
 
 ---
 
-## 5. Struktur Direktori Proyek (Git Standard)
+## 5. Struktur Direktori Proyek (Arsitektur 1 Konten = 1 Folder)
 ```text
-ada-di-quran/
+D:\Dokumen\yt\
 ├── PROJECT_SSOT.md              # Dokumen acuan utama proyek (file ini)
 ├── FOUNDATION_BACKLOG.md        # Backlog pembangunan pondasi Base Engine
-├── briefs/                      # Dokumen riset, naskah voiceover, & storyboard per episode (BRIEF_EPXX.md)
-├── scripts/                     # Script utilitas (fetch-ayah.mjs untuk unduh .mp3 & .png)
-├── public/
-│   └── assets/
-│       ├── global/              # Aset reusable (vo_cta.mp3, watermark/logo)
-│       └── epXX/                # Aset per episode (vo_main.mp3, ayah.mp3, ayah.png)
-└── src/
-    ├── theme/                   # Konstanta palet warna, ukuran, font Latin, dan daftar 114 Surah
-    ├── utils/                   # Utilitas Auto-Proportional Subtitle Timing (subtitleTiming.ts)
-    ├── components/              # Reusable engine (CameraRig, SacredLight, AyahCard, DynamicSubtitle, EpisodeLayout)
-    ├── episodes/                # Full-scene 2D illustrations spesifik per episode (Ep01, Ep02, dst.)
-    └── Root.tsx                 # Registrasi komposisi Remotion
+├── scripts/                     # Script utilitas (fetch-ayah.mjs untuk unduh aset ke folder konten)
+│
+├── konten/                      # 📦 SETIAP KONTEN HANYA 1 FOLDER UTUH
+│   ├── 01-gelitik/              # Konten 1: Kenapa Geli (Arsip)
+│   └── 02-dua-lautan/           # Konten 2 / Episode 1 "Ada di Quran"
+│       ├── BRIEF.md             # Riset, naskah, & hook
+│       ├── vo_main.wav          # Audio narasi utama (dari Google AI Studio)
+│       ├── vo_cta.wav           # Audio penutup CTA (dari Google AI Studio)
+│       ├── ayah_19.mp3 & .png   # Murattal & kaligrafi ayat 19 (EveryAyah)
+│       ├── ayah_20.mp3 & .png   # Murattal & kaligrafi ayat 20 (EveryAyah)
+│       ├── MainVideo.tsx        # Komposisi utama episode ini
+│       ├── theme.ts             # Pengaturan tema/durasi episode
+│       └── components/          # Scene-scene visual 2D
+│
+├── public/                      # 🎵 SHARED GLOBAL ASSETS (BGM & SFX Library)
+│   ├── bgm_bossa.mp3 & rhodes.mp3
+│   ├── sfx/                     # 26 efek suara komik & bioskop
+│   └── twemoji/                 # Vektor emoji SVG
+│
+├── src/                         # ⚙️ BASE ENGINE (Reusable Engine)
+│   ├── components/              # AyahCard, CameraRig, DynamicSubtitle, SacredLight, EpisodeLayout
+│   ├── theme/                   # Tokens, fonts, surahList (114 Surah)
+│   ├── utils/                   # subtitleTiming (Auto-proportional)
+│   ├── declarations.d.ts        # Dukungan import aset audio & gambar langsung
+│   ├── Root.tsx                 # Registrasi Composition Remotion
+│   └── index.ts                 # Entry point
+│
+└── out/                         # 🎬 HASIL EXPORT FINAL (.mp4)
 ```

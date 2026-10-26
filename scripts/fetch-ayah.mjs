@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "..");
 
-// 1. Parse CLI Arguments (--ep=00, --surah=49, --ayah=9 atau --ep 00 --surah 49 --ayah 9)
+// 1. Parse CLI Arguments (--ep=02, --surah=55, --ayah=19, --suffix=19, --folder=02-dua-lautan)
 function parseArgs() {
   const args = process.argv.slice(2);
   const parsed = {};
@@ -66,10 +66,23 @@ async function main() {
   const ayah = args.ayah ? parseInt(args.ayah, 10) : null;
   const suffix = args.suffix ? `_${args.suffix}` : "";
 
-  if (!ep || !surah || !ayah) {
+  if ((!ep && !args.folder && !args.dest) || !surah || !ayah) {
     console.error("❌ Argumen tidak lengkap!");
-    console.error("👉 Penggunaan: node scripts/fetch-ayah.mjs --ep=01 --surah=49 --ayah=9 [--suffix=19]");
+    console.error("👉 Penggunaan: node scripts/fetch-ayah.mjs --ep=02 --surah=55 --ayah=19 [--suffix=19]");
     process.exit(1);
+  }
+
+  // Tentukan target direktori di dalam folder konten/
+  let targetDir = "";
+  if (args.dest) {
+    targetDir = path.resolve(projectRoot, args.dest);
+  } else if (args.folder) {
+    targetDir = path.join(projectRoot, "konten", args.folder);
+  } else if (ep) {
+    const kontenDir = path.join(projectRoot, "konten");
+    const subdirs = fs.existsSync(kontenDir) ? fs.readdirSync(kontenDir) : [];
+    const matched = subdirs.find((d) => d.startsWith(`${ep}-`) || d === ep);
+    targetDir = matched ? path.join(kontenDir, matched) : path.join(kontenDir, ep);
   }
 
   // Format parameter EveryAyah
@@ -81,14 +94,13 @@ async function main() {
   const audioUrl = `https://everyayah.com/data/Abu_Bakr_Ash-Shaatree_128kbps/${audioFileName}`;
   const imageUrl = `https://everyayah.com/data/images_png/${imageFileName}`;
 
-  const targetDir = path.join(projectRoot, "public", "assets", `ep${ep}`);
   const destAudio = path.join(targetDir, `ayah${suffix}.mp3`);
   const destImage = path.join(targetDir, `ayah${suffix}.png`);
 
   console.log(`\n======================================================`);
-  console.log(`📥 MENGUNDUH ASET AYAT UNTUK EPISODE ${ep}`);
+  console.log(`📥 MENGUNDUH ASET AYAT`);
   console.log(`   Surah : ${surah} | Ayat : ${ayah}`);
-  console.log(`   Target: public/assets/ep${ep}/`);
+  console.log(`   Target: ${path.relative(projectRoot, targetDir)}/`);
   console.log(`======================================================\n`);
 
   try {
@@ -96,15 +108,15 @@ async function main() {
     console.log(`⏳ [1/2] Mengunduh Audio Murattal...`);
     console.log(`   URL : ${audioUrl}`);
     const audioSize = await downloadFile(audioUrl, destAudio);
-    console.log(`   ✅ Audio tersimpan: ayah.mp3 (${(audioSize / 1024).toFixed(1)} KB)`);
+    console.log(`   ✅ Audio tersimpan: ayah${suffix}.mp3 (${(audioSize / 1024).toFixed(1)} KB)`);
 
     // 2. Download Gambar Kaligrafi Ayat
     console.log(`\n⏳ [2/2] Mengunduh Gambar Kaligrafi Ayat...`);
     console.log(`   URL : ${imageUrl}`);
     const imageSize = await downloadFile(imageUrl, destImage);
-    console.log(`   ✅ Gambar tersimpan: ayah.png (${(imageSize / 1024).toFixed(1)} KB)`);
+    console.log(`   ✅ Gambar tersimpan: ayah${suffix}.png (${(imageSize / 1024).toFixed(1)} KB)`);
 
-    console.log(`\n🎉 SUKSES! Seluruh aset ayat untuk Episode ${ep} siap digunakan di:`);
+    console.log(`\n🎉 SUKSES! Seluruh aset ayat siap digunakan di:`);
     console.log(`   📁 ${destAudio}`);
     console.log(`   📁 ${destImage}\n`);
   } catch (err) {

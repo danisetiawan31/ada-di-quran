@@ -13,6 +13,10 @@ import { THEME as GELITIK_THEME } from "../konten/01-gelitik/theme";
 import { MainVideo as VideoDuaLautan } from "../konten/02-dua-lautan/MainVideo";
 import { EP01_THEME } from "../konten/02-dua-lautan/theme";
 
+// 3. SHOWCASE LOGO
+import { LogoOption1Preview, LogoOption2Preview } from "./components/logos/LogoShowcase";
+import { StandaloneVectorMushaf, StandaloneVectorRubElHizb } from "./components/logos/StandaloneLogos";
+
 export const RemotionRoot: React.FC = () => {
   return (
     <>
@@ -41,6 +45,46 @@ export const RemotionRoot: React.FC = () => {
         fps={EP01_THEME.dimensions.fps}
         width={EP01_THEME.dimensions.width}
         height={EP01_THEME.dimensions.height}
+      />
+
+      {/* -------------------------------------------------------------
+          3. PREVIEW LOGO OPSI 1 & OPSI 2 (Standalone Image Preview)
+         ------------------------------------------------------------- */}
+      <Composition
+        id="LogoOption1"
+        component={LogoOption1Preview}
+        durationInFrames={30}
+        fps={30}
+        width={1080}
+        height={1080}
+      />
+      <Composition
+        id="LogoOption2"
+        component={LogoOption2Preview}
+        durationInFrames={30}
+        fps={30}
+        width={1080}
+        height={1080}
+      />
+
+      {/* -------------------------------------------------------------
+          4. TRANSPARENT VECTOR LOGO EXPORTS (1024x1024 Transparent PNG)
+         ------------------------------------------------------------- */}
+      <Composition
+        id="VectorMushaf"
+        component={StandaloneVectorMushaf}
+        durationInFrames={1}
+        fps={30}
+        width={1024}
+        height={1024}
+      />
+      <Composition
+        id="VectorRubElHizb"
+        component={StandaloneVectorRubElHizb}
+        durationInFrames={1}
+        fps={30}
+        width={1024}
+        height={1024}
       />
     </>
   );

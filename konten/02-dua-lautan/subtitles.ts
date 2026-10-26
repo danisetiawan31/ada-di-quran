@@ -50,13 +50,18 @@ export const EP01_SUBTITLE_SEGMENTS = [
     highlightWords: ["sifat asli"],
   },
   {
-    // Segmen 11 (~40.0s - 44.8s | Frame 1200 - 1344)
+    // Segmen 11 (~40.0s - 44.5s)
     text: "Menariknya, jauh sebelum alat oseanografi modern meneliti kedalaman laut,",
     highlightWords: ["oseanografi modern", "kedalaman laut"],
   },
   {
-    // Segmen 12 (~44.8s - 52.0s | Frame 1344 - 1560)
-    text: "fenomena dua lautan yang bertemu tapi punya batas pemisah ini sudah tertulis di dalam Al-Qur'an, Surah Ar-Rahman ayat 19 dan 20.",
+    // Segmen 12A (~44.5s - 48.4s)
+    text: "fenomena dua lautan yang bertemu tapi punya batas pemisah ini,",
+    highlightWords: ["dua lautan", "batas pemisah"],
+  },
+  {
+    // Segmen 12B (~48.4s - 52.6s)
+    text: "sudah tertulis di dalam Al-Qur'an, Surah Ar-Rahman ayat 19 dan 20.",
     highlightWords: ["Al-Qur'an", "Surah Ar-Rahman", "ayat 19 dan 20"],
   },
 ];

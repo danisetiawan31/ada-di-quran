@@ -39,7 +39,7 @@ Setiap video disusun menggunakan 3 komponen audio vokal berurutan (linear), didu
 
 - **Aturan Pengiring Audio (Ambience & BGM):**
   - **Fokus Utama — Ambient Soundscapes & Foley:** Menggunakan suara lingkungan alami yang sesuai konteks topik (contoh: gemuruh ombak bawah air untuk oseanografi, hembusan angin gurun untuk sejarah/alam, detak jantung atau cinematic sub-bass untuk biologi/medis) serta SFX halus (transisi *whoosh*, kilauan cahaya saat ayat muncul). Hal ini membuat video terasa sinematik dan hidup tanpa terasa "kering" atau canggung di sela nafas narator.
-  - **BGM Adaptif (Opsional & Kondisional):** BGM instrumental/lo-fi lembut dengan volume **15–20%** dapat digunakan apabila cocok dengan suasana cerita.
+  - **BGM Adaptif (Opsional & Kondisional):** BGM instrumental/lo-fi lembut dengan volume default **25%** (`0.25`) digunakan selama Bagian 1 untuk menjaga retensi dan suasana cerita tanpa menenggelamkan vokal narator.
   - **Kekhusyukan Ayat (Bagian 2):** Saat masuk ke pembacaan ayat Al-Qur'an, BGM/ambience wajib diheningkan total (*full mute*) atau diturunkan drastis (*ducking*) agar murattal terdengar jernih, agung, dan khusyuk.
 
 1. **Bagian 1 — Narasi Utama (`vo_main.wav` / `vo_main.mp3`):**

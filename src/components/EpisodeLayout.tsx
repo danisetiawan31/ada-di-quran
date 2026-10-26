@@ -37,7 +37,7 @@ export interface EpisodeLayoutProps {
 
   // Optional Ambience / BGM
   bgmTrack?: "bossa" | "rhodes" | string;
-  bgmVolume?: number; // 0.15 - 0.20
+  bgmVolume?: number; // default: 0.25 (25%)
 }
 
 export const EpisodeLayout: React.FC<EpisodeLayoutProps> = ({
@@ -61,7 +61,7 @@ export const EpisodeLayout: React.FC<EpisodeLayoutProps> = ({
   ctaNode,
 
   bgmTrack,
-  bgmVolume = 0.15,
+  bgmVolume = 0.25,
 }) => {
   const currentFrame = useCurrentFrame();
 

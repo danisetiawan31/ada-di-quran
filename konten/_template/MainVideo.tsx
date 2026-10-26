@@ -18,8 +18,8 @@ export const MainVideo: React.FC = () => {
         fontFamily: THEME.typography.fontFamilyTitle,
       }}
     >
-      {/* Background Music Reusable */}
-      <BackgroundMusic track="bossa" volume={0.15} />
+      {/* Background Music Reusable (Default SSOT: 25%) */}
+      <BackgroundMusic track="bossa" volume={0.25} />
 
       {/* Konten Video Baru */}
       <h1 style={{ fontSize: 48, color: THEME.colors.primary, textAlign: "center" }}>

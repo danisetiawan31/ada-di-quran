@@ -41,9 +41,8 @@ export const BackgroundMusic: React.FC<BackgroundMusicProps> = ({
   if (track === "bossa") fileName = "bgm_bossa.mp3";
   else if (track === "rhodes") fileName = "bgm_rhodes.mp3";
 
-  // Bossa Antigua is mastered with high dynamic range (-23.8 dB mean), so 0.20 (20%) gives a cozy presence.
-  // Airport Lounge is louder (-16.9 dB mean), so 0.12 is ideal.
-  const targetVolume = volume ?? (track === "bossa" ? 0.20 : 0.12);
+  // Default BGM volume SSOT: 25% (0.25)
+  const targetVolume = volume ?? 0.25;
 
   const fadeOutStart = Math.max(0, totalDuration - fadeOutFrames);
 

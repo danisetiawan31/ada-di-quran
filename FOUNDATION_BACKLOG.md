@@ -23,7 +23,7 @@ Tujuan: Mengunci variabel ukuran layar, palet warna, kamus 114 surah, serta fung
 
 - [x] **Task 2.1 — File Konstanta Tema & Font (`src/theme/tokens.ts` & `fonts.ts`):**
   - Kunci ukuran layar: `WIDTH = 1080`, `HEIGHT = 1920`, `FPS = 30`, `MAX_AYAH_FRAMES = 300` (10 detik).
-  - Siapkan palet warna dasar & aksen: Deep Night (`#0A1128`), Mushaf Cream (`#FDFBF7`), Teal (`#14B8A6`), Orange (`#F97316`), Amber (`#FBBF24`), dan Text White (`#F8FAFC`).
+  - Siapkan palet warna dasar & aksen: Mushaf Cream (`#FDFBF7`), Amber (`#FBBF24`), dan Text White (`#F8FAFC`). Seluruh elemen dasar mesin bersifat *color-agnostic* (netral hitam transparan) agar setiap episode bebas menentukan tema warnanya sendiri.
   - Muat font Latin (`Plus Jakarta Sans` atau `Inter`) via `@remotion/google-fonts`.
 - [x] **Task 2.2 — Kamus Data 114 Surah (`src/theme/surahList.ts`):**
   - Simpan mapping nomor surah (1–114) ke nama surah sesuai daftar `<select id="chapter">` di EveryAyah (contoh: `1: "Al-Faatiha"`, `22: "Al-Hajj"`, `49: "Al-Hujuraat"`, `55: "Ar-Rahmaan"`, `75: "Al-Qiyaama"`, dst.).
@@ -53,17 +53,17 @@ Tujuan: Membangun perangkat kamera 2D, komponen adab cahaya, kartu mushaf anti-o
     - `<ParallaxLayer speed={...} />` untuk memisahkan gerakan latar langit, objek tengah, dan latar depan.
 - [x] **Task 4.2 — `<SacredLight />` & `<Watermark />` (`src/components/SacredLight.tsx`):**
   - Komponen bola cahaya keemasan bersinar (*glowing orb* dengan partikel lembut) untuk merepresentasikan Nabi, Malaikat, atau hal gaib.
-  - Komponen watermark `@AdaDiQuran` di area aman bagian atas layar.
+  - Komponen watermark `@AdaDiQuran` di area aman bagian atas layar (dengan *frosted neutral backdrop*).
 - [x] **Task 4.3 — `<AyahCard />` (`src/components/AyahCard.tsx`):**
   - Menerima *props*: `surahNumber`, `ayahNumber`, `translationText`, `imageSrc` (`ayah.png`), dan `audioSrc` (`ayah.mp3`).
-  - Merender *backdrop overlay* gelap transparan (`backdropFilter: 'blur(12px)'`, `backgroundColor: 'rgba(10, 17, 40, 0.75)'`) yang akan mem-blur ilustrasi adegan cerita di bawahnya.
+  - Merender *backdrop overlay* gelap transparan (`backdropFilter: 'blur(14px)'`, `backgroundColor: 'rgba(0, 0, 0, 0.75)'`) yang akan mem-blur ilustrasi adegan cerita di bawahnya.
   - Menampilkan *badge* nama surah (otomatis dari `surahList.ts`) & nomor ayat dengan aksen Amber (`#FBBF24`).
   - Menampilkan gambar `<Img src={imageSrc} />` di dalam kartu **Warm Cream (`#FDFBF7`)** dengan gaya `width: '100%'`, `maxHeight: 420`, `objectFit: 'contain'`, dan **`mixBlendMode: 'multiply'`** agar kaligrafi hitam menyatu sempurna tanpa kotak background bawaan.
   - Menampilkan **Audio Waveform Visualizer** (via `useAudioData()`) dan *progress bar* berwarna Amber di bawah kaligrafi.
   - Menampilkan `translationText` dengan logika **Auto-Scale Font Size** (contoh: `fontSize = translationText.length > 180 ? 28 : 34`) agar terjemahan panjang tidak pernah *overflow* keluar kartu.
   - Memutar `<Audio src={audioSrc} />` dengan batas maksimal 10 detik (300 frames) dan *audio fade-out* halus di frame 270–300 jika durasi asli audio > 10 detik.
 - [x] **Task 4.4 — `<DynamicSubtitle />` (`src/components/DynamicSubtitle.tsx`):**
-  - Dilengkapi *bottom dark vignette* (gradasi hitam halus di bagian bawah layar) agar teks selalu kontras di atas ilustrasi apa pun.
+  - Dilengkapi *bottom dark vignette* (gradasi hitam netral di bagian bawah layar) agar teks selalu kontras di atas ilustrasi apa pun.
   - Menerima *array* hasil kalkulasi `generateProportionalSubtitles()` dan menampilkan maksimal 1–2 baris di sepertiga bawah layar dengan *highlight* warna aksen pada kata kunci.
 
 ---
@@ -73,8 +73,9 @@ Tujuan: Menggabungkan 3 bagian audio linear secara otomatis sekaligus mempertaha
 
 - [x] **Task 5.1 — Bangun `<EpisodeLayout />`:**
   - Membaca durasi `vo_main.mp3` (`voMainFrames`), `ayah.mp3` (`ayahFrames = Math.min(durasiAsliFrames, 300)`), dan `vo_cta.mp3` (`ctaFrames`) secara otomatis menggunakan `getAudioDurationInSeconds()` di `calculateMetadata`.
+  - Mendukung prop `backgroundColor` fleksibel per episode (default netral `#000000`).
   - **Layer 1 (Base Visual Layer — `<AbsoluteFill>` Paling Bawah):**
-    - Merender `children` (ilustrasi 2D episode) sepanjang durasi video dengan pembungkus `<Freeze frame={voMainFrames - 1} active={currentFrame >= voMainFrames}>` dari Remotion. Dengan ini, saat masuk ke bagian Ayat dan CTA, ilustrasi terakhir cerita tetap tampil membeku di latar belakang (tidak hilang/hitam) sehingga efek `backdropFilter: 'blur(12px)'` bekerja sempurna.
+    - Merender `children` (ilustrasi 2D episode) sepanjang durasi video dengan pembungkus `<Freeze frame={voMainFrames - 1} active={currentFrame >= voMainFrames}>` dari Remotion. Dengan ini, saat masuk ke bagian Ayat dan CTA, ilustrasi terakhir cerita tetap tampil membeku di latar belakang (tidak hilang/hitam) sehingga efek `backdropFilter: 'blur(14px)'` bekerja sempurna.
   - **Layer 2 (Sequential Audio & Overlay Layer — `<Series>`):**
     1. **Sekuens 1 (Durasi = `voMainFrames`):** Merender `<Audio src={voMain} />` + `<DynamicSubtitle subtitles={mainSubtitles} />`.
     2. **Sekuens 2 (Durasi = `ayahFrames`):** Merender `<AyahCard />` (sebagai *blurred overlay* di atas ilustrasi yang di-*freeze*).

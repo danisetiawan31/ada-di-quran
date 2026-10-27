@@ -60,6 +60,13 @@ Setiap video disusun menggunakan 3 komponen audio vokal berurutan (linear), didu
 
 ## 4. Standar Visual & Prinsip Animasi Remotion ("Full-Scene 2D Storytelling")
 - **Resolusi & Frame Rate:** 1080 x 1920 piksel (Vertikal 9:16), 30 fps.
+- **Bebas Warna Acuan (100% Bebas & Independen per Topik):** Channel "Ada di Quran" **TIDAK MEMILIKI WARNA ACUAN GLOBAL (dilarang mematok tema navy atau tema warna tunggal lainnya)**. Setiap topik pembahasan memiliki kebebasan penuh merancang palet warna orisinal di dalam file tema lokalnya masing-masing (`theme.ts` per konten):
+  - **Alam & Hidrologi:** Biru samudra, toska, pecahan busa putih.
+  - **Tumbuhan & Botani:** Hijau zamrud, kuning madu, cokelat tanah humus.
+  - **Anatomi & Medis:** Merah marun sel darah, merah muda, krem jaringan tubuh.
+  - **Sejarah & Gurun:** Kuning pasir, terakota, oranye senja, batu karang.
+  - **Astronomi & Langit:** Hitam kosmik, ungu nebula, perak bintang.
+  Seluruh komponen dasar mesin (*base engine*) seperti *overlay blur*, gradasi subtitle (*dark vignette*), dan kanvas dasar wajib bersifat netral (*color-agnostic* hitam netral transparan) agar tidak pernah mengotori atau membiaskan warna alami tema video apa pun.
 - **Larangan Background Polos & Statis:** Dilarang menggunakan latar belakang 1 warna polos atau sekadar menumpuk kartu teks (*UI cards*). Setiap adegan wajib berupa **ilustrasi lingkungan 2D utuh (Full-Scene Environment)** yang sesuai dengan konteks cerita.
 
 ### A. Prinsip Visualisasi Kontekstual (Topic-Driven Visuals)
@@ -77,7 +84,7 @@ Agar penonton betah menonton hingga akhir, setiap episode wajib dibagi menjadi *
 - **2.5D Parallax:** Memisahkan elemen latar depan (*foreground*), tengah (*midground*), dan belakang (*background*) agar bergerak dengan kecepatan berbeda.
 
 ### C. Desain `<AyahCard />` (Seamless Mushaf Overlay & Freeze Background)
-- Saat masuk Bagian 2, adegan ilustrasi terakhir dari Bagian 1 **tetap dipertahankan di layar bawah dalam kondisi dibekukan (`<Freeze />`)**, lalu dilapisi *overlay* gelap transparan dan *blur* (`backdropFilter: 'blur(12px)'`, `backgroundColor: 'rgba(10, 17, 40, 0.75)'`).
+- Saat masuk Bagian 2, adegan ilustrasi terakhir dari Bagian 1 **tetap dipertahankan di layar bawah dalam kondisi dibekukan (`<Freeze />`)**, lalu dilapisi *overlay* gelap netral transparan dan *blur* (`backdropFilter: 'blur(14px)'`, `backgroundColor: 'rgba(0, 0, 0, 0.75)'`).
 - Di tengah layar muncul kartu Mushaf berwarna **Warm Cream (`#FDFBF7`)** dengan aksen bingkai Amber (`#FBBF24`).
 - Gambar `ayah.png` dirender dengan properti CSS **`mixBlendMode: 'multiply'`** agar latar putih bawaan EveryAyah menyatu 100% dengan warna kertas kartu.
 - Dilengkapi **Audio Waveform Visualizer** berwarna Amber di bawah kaligrafi serta teks terjemahan Kemenag dengan fitur **Auto-Scale Font Size** agar terjemahan tidak pernah *overflow*.

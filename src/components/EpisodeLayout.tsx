@@ -13,6 +13,9 @@ import { TimedSubtitle } from "../utils/subtitleTiming";
 import { BackgroundMusic } from "../shared/components/BackgroundMusic";
 
 export interface EpisodeLayoutProps {
+  // Background canvas (Color-agnostic per episode)
+  backgroundColor?: string;
+
   // Part 1: Main Story & Voiceover
   voMainSrc: string;
   voMainFrames: number;
@@ -41,6 +44,7 @@ export interface EpisodeLayoutProps {
 }
 
 export const EpisodeLayout: React.FC<EpisodeLayoutProps> = ({
+  backgroundColor = "#000000",
   voMainSrc,
   voMainFrames,
   mainSubtitles,
@@ -72,7 +76,7 @@ export const EpisodeLayout: React.FC<EpisodeLayoutProps> = ({
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: "#0A1128",
+        backgroundColor,
         overflow: "hidden",
       }}
     >

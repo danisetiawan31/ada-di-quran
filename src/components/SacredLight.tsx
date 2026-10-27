@@ -158,7 +158,7 @@ export const Watermark: React.FC<WatermarkProps> = ({
         alignItems: "center",
         gap: 8,
         padding: "8px 18px",
-        backgroundColor: "rgba(10, 17, 40, 0.45)",
+        backgroundColor: "rgba(0, 0, 0, 0.50)",
         backdropFilter: "blur(8px)",
         borderRadius: 24,
         border: "1px solid rgba(251, 191, 36, 0.3)",

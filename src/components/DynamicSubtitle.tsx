@@ -51,7 +51,7 @@ export const DynamicSubtitle: React.FC<DynamicSubtitleProps> = ({
         zIndex: 80,
       }}
     >
-      {/* 1. Bottom Dark Vignette: Gradasi hitam halus di bagian bawah agar teks selalu kontras */}
+      {/* 1. Bottom Dark Vignette: Gradasi hitam netral di bagian bawah agar teks selalu kontras */}
       <div
         style={{
           position: "absolute",
@@ -59,7 +59,7 @@ export const DynamicSubtitle: React.FC<DynamicSubtitleProps> = ({
           left: 0,
           width: "100%",
           height: 520,
-          background: `linear-gradient(to top, rgba(10, 17, 40, 0.92) 0%, rgba(10, 17, 40, 0.65) 50%, transparent 100%)`,
+          background: `linear-gradient(to top, rgba(0, 0, 0, 0.90) 0%, rgba(0, 0, 0, 0.60) 50%, transparent 100%)`,
         }}
       />
 

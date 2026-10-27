@@ -205,3 +205,20 @@ Sebuah `SceneX.tsx` **DILARANG** dinyatakan selesai apabila melanggar satu saja 
 18. **Kesesuaian Mood Warna dengan Konteks Cerita (Mood-Driven Palette):** Jangan terpaku pada satu warna gelap. Sesuaikan suhu warna latar dengan emosi kalimat: hangat/cerah saat membahas keseharian atau alam siang hari, teduh/sejuk saat membahas ketenangan, dan redup/kontras saat membahas kebingungan.
 19. **Transisi `<Freeze />` & Blur ke `<AyahCard />`:** Pastikan tepat saat `vo_main.mp3` berakhir, frame terakhir dari scene penutup tetap membeku dengan indah di latar belakang, dilapisi *blur* halus (`backdropFilter: 'blur(14px)'`) dan *dark overlay* (`rgba(0, 0, 0, 0.75)`), sehingga kartu Mushaf tampil menonjol dan agung.
 20. **Sinkronisasi Aksi Visual dengan Kata Kunci Subtitle:** Setiap kali narator mengucapkan kata kunci yang di-*highlight* pada `<DynamicSubtitle />`, aksi visual utama di dalam scene (seperti balon pikiran meletus, tunas ditarik, atau akar tumbuh) **wajib terjadi tepat pada rentang frame segmen subtitle tersebut**, bukan lebih cepat atau terlambat.
+
+---
+
+### C. Standar Elemen Interaktif & Micro-SFX (`<PopElement />` & Perpustakaan Audio `public/sfx/`)
+
+1. **Larangan Elemen Muncul Mendadak (No Instant Appear):**
+   - Setiap elemen visual pendukung (seperti kartu infografis/card, balon pikiran, badge, ikon objek, atau indikator) **DILARANG KERAS** langsung tampil diam di layar sejak frame 0 scene tersebut atau muncul hanya dengan `opacity` pudar.
+   - Seluruh elemen pendukung wajib masuk ke layar secara bertahap sesuai konteks ucapan narator menggunakan komponen reusable **`<PopElement triggerFrame={...} />`** yang memberikan animasi kombinasi: *Elastic Spring (`0` $\rightarrow$ `1.08` $\rightarrow$ `1.0`)* + *Playful Tilt (`-8deg` $\rightarrow$ `0deg`)* + *Fade In halus*.
+
+2. **Integrasi Micro-SFX Otomatis (Playful Audio Feedback):**
+   - Gunakan perpustakaan aset audio kurasi lokal di folder `public/sfx/` yang dipicu otomatis oleh komponen animasi:
+     - **Kemunculan Elemen (`<PopElement sound="pop" />`):** Otomatis memutar SFX *soft pop* (`pop.wav` / `btn_pop.wav` / `whip.wav`) dengan `volume={0.22}` tepat pada `triggerFrame` elemen tersebut.
+     - **Pergerakan Kamera Cepat / Transisi Scene (`<CameraRig />`):** Memutar SFX *airy whoosh* (`whoosh.wav` / `whoosh1.mp3`) dengan `volume={0.18}` saat terjadi *camera pan* besar atau perpindahan antar-scene.
+
+3. **Aturan Kerapatan & Zona Hening Ayat:**
+   - **Batasan Kerapatan:** Batasi maksimal **2–3 trigger SFX per scene** (hanya pada objek fokus utama cerita) agar tidak bising dan tidak menenggelamkan kejelasan suara narator (`vo_main.wav`).
+   - **ZONA HENING MUTLAK (0 SFX):** Saat memasuki Bagian 2 (`<AyahCard />`), seluruh efek suara tambahan wajib dihentikan total (0 SFX) demi menjaga kekhusyukan, keagungan, dan kejernihan murattal Al-Qur'an.

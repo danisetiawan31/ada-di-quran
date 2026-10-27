@@ -130,3 +130,78 @@ D:\Dokumen\yt\
 │
 └── out/                         # 🎬 HASIL EXPORT FINAL (.mp4)
 ```
+
+---
+
+## 6. Protokol Eksekusi Mandiri & Standar Mutlak Kualitas Visual (Zero-Defect Quality Gate)
+
+Untuk menghilangkan iterasi manual yang monoton dari sisi pengguna, Antigravity **WAJIB** bertindak sebagai *Lead Animator* sekaligus *Quality Assurance (Viewer Kritis)* secara mandiri. 
+
+Antigravity **DILARANG KERAS**:
+1. Menulis seluruh scene episode di dalam satu file tunggal (`index.tsx`).
+2. Mengerjakan semua scene sekaligus dalam kondisi draf lalu baru mengevaluasinya di akhir.
+3. Berhenti di tengah jalan untuk meminta validasi pengguna per-scene.
+4. Menjalankan render video penuh (`npx remotion render`) sebelum ada perintah eksplisit dari pengguna.
+
+Setiap kali mengeksekusi sebuah episode (`BRIEF.md` per folder konten), Antigravity wajib menjalankan **Sequential Per-Scene Loop** (Selesaikan `Scene 1` hingga 100% lulus *Quality Gate*, kunci sebagai **FINAL**, baru boleh membuat file `Scene 2`, dst.).
+
+---
+
+### A. Siklus Kerja Mandiri Per-Scene (Wajib Dijalankan Berurutan)
+
+Untuk setiap scene (`Scene1.tsx`, `Scene2.tsx`, dst.), lakukan siklus 4 langkah ini secara tuntas:
+
+1. **Langkah 1 — Initial Scene Construction:**
+   - Buat file terpisah `SceneX.tsx` di dalam folder `components/` sesuai rincian Storyboard di dokumen Brief.
+2. **Langkah 2 — Deep Viewer Self-Audit (Posisikan Diri Sebagai Penonton Kritis):**
+   - Render minimal 1 frame still kunci (`npx remotion still`) pada momen puncak aksi/komposisi scene tersebut.
+   - Periksa gambar hasil render secara visual menggunakan tool pembaca gambar.
+   - Evaluasi visual tersebut menggunakan **20 Syarat Mutlak (Bagian B)** di bawah ini. Cari seluruh celah yang membuat penonton bosan, ilusi anatomi aneh, tabrakan subtitle, area kosong (*void*), atau gerakan kaku.
+3. **Langkah 3 — Immediate Rewrite & Polish (Lock as FINAL):**
+   - Tanpa bertanya kepada pengguna, **langsung tulis ulang dan perbaiki `SceneX.tsx`** saat itu juga untuk menambal seluruh kekurangan dari Langkah 2.
+   - Pastikan 100% syarat di Bagian B terpenuhi. Setelah `SceneX.tsx` berstatus **FINAL**, barulah lanjut membuat `Scene(X+1).tsx`.
+4. **Langkah 4 — Penyelesaian Siklus & Siaga Render (Render Gate):**
+   - Setelah seluruh scene (`Scene 1` s/d `Scene Penutup`) dan sekuens Ayat/CTA selesai dikunci sebagai **FINAL**:
+   - Antigravity **DILARANG KERAS** menjalankan render video penuh (`npx remotion render`).
+   - Antigravity wajib menyajikan ringkasan kelulusan *Quality Gate* beserta cuplikan frame still kunci, lalu **berhenti dan siaga menunggu instruksi eksplisit pengguna** (misal: *"render full"* / *"render video"*).
+
+---
+
+### B. 20 Syarat Mutlak "Viewer Betah, Playful & Anti-Cacat" (Wajib Lulus 100% di Tiap Scene)
+
+Sebuah `SceneX.tsx` **DILARANG** dinyatakan selesai apabila melanggar satu saja dari 5 pilar kualitas berikut:
+
+#### Pilar 1: Psikologi Retensi Penonton (Apa yang Bikin Viewer Betah)
+1. **Aturan 3 Detik (Visual Change Rate):** Mata penonton vertikal mudah bosan. Di dalam satu scene yang berdurasi > 5 detik (150 frames), **wajib** ada perubahan visual yang jelas setiap 90–120 frames (misal: perubahan sudut `<CameraRig />`, kemunculan objek pendukung baru, perubahan ekspresi karakter, atau pergeseran *mood* pencahayaan).
+2. **Kejelasan Fokus Utama (1 Detik Paham):** Saat scene dimulai, penonton harus langsung tahu ke mana mata mereka harus melihat dalam < 1 detik. Objek utama wajib memiliki kontras warna paling menonjol dibanding latar belakang.
+3. **Skala Objek Proporsional (Anti-Kekecilan):** Objek utama atau karakter tidak boleh terlihat kerdil di tengah layar. Fokus utama wajib mengisi **40% hingga 65% dari area tengah layar**.
+4. **Keseimbangan Komposisi (3-Layer Depth):** Setiap scene wajib memiliki minimal 3 lapisan kedalaman:
+   - *Background Layer:* Langit/dinding ruangan/lanskap dengan gradasi kaya (`<linearGradient>` / `<radialGradient>`), bukan warna flat.
+   - *Midground Layer:* Karakter utama dan objek interaksi cerita.
+   - *Foreground / Ambient Layer:* Elemen siluet di tepi layar, partikel debu cahaya, daun melayang, atau gelembung untuk menciptakan efek kedalaman 2.5D.
+
+#### Pilar 2: Standar "Playful & Hidup" (Larangan Animasi Kaku)
+5. **Larangan Mutlak Gerakan Linear pada Objek:** Dilarang memunculkan atau menggerakkan objek utama hanya dengan `interpolate()` linear yang kaku. Semua objek masuk (*entrance*), keluar (*exit*), dan perubahan skala wajib menggunakan `spring()` dengan konfigurasi kenyal (*bouncy overshoot*, contoh: `damping: 10–14`, `stiffness: 100–140`).
+6. **Hukum "Layar Tidak Boleh Mati" (Continuous Secondary Motion):** Meskipun narasi sedang menjelaskan sesuatu dan kamera sedang diam, **tidak boleh ada frame yang membeku seperti gambar statis**. Wajib ada minimal 2 gerakan mikro berkelanjutan menggunakan `Math.sin(frame / speed)`:
+   - Karakter yang "bernapas" (bahu/dada naik-turun halus `2–4px`) dan mata yang berkedip periodik.
+   - Awan yang bergeser, daun yang bergoyang, air yang beriak, atau partikel cahaya yang mengapung.
+7. **Antisipasi & Follow-Through (Squash & Stretch):** Saat objek membesar atau melompat, berikan sedikit efek gepeng/memanjang (*scaleX* vs *scaleY* yang berlawanan tipis `0.95` ke `1.05`) agar terasa kenyal seperti kartun studio profesional.
+8. **Rotasi Dinamis:** Saat sebuah ikon, balon pikiran, atau kartu muncul di layar, jangan hanya di-*scale* dari `0` ke `1`, tetapi sertakan sedikit rotasi mengayun (misal dari `-8deg` ke `0deg` dengan `spring()`) agar terasa *playful*.
+
+#### Pilar 3: Pencegahan Cacat Visual & Anatomi (Anti-Jelek / Anti-Berantakan)
+9. **Konsistensi Anatomi & Rigging Karakter:** Jika episode menggunakan karakter manusia (`MainCharacter.tsx`), bagian tubuh (kepala, badan, lengan, tangan) harus menyatu pada titik engsel (*pivot point / transformOrigin*) yang benar. **Dilarang keras** membuat tangan/kaki yang melayang terputus dari badan atau proporsi kepala dan tubuh yang berubah-ubah antar-scene.
+10. **Larangan Bentuk Geometri Mentah (No Raw Boxes):** Dilarang menggambar objek seperti meja, pohon, awan, atau batu hanya dengan `<rect>` tajam atau `<circle>` polos. Wajib gunakan sudut membulat (`rx`), kurva Bezier halus, tumpukan *shading* (bayangan gelap & *highlight* terang), serta gradasi warna.
+11. **Larangan Keras Teks di Dalam Ilustrasi SVG:** Dilarang merender tag `<text>` atau huruf/kata apa pun di dalam gambar ilustrasi SVG (seperti di dalam balon pikiran, rambu jalan, atau layar laptop). Semua informasi di dalam ilustrasi wajib direpresentasikan dengan **simbol/ikon visual murni** agar tidak bertabrakan dengan teks `<DynamicSubtitle />`.
+12. **Anti-Clipping & Overflow:** Pastikan saat `<CameraRig />` melakukan *zoom-in* atau *panning*, pinggiran kanvas latar belakang tidak bocor memperlihatkan ruang kosong/hitam (buat ukuran kanvas *background* minimal `120%–140%` dari ukuran layar 1080x1920 saat ada kamera *pan/zoom*).
+
+#### Pilar 4: Tata Letak & Zona Aman Layar Vertikal (9:16 Safe Zones)
+13. **Zona Terlarang Bawah (Subtitle Safe Zone — `Y: 1280px s/d 1920px`):** Area sepertiga bawah layar adalah milik `<DynamicSubtitle />` dan UI TikTok/Reels/Shorts. **Dilarang keras** menempatkan wajah karakter, objek penting, atau fokus cerita di bawah koordinat `Y = 1280px`.
+14. **Zona Terlarang Atas (Header/Watermark Safe Zone — `Y: 0px s/d 220px`):** Area paling atas adalah ruang untuk `<Watermark />` dan status bar HP. Fokus utama cerita harus berada di **Golden Center Zone (`Y: 300px s/d 1250px`)**.
+15. **Zona Aman Tepi Kanan (UI Buttons Safe Zone — `X: 920px s/d 1080px`):** Hindari menaruh detail visual krusial terlalu mepet ke tepi kanan layar karena di TikTok/Reels/Shorts terdapat deretan tombol Like/Comment/Share.
+16. **Kontras Subtitle Mutlak:** Pastikan *dark vignette* di bagian bawah layar selalu aktif di atas ilustrasi terang sekalipun, sehingga teks `<DynamicSubtitle />` berwarna putih/aksen selalu terbaca 100% jelas tanpa menyilaukan mata.
+
+#### Pilar 5: Kontinuitas Transisi, Audio & Ayat
+17. **Transisi Antar-Scene yang Mulus:** Perpindahan dari `Scene 1` ke `Scene 2` (dan seterusnya) tidak boleh terasa patah (*jarring cut*). Gunakan pergerakan kamera berkesinambungan (misal: *camera pan* menembus objek/tanah) atau *smooth cross-dissolve / wipe* selama 10–15 frames.
+18. **Kesesuaian Mood Warna dengan Konteks Cerita (Mood-Driven Palette):** Jangan terpaku pada satu warna gelap. Sesuaikan suhu warna latar dengan emosi kalimat: hangat/cerah saat membahas keseharian atau alam siang hari, teduh/sejuk saat membahas ketenangan, dan redup/kontras saat membahas kebingungan.
+19. **Transisi `<Freeze />` & Blur ke `<AyahCard />`:** Pastikan tepat saat `vo_main.mp3` berakhir, frame terakhir dari scene penutup tetap membeku dengan indah di latar belakang, dilapisi *blur* halus (`backdropFilter: 'blur(14px)'`) dan *dark overlay* (`rgba(0, 0, 0, 0.75)`), sehingga kartu Mushaf tampil menonjol dan agung.
+20. **Sinkronisasi Aksi Visual dengan Kata Kunci Subtitle:** Setiap kali narator mengucapkan kata kunci yang di-*highlight* pada `<DynamicSubtitle />`, aksi visual utama di dalam scene (seperti balon pikiran meletus, tunas ditarik, atau akar tumbuh) **wajib terjadi tepat pada rentang frame segmen subtitle tersebut**, bukan lebih cepat atau terlambat.

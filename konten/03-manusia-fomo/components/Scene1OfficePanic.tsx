@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { EP02_THEME } from "../theme";
 import { MainCharacter } from "./MainCharacter";
+import { PopElement } from "../../../src/components/PopElement";
 
 export const Scene1OfficePanic: React.FC = () => {
   const frame = useCurrentFrame();
@@ -226,18 +227,23 @@ export const Scene1OfficePanic: React.FC = () => {
               top: 630,
               left: "50%",
               transform: `translateX(-50%) translate(${loadingJitter}px, 0px)`,
-              width: 620,
-              backgroundColor: "#FFFFFF",
-              borderRadius: 24,
-              padding: "18px 26px",
-              boxShadow: "0 18px 45px rgba(239, 68, 68, 0.16)",
-              border: "2.5px solid #FDBA74",
-              display: "flex",
-              flexDirection: "column",
-              gap: 12,
               zIndex: 15,
             }}
           >
+            <PopElement triggerFrame={8} sound="btn_pop" volume={0.18}>
+              <div
+                style={{
+                  width: 620,
+                  backgroundColor: "#FFFFFF",
+                  borderRadius: 24,
+                  padding: "18px 26px",
+                  boxShadow: "0 18px 45px rgba(239, 68, 68, 0.16)",
+                  border: "2.5px solid #FDBA74",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                }}
+              >
             {/* Header: Flashing Warning + Clear Text Badge */}
             <div
               style={{
@@ -338,7 +344,9 @@ export const Scene1OfficePanic: React.FC = () => {
               />
             </div>
           </div>
-        )}
+        </PopElement>
+      </div>
+    )}
 
         {/* =====================================================================
             D. PHASE B1: THOUGHT BUBBLE WITH SEAMLESS TRAILING DOT CHAIN
@@ -419,18 +427,23 @@ export const Scene1OfficePanic: React.FC = () => {
                 position: "absolute",
                 top: 615,
                 left: "50%",
-                transform: `translateX(-50%) scale(${bubbleSpring * bubbleFade})`,
-                display: "flex",
-                alignItems: "center",
-                gap: 28,
-                backgroundColor: "#FFFFFF",
-                borderRadius: 36,
-                padding: "22px 36px",
-                boxShadow: "0 20px 50px rgba(245, 158, 11, 0.35)",
-                border: `3.5px solid ${colors.amberGold}`,
+                transform: `translateX(-50%) scale(${bubbleFade})`,
                 zIndex: 30,
               }}
             >
+              <PopElement triggerFrame={205} sound="pop" volume={0.22} tilt={-6}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 28,
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: 36,
+                    padding: "22px 36px",
+                    boxShadow: "0 20px 50px rgba(245, 158, 11, 0.35)",
+                    border: `3.5px solid ${colors.amberGold}`,
+                  }}
+                >
               {/* 1. Golden Trophy Icon (Pure Vector, No Text) */}
               <div
                 style={{
@@ -527,8 +540,10 @@ export const Scene1OfficePanic: React.FC = () => {
                 </svg>
               </div>
             </div>
-          </>
-        )}
+          </PopElement>
+        </div>
+      </>
+    )}
 
         {/* =====================================================================
             E. PHASE B2: GLOOMY RAIN CLOUD OVER CHARACTER
@@ -541,52 +556,59 @@ export const Scene1OfficePanic: React.FC = () => {
               top: 610,
               left: "50%",
               transform: "translateX(-50%)",
-              width: 340,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              opacity: gloomProgress,
               zIndex: 35,
             }}
           >
-            {/* Fluffy Dark Cloud */}
-            <svg width="260" height="120" viewBox="0 0 240 110">
-              <path
-                d="M40 85 Q20 85 20 65 Q20 45 42 45 Q52 20 85 20 Q120 18 135 40 Q155 30 178 40 Q205 45 205 70 Q215 90 190 90 Z"
-                fill="#475569"
-                filter="drop-shadow(0 12px 24px rgba(0,0,0,0.5))"
-              />
-            </svg>
-
-            {/* Falling Animated Rain Drops (Deep vertical trajectory) */}
-            <svg
-              width="280"
-              height="400"
-              style={{ position: "absolute", top: 80, overflow: "visible" }}
-            >
-              {rainDrops.map((d) => (
-                <g key={d.index}>
-                  {/* Rain droplet */}
+            <PopElement triggerFrame={306} sound="whip" volume={0.20} tilt={3}>
+              <div
+                style={{
+                  width: 340,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  opacity: gloomProgress,
+                }}
+              >
+                {/* Fluffy Dark Cloud */}
+                <svg width="260" height="120" viewBox="0 0 240 110">
                   <path
-                    d={`M${d.x} ${d.y} Q${d.x - 2} ${d.y + 14} ${d.x} ${d.y + 18} Q${d.x + 2} ${d.y + 14} ${d.x} ${d.y}`}
-                    fill="#60A5FA"
-                    opacity={d.y > 330 ? 0.3 : 0.85}
+                    d="M40 85 Q20 85 20 65 Q20 45 42 45 Q52 20 85 20 Q120 18 135 40 Q155 30 178 40 Q205 45 205 70 Q215 90 190 90 Z"
+                    fill="#475569"
+                    filter="drop-shadow(0 12px 24px rgba(0,0,0,0.5))"
                   />
-                  {/* Splash ripple on impact near character head (y > 310) */}
-                  {d.y > 310 && (
-                    <circle
-                      cx={d.x}
-                      cy={d.y + 16}
-                      r={(d.y - 310) * 0.45}
-                      fill="none"
-                      stroke="#93C5FD"
-                      strokeWidth="1.5"
-                      opacity={(370 - d.y) / 60}
-                    />
-                  )}
-                </g>
-              ))}
-            </svg>
+                </svg>
+
+                {/* Falling Animated Rain Drops (Deep vertical trajectory) */}
+                <svg
+                  width="280"
+                  height="400"
+                  style={{ position: "absolute", top: 80, overflow: "visible" }}
+                >
+                  {rainDrops.map((d) => (
+                    <g key={d.index}>
+                      {/* Rain droplet */}
+                      <path
+                        d={`M${d.x} ${d.y} Q${d.x - 2} ${d.y + 14} ${d.x} ${d.y + 18} Q${d.x + 2} ${d.y + 14} ${d.x} ${d.y}`}
+                        fill="#60A5FA"
+                        opacity={d.y > 330 ? 0.3 : 0.85}
+                      />
+                      {/* Splash ripple on impact near character head (y > 310) */}
+                      {d.y > 310 && (
+                        <circle
+                          cx={d.x}
+                          cy={d.y + 16}
+                          r={(d.y - 310) * 0.45}
+                          fill="none"
+                          stroke="#93C5FD"
+                          strokeWidth="1.5"
+                          opacity={(370 - d.y) / 60}
+                        />
+                      )}
+                    </g>
+                  ))}
+                </svg>
+              </div>
+            </PopElement>
           </div>
         )}
 

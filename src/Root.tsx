@@ -13,7 +13,11 @@ import { THEME as GELITIK_THEME } from "../konten/01-gelitik/theme";
 import { MainVideo as VideoDuaLautan } from "../konten/02-dua-lautan/MainVideo";
 import { EP01_THEME } from "../konten/02-dua-lautan/theme";
 
-// 3. SHOWCASE LOGO
+// 3. KONTEN 3: Episode 02 "Ada di Quran" (Kenapa Manusia Gampang Panik & Nggak Sabaran - QS. Al-Anbiya: 37)
+import { MainVideo as VideoTergesaGesa } from "../konten/03-manusia-fomo/MainVideo";
+import { EP02_THEME } from "../konten/03-manusia-fomo/theme";
+
+// 4. SHOWCASE LOGO
 import { LogoOption1Preview, LogoOption2Preview } from "./components/logos/LogoShowcase";
 import { StandaloneVectorMushaf, StandaloneVectorRubElHizb } from "./components/logos/StandaloneLogos";
 
@@ -48,7 +52,21 @@ export const RemotionRoot: React.FC = () => {
       />
 
       {/* -------------------------------------------------------------
-          3. PREVIEW LOGO OPSI 1 & OPSI 2 (Standalone Image Preview)
+          3. KONTEN 3: TERGESA-GESA (Episode 2 "Ada di Quran")
+             ID: TergesaGesa
+             Total frames: 1524 (VO) + 295 (Ayat 37) + 107 (CTA) = 1926 frames (~64.2s)
+         ------------------------------------------------------------- */}
+      <Composition
+        id="TergesaGesa"
+        component={VideoTergesaGesa}
+        durationInFrames={EP02_THEME.dimensions.totalDurationFrames}
+        fps={EP02_THEME.dimensions.fps}
+        width={EP02_THEME.dimensions.width}
+        height={EP02_THEME.dimensions.height}
+      />
+
+      {/* -------------------------------------------------------------
+          4. PREVIEW LOGO OPSI 1 & OPSI 2 (Standalone Image Preview)
          ------------------------------------------------------------- */}
       <Composition
         id="LogoOption1"
@@ -68,7 +86,7 @@ export const RemotionRoot: React.FC = () => {
       />
 
       {/* -------------------------------------------------------------
-          4. TRANSPARENT VECTOR LOGO EXPORTS (1024x1024 Transparent PNG)
+          5. TRANSPARENT VECTOR LOGO EXPORTS (1024x1024 Transparent PNG)
          ------------------------------------------------------------- */}
       <Composition
         id="VectorMushaf"

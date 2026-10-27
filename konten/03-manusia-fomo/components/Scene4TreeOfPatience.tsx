@@ -1,7 +1,8 @@
 import React from "react";
-import { AbsoluteFill, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, interpolate, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { EP02_THEME } from "../theme";
 import { MainCharacter } from "./MainCharacter";
+import { PopElement } from "../../../src/components/PopElement";
 
 export const Scene4TreeOfPatience: React.FC = () => {
   const frame = useCurrentFrame();
@@ -45,6 +46,14 @@ export const Scene4TreeOfPatience: React.FC = () => {
         overflow: "hidden",
       }}
     >
+      {/* =====================================================================
+          AUDIO: SCENE 4 TRANSITION & AYAH TEASER SFX (Max 2 triggers)
+         ===================================================================== */}
+      {/* 1. Scene Transition Gentle Nature Breeze Whoosh */}
+      <Sequence from={0} durationInFrames={35}>
+        <Audio src={staticFile("sfx/whoosh.wav")} volume={0.14} />
+      </Sequence>
+
       {/* =====================================================================
           1. ENVIRONMENTAL BACKDROP: MORNING SUN & ROLLING HILLS
          ===================================================================== */}
@@ -357,6 +366,53 @@ export const Scene4TreeOfPatience: React.FC = () => {
             </svg>
           </div>
         ))}
+
+        {/* -----------------------------------------------------------------
+            D. AYAH TEASER BADGE: "QS. AL-ANBIYA : 37"
+               (Pops gracefully when narrator introduces the Quranic verse)
+           ----------------------------------------------------------------- */}
+        <div
+          style={{
+            position: "absolute",
+            top: 200,
+            left: 70,
+            zIndex: 35,
+          }}
+        >
+          <PopElement triggerFrame={132} sound="ting" volume={0.18} tilt={-2}>
+            <div
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.96)",
+                backdropFilter: "blur(14px)",
+                border: "2.5px solid #FCD34D",
+                boxShadow: "0 12px 30px rgba(245, 158, 11, 0.22)",
+                borderRadius: 999,
+                padding: "10px 24px",
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+              }}
+            >
+              {/* Gold Quran / Star Icon */}
+              <svg width="24" height="24" viewBox="0 0 24 24">
+                <path
+                  d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"
+                  fill="#F59E0B"
+                />
+              </svg>
+              <span
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "#0F172A",
+                  letterSpacing: 0.5,
+                }}
+              >
+                QS. Al-Anbiya : 37
+              </span>
+            </div>
+          </PopElement>
+        </div>
       </AbsoluteFill>
     </AbsoluteFill>
   );

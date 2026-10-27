@@ -47,11 +47,16 @@ export const Scene4TreeOfPatience: React.FC = () => {
       }}
     >
       {/* =====================================================================
-          AUDIO: SCENE 4 TRANSITION & AYAH TEASER SFX (Max 2 triggers)
+          AUDIO: SCENE 4 TRANSITION, TREE BLOOM & AYAH TEASER SFX (Viewer-Centric)
          ===================================================================== */}
       {/* 1. Scene Transition Gentle Nature Breeze Whoosh */}
       <Sequence from={0} durationInFrames={35}>
         <Audio src={staticFile("sfx/whoosh.wav")} volume={0.14} />
+      </Sequence>
+
+      {/* 2. Flourishing Tree Bloom & Fruit Ripening Chime at Frame 40 */}
+      <Sequence from={40} durationInFrames={40}>
+        <Audio src={staticFile("sfx/bling.mp3")} volume={0.16} />
       </Sequence>
 
       {/* =====================================================================

@@ -51,16 +51,21 @@ export const Scene3SoilRoots: React.FC = () => {
       }}
     >
       {/* =====================================================================
-          AUDIO: CINEMATIC DIVE & ILLUMINATION SFX (Max 2-3 triggers)
+          AUDIO: CINEMATIC DIVE & ILLUMINATION SFX (Viewer-Centric)
          ===================================================================== */}
-      {/* 1. Subterranean Dive Whoosh at Frame 210 */}
+      {/* 1. Sprout Yanking Pluck at Frame 40 (Playful bounce as character tries to rush growth) */}
+      <Sequence from={40} durationInFrames={25}>
+        <Audio src={staticFile("sfx/pluck.wav")} volume={0.18} />
+      </Sequence>
+
+      {/* 2. Subterranean Dive Whoosh at Frame 210 (Camera plunges deep into dark soil) */}
       <Sequence from={210} durationInFrames={40}>
         <Audio src={staticFile("sfx/whoosh.wav")} volume={0.18} />
       </Sequence>
 
-      {/* 2. Sacred Root Glow Chime/Ting at Frame 275 */}
-      <Sequence from={275} durationInFrames={40}>
-        <Audio src={staticFile("sfx/ting.wav")} volume={0.15} />
+      {/* 3. Sacred Root Illumination at Frame 275 (Rich warm chime as glowing roots branch out) */}
+      <Sequence from={275} durationInFrames={45}>
+        <Audio src={staticFile("sfx/chime.mp3")} volume={0.16} />
       </Sequence>
 
       {/* =====================================================================

@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Easing, interpolate, Sequence, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { EP02_THEME } from "../theme";
 import { MainCharacter } from "./MainCharacter";
 import { PopElement } from "../../../src/components/PopElement";
@@ -88,6 +88,19 @@ export const Scene1OfficePanic: React.FC = () => {
         overflow: "hidden",
       }}
     >
+      {/* =========================================================================
+          AUDIO: STORYTELLING MICRO-SFX (Viewer-Centric)
+         ========================================================================= */}
+      {/* 1. Subtle Clock Tick when loading bar is struggling at Frame 35 */}
+      <Sequence from={35} durationInFrames={20}>
+        <Audio src={staticFile("sfx/tick.wav")} volume={0.15} />
+      </Sequence>
+
+      {/* 2. Emotional Gloom Drop at Frame 306 (Sudden shift to dark room & rain) */}
+      <Sequence from={306} durationInFrames={40}>
+        <Audio src={staticFile("sfx/fader.wav")} volume={0.16} />
+      </Sequence>
+
       {/* GLOOMY BACKGROUND OVERLAY (Fades in smoothly on Phase B2) */}
       <AbsoluteFill
         style={{

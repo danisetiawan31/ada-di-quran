@@ -43,16 +43,26 @@ export const Scene2ForkInTheRoad: React.FC = () => {
       }}
     >
       {/* =========================================================================
-          AUDIO: SCENE TRANSITION & STORYTELLING MICRO-SFX (Max 2-3 triggers)
+          AUDIO: SCENE TRANSITION & STORYTELLING MICRO-SFX (Viewer-Centric)
          ========================================================================= */}
       {/* 1. Scene Transition Airy Whoosh */}
       <Sequence from={0} durationInFrames={30}>
         <Audio src={staticFile("sfx/whoosh.wav")} volume={0.16} />
       </Sequence>
 
-      {/* 2. Dilemma Shift Ding at Frame 160 (Character turns to Mountain Process) */}
-      <Sequence from={160} durationInFrames={30}>
-        <Audio src={staticFile("sfx/ding.wav")} volume={0.16} />
+      {/* 2. Golden Archway Sparkle at Frame 50 (Instant shortcut temptation) */}
+      <Sequence from={50} durationInFrames={35}>
+        <Audio src={staticFile("sfx/ting.wav")} volume={0.14} />
+      </Sequence>
+
+      {/* 3. Dilemma Shift at Frame 160 (Curious melodic riser when turning to mountain) */}
+      <Sequence from={160} durationInFrames={35}>
+        <Audio src={staticFile("sfx/question1.wav")} volume={0.14} />
+      </Sequence>
+
+      {/* 4. Comical Weary Droop at Frame 231 (Narrator mentions "gampang mengeluh" + sweat bead) */}
+      <Sequence from={231} durationInFrames={30}>
+        <Audio src={staticFile("sfx/drop.wav")} volume={0.18} />
       </Sequence>
 
       {/* =========================================================================

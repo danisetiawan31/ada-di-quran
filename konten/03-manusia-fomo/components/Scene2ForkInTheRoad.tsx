@@ -1,11 +1,11 @@
 import React from "react";
-import { AbsoluteFill, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { EP02_THEME } from "../theme";
-import { MainCharacter } from "./MainCharacter";
+import { MainCharacter, CharacterPose } from "./MainCharacter";
+import { PopElement } from "../../../src/components/PopElement";
 
 export const Scene2ForkInTheRoad: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
   // Relative frame from 0 (starts at global frame 558)
   const relFrame = Math.max(0, frame - 558);
 
@@ -15,8 +15,11 @@ export const Scene2ForkInTheRoad: React.FC = () => {
   // 1. STORYTELLING CHOREOGRAPHY (Dilemma Pacing)
   // =========================================================================
   // 0 - 160: Focus on Instant Shortcut (Looks Left towards Flash Portal)
-  // 160 - 357: Focus on Mountain Process (Looks Right towards Hill Trail)
+  // 160 - 231: Focus on Mountain Process (Looks Right towards Hill Trail)
+  // 231 - 357: Feeling overwhelmed by long process ("gampang mengeluh")
   const isLookingLeft = relFrame < 160;
+  const characterPose: CharacterPose =
+    relFrame < 231 ? "impatient" : "gloomy";
 
   // Gentle weight shift instead of wild flipping
   const swayX = Math.sin(relFrame * 0.08) * 10;
@@ -25,13 +28,8 @@ export const Scene2ForkInTheRoad: React.FC = () => {
   const portalGlow = Math.sin(relFrame * 0.2) * 0.25 + 0.75;
   const portalRays = (relFrame * 2.5) % 360;
 
-  // Brain Infographic spring entrance & pulse
-  const brainSpring = spring({
-    frame: relFrame,
-    fps,
-    config: { damping: 14, stiffness: 100 },
-  });
-  const brainPulse = Math.sin(relFrame * 0.12) * 0.04 + 1.0;
+  // Brain Infographic pulse (breathing)
+  const brainPulse = Math.sin(relFrame * 0.12) * 0.03 + 1.0;
 
   return (
     <AbsoluteFill
@@ -40,6 +38,19 @@ export const Scene2ForkInTheRoad: React.FC = () => {
         overflow: "hidden",
       }}
     >
+      {/* =========================================================================
+          AUDIO: SCENE TRANSITION & STORYTELLING MICRO-SFX (Max 2-3 triggers)
+         ========================================================================= */}
+      {/* 1. Scene Transition Airy Whoosh */}
+      <Sequence from={0} durationInFrames={30}>
+        <Audio src={staticFile("sfx/whoosh.wav")} volume={0.16} />
+      </Sequence>
+
+      {/* 2. Dilemma Shift Ding at Frame 160 (Character turns to Mountain Process) */}
+      <Sequence from={160} durationInFrames={30}>
+        <Audio src={staticFile("sfx/ding.wav")} volume={0.16} />
+      </Sequence>
+
       {/* =========================================================================
           1. SKY GRADIENT & SUN
          ========================================================================= */}
@@ -104,26 +115,33 @@ export const Scene2ForkInTheRoad: React.FC = () => {
       {/* =========================================================================
           3. BENTO CARD: BRAIN INFOGRAPHIC (Instant Gratification Bias)
              (Safe zone below Watermark, clear typography & animated neuron)
+             Integrated with PopElement for bouncy spring entry & auto micro-SFX
          ========================================================================= */}
       <div
         style={{
           position: "absolute",
           top: 200,
           left: "50%",
-          transform: `translateX(-50%) scale(${brainSpring * brainPulse})`,
-          width: 580,
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
-          backdropFilter: "blur(16px)",
-          borderRadius: 28,
-          padding: "16px 26px",
-          boxShadow: "0 20px 48px rgba(245, 158, 11, 0.2)",
-          border: "2.5px solid #FCD34D",
-          display: "flex",
-          alignItems: "center",
-          gap: 20,
+          transform: "translateX(-50%)",
           zIndex: 40,
         }}
       >
+        <PopElement triggerFrame={10} sound="btn_pop" volume={0.20} tilt={-2}>
+          <div
+            style={{
+              transform: `scale(${brainPulse})`,
+              width: 580,
+              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              backdropFilter: "blur(16px)",
+              borderRadius: 28,
+              padding: "16px 26px",
+              boxShadow: "0 20px 48px rgba(245, 158, 11, 0.2)",
+              border: "2.5px solid #FCD34D",
+              display: "flex",
+              alignItems: "center",
+              gap: 20,
+            }}
+          >
         {/* Animated Brain Vector Icon */}
         <div style={{ flexShrink: 0 }}>
           <svg width="105" height="85" viewBox="0 0 120 90">
@@ -226,6 +244,8 @@ export const Scene2ForkInTheRoad: React.FC = () => {
           </span>
         </div>
       </div>
+    </PopElement>
+  </div>
 
       {/* =========================================================================
           4. FOREGROUND HILLS & INTEGRATED CONTINUOUS Y-FORK ROAD SYSTEM
@@ -500,7 +520,7 @@ export const Scene2ForkInTheRoad: React.FC = () => {
 
       {/* =========================================================================
           7. MAIN CHARACTER (Ergonomically Elevated at Crossroads: Bottom 470)
-             (100% Free from Subtitle Collision, dilemma pose)
+             (100% Free from Subtitle Collision, dilemma & narrative-driven pose)
          ========================================================================= */}
       <div
         style={{
@@ -512,10 +532,35 @@ export const Scene2ForkInTheRoad: React.FC = () => {
         }}
       >
         <MainCharacter
-          pose="impatient"
+          pose={characterPose}
           scale={1.48}
           flip={isLookingLeft}
         />
+
+        {/* Weary Sweat Bead when narrator mentions "gampang mengeluh" (relFrame >= 231) */}
+        {relFrame >= 231 && (
+          <div
+            style={{
+              position: "absolute",
+              top: 55,
+              right: isLookingLeft ? 260 : 35,
+              opacity: Math.min(1, (relFrame - 231) / 15),
+              transform: `translateY(${Math.sin((relFrame - 231) * 0.15) * 4}px)`,
+            }}
+          >
+            <svg width="36" height="36" viewBox="0 0 42 42">
+              {/* Blue sweat bead */}
+              <path
+                d="M21 4 C21 4 10 18 10 26 C10 32 15 37 21 37 C27 37 32 32 32 26 C32 18 21 4 21 4 Z"
+                fill="#38BDF8"
+                stroke="#0284C7"
+                strokeWidth="2.5"
+              />
+              {/* Highlight */}
+              <ellipse cx="17" cy="24" rx="3" ry="5" fill="#FFFFFF" opacity="0.75" />
+            </svg>
+          </div>
+        )}
       </div>
     </AbsoluteFill>
   );

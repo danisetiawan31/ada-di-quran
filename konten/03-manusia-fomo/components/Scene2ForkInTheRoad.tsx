@@ -260,7 +260,14 @@ export const Scene2ForkInTheRoad: React.FC = () => {
 
       {/* =========================================================================
           4. MAIN LANDSCAPE & ROAD SYSTEM (CLEAN 2.5D PERSPECTIVE Y-FORK)
-             Canvas coordinates: 1080 x 1400 (Top: 620 to 1920)
+             Canvas coordinates: 1080 x 1380 (Top: 620 to 1920)
+             STRICT Z-INDEX ORDERING:
+             1. Rolling Hills Meadow Background
+             2. Incoming Bottom Highway (drawn UNDER the central plaza hub)
+             3. Branch 1: Golden Expressway (chevrons pointing UP-LEFT towards Arch)
+             4. Branch 2: Mountain Switchback Trail (arriving at base of summit)
+             5. Central Crossroads Plaza Hub (drawn ON TOP of roads, cleanly capping them)
+             6. Destinations (Arch on left, Summit Mountain Peak & Tree ON TOP of trail)
          ========================================================================= */}
       <svg
         viewBox="0 0 1080 1380"
@@ -363,69 +370,20 @@ export const Scene2ForkInTheRoad: React.FC = () => {
         />
 
         {/* -------------------------------------------------------------------
-            B. DESTINATIONS AT THE END OF EACH PATH
+            B. MAIN HIGHWAY ENTERING FROM BOTTOM (Y: 600 -> Y: 1380)
+               (Drawn BEFORE the Central Plaza Hub so the round hub cleanly caps it!)
            ------------------------------------------------------------------- */}
-        {/* DESTINATION 1 (LEFT): Radiant Instant Finish Arch / Trophy Gate */}
-        <g transform="translate(140, 190)">
-          {/* Pulsing Sunburst Halo */}
-          <circle cx="60" cy="50" r="75" fill="#FEF08A" opacity={0.35 * gateGlow} filter="blur(10px)" />
-          
-          {/* Golden Archway Columns */}
-          <rect x="15" y="20" width="16" height="70" rx="4" fill="#D97706" />
-          <rect x="89" y="20" width="16" height="70" rx="4" fill="#D97706" />
-          <rect x="19" y="20" width="8" height="70" fill="#FBBF24" />
-          <rect x="93" y="20" width="8" height="70" fill="#FBBF24" />
+        {/* Highway Shoulder Curbs extending neatly into y=600 */}
+        <polygon points="210,1380 870,1380 700,600 380,600" fill="#64748B" />
+        {/* Smooth Dark Highway Asphalt extending neatly into y=600 */}
+        <polygon points="230,1380 850,1380 680,600 400,600" fill="url(#incomingRoadGrad)" />
 
-          {/* Archway Lintel */}
-          <rect x="8" y="10" width="104" height="18" rx="6" fill="#F59E0B" stroke="#B45309" strokeWidth="2.5" />
-          <rect x="12" y="13" width="96" height="6" rx="3" fill="#FEF3C7" />
-
-          {/* Golden Lightning Bolt Emblem */}
-          <circle cx="60" cy="50" r="26" fill="#FDE047" stroke="#F59E0B" strokeWidth="3" />
-          <polygon points="62,35 48,51 58,51 56,66 72,47 62,47" fill="#B45309" />
-
-          {/* Floating Reward Stars */}
-          <polygon points="20,0 23,6 29,7 24,12 26,18 20,15 14,18 16,12 11,7 17,6" fill="#FDE047" opacity={gateGlow} />
-          <polygon points="100,2 103,7 109,8 104,13 106,19 100,16 94,19 96,13 91,8 97,7" fill="#FDE047" opacity={gateGlow} />
-        </g>
-
-        {/* DESTINATION 2 (RIGHT): Serene Mountaintop Summit with Flourishing Tree & Flag */}
-        <g transform="translate(860, 120)">
-          {/* Heavenly Golden Sunbeams */}
-          {Array.from({ length: 6 }).map((_, i) => (
-            <line
-              key={i}
-              x1="50"
-              y1="40"
-              x2={50 + 60 * Math.cos(((i * 30 + 190) * Math.PI) / 180)}
-              y2={40 + 60 * Math.sin(((i * 30 + 190) * Math.PI) / 180)}
-              stroke="#FEF08A"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              opacity={0.45 * sunShimmer}
-            />
-          ))}
-
-          {/* Mountaintop Rocky Peak Base */}
-          <polygon points="15,80 50,28 85,80" fill="#E2E8F0" stroke="#94A3B8" strokeWidth="2" />
-          <polygon points="32,80 50,28 68,80" fill="#F8FAFC" />
-
-          {/* Summit Golden Flagpole & Banner */}
-          <line x1="50" y1="28" x2="50" y2="2" stroke="#78350F" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="50" cy="2" r="3.5" fill="#F59E0B" />
-          {/* Waving Golden Banner */}
-          <path
-            d="M50 4 Q68 8 82 4 Q68 16 50 18 Z"
-            fill="#10B981"
-            stroke="#047857"
-            strokeWidth="1.5"
-          />
-
-          {/* Flourishing Little Mountaintop Tree (Foreshadowing Scene 4 Tree of Patience) */}
-          <ellipse cx="28" cy="55" rx="14" ry="16" fill="#10B981" />
-          <ellipse cx="28" cy="52" rx="10" ry="12" fill="#34D399" />
-          <rect x="26" y="65" width="5" height="12" rx="2" fill="#78350F" />
-        </g>
+        {/* Perspective Center Lane Dashes */}
+        <line x1="540" y1="1330" x2="540" y2="1210" stroke="#FFFFFF" strokeWidth="9" strokeDasharray="22 22" opacity="0.9" strokeLinecap="round" />
+        <line x1="540" y1="1150" x2="540" y2="1040" stroke="#FFFFFF" strokeWidth="8" strokeDasharray="18 18" opacity="0.9" strokeLinecap="round" />
+        <line x1="540" y1="990" x2="540" y2="900" stroke="#FFFFFF" strokeWidth="7" strokeDasharray="16 16" opacity="0.9" strokeLinecap="round" />
+        <line x1="540" y1="860" x2="540" y2="780" stroke="#FFFFFF" strokeWidth="6" strokeDasharray="14 14" opacity="0.9" strokeLinecap="round" />
+        <line x1="540" y1="750" x2="540" y2="685" stroke="#FFFFFF" strokeWidth="5" strokeDasharray="12 12" opacity="0.9" strokeLinecap="round" />
 
         {/* -------------------------------------------------------------------
             C. BRANCH 1: HIGH-SPEED GOLDEN RUNWAY (⚡ JALUR INSTAN)
@@ -464,12 +422,12 @@ export const Scene2ForkInTheRoad: React.FC = () => {
           filter="url(#neonGlowYellow)"
         />
 
-        {/* Animated Speed Chevrons (>> >> >>) Pointing UP & FORWARD towards Golden Arch */}
+        {/* Animated Speed Chevrons (>> >> >>) POINTING UP & FORWARD TOWARDS GOLDEN ARCH */}
         {[
-          { x: 425, y: 550, rot: 132, scale: 0.95 },
-          { x: 335, y: 440, rot: 128, scale: 0.8 },
-          { x: 265, y: 350, rot: 124, scale: 0.65 },
-          { x: 215, y: 280, rot: 120, scale: 0.5 },
+          { x: 425, y: 550, rot: -130, scale: 0.95 },
+          { x: 335, y: 440, rot: -128, scale: 0.8 },
+          { x: 265, y: 350, rot: -125, scale: 0.65 },
+          { x: 215, y: 280, rot: -122, scale: 0.5 },
         ].map((c, idx) => (
           <g key={idx} transform={`translate(${c.x}, ${c.y}) rotate(${c.rot}) scale(${c.scale})`}>
             <polyline
@@ -495,6 +453,7 @@ export const Scene2ForkInTheRoad: React.FC = () => {
         {/* -------------------------------------------------------------------
             D. BRANCH 2: SCENIC MOUNTAIN SWITCHBACK TRAIL (🌱 JALUR PROSES)
                Beautifully winding stone trail with 3 clear switchback curves
+               Leading up to the base of the summit (without covering the mountain!)
            ------------------------------------------------------------------- */}
         {/* Switchback Curve 1: From Hub curving right towards cliff */}
         <path
@@ -512,9 +471,9 @@ export const Scene2ForkInTheRoad: React.FC = () => {
           strokeWidth="2"
         />
 
-        {/* Switchback Curve 3: Final ascent to the Summit Flag & Tree */}
+        {/* Switchback Curve 3: Final ascent stopping naturally at the summit plateau base */}
         <path
-          d="M720 340 Q710 300 760 260 Q820 210 880 170 L905 170 Q850 210 790 255 Q745 290 750 340 Z"
+          d="M720 340 Q710 300 755 265 Q800 230 855 200 L870 210 Q815 240 770 275 Q735 310 750 340 Z"
           fill="url(#mountainTrailGrad)"
           stroke="#64748B"
           strokeWidth="2"
@@ -530,10 +489,10 @@ export const Scene2ForkInTheRoad: React.FC = () => {
           { x1: 825, y1: 460, x2: 845, y2: 440 },
           { x1: 775, y1: 405, x2: 795, y2: 385 },
           { x1: 730, y1: 355, x2: 750, y2: 335 },
-          // Ascent 3 steps towards peak
+          // Ascent 3 steps towards peak plateau
           { x1: 755, y1: 280, x2: 775, y2: 265 },
-          { x1: 810, y1: 230, x2: 830, y2: 215 },
-          { x1: 860, y1: 185, x2: 880, y2: 170 },
+          { x1: 805, y1: 235, x2: 825, y2: 220 },
+          { x1: 840, y1: 208, x2: 860, y2: 198 },
         ].map((st, sIdx) => (
           <g key={`step-${sIdx}`}>
             {/* Step Timber Shadow */}
@@ -580,11 +539,11 @@ export const Scene2ForkInTheRoad: React.FC = () => {
 
         {/* -------------------------------------------------------------------
             E. CENTRAL FORK PLAZA HUB (BUNDARAN PERSIMPANGAN BATU)
-               Solid circular paved cobblestone plaza where character stands firmly
+               (Drawn ON TOP of all 3 roads, seamlessly capping the asphalt and branches!)
            ------------------------------------------------------------------- */}
         {/* Plaza Embankment Drop Shadow */}
         <ellipse cx="540" cy="635" rx="215" ry="70" fill="#1C1917" opacity="0.25" />
-        {/* Paved Stone Plaza Surface */}
+        {/* Paved Stone Plaza Surface with Curved Cobblestone Curb */}
         <ellipse cx="540" cy="630" rx="210" ry="66" fill="url(#plazaHubGrad)" stroke="#475569" strokeWidth="4" />
         {/* Decorative Inner Paver Cobblestone Ring */}
         <ellipse cx="540" cy="630" rx="160" ry="48" fill="none" stroke="#F1F5F9" strokeWidth="2.5" strokeDasharray="12 10" opacity="0.75" />
@@ -592,20 +551,73 @@ export const Scene2ForkInTheRoad: React.FC = () => {
         <ellipse cx="540" cy="630" rx="90" ry="26" fill="#334155" opacity="0.3" />
 
         {/* -------------------------------------------------------------------
-            F. MAIN HIGHWAY ENTERING FROM BOTTOM (Y: 630 -> Y: 1380)
-               Tapers naturally towards the junction
+            F. DESTINATIONS AT THE END OF EACH PATH
+               (Drawn ON TOP of roads and landscape: 100% visible, zero road clipping!)
            ------------------------------------------------------------------- */}
-        {/* Highway Shoulder Curbs */}
-        <polygon points="210,1380 870,1380 710,660 370,660" fill="#64748B" />
-        {/* Smooth Dark Highway Asphalt */}
-        <polygon points="230,1380 850,1380 690,660 390,660" fill="url(#incomingRoadGrad)" />
+        {/* DESTINATION 1 (LEFT): Radiant Instant Finish Arch / Trophy Gate */}
+        <g transform="translate(140, 190)">
+          {/* Pulsing Sunburst Halo */}
+          <circle cx="60" cy="50" r="75" fill="#FEF08A" opacity={0.35 * gateGlow} filter="blur(10px)" />
+          
+          {/* Golden Archway Columns */}
+          <rect x="15" y="20" width="16" height="70" rx="4" fill="#D97706" />
+          <rect x="89" y="20" width="16" height="70" rx="4" fill="#D97706" />
+          <rect x="19" y="20" width="8" height="70" fill="#FBBF24" />
+          <rect x="93" y="20" width="8" height="70" fill="#FBBF24" />
 
-        {/* Perspective Center Lane Dashes */}
-        <line x1="540" y1="1330" x2="540" y2="1210" stroke="#FFFFFF" strokeWidth="9" strokeDasharray="22 22" opacity="0.9" strokeLinecap="round" />
-        <line x1="540" y1="1150" x2="540" y2="1040" stroke="#FFFFFF" strokeWidth="8" strokeDasharray="18 18" opacity="0.9" strokeLinecap="round" />
-        <line x1="540" y1="990" x2="540" y2="900" stroke="#FFFFFF" strokeWidth="7" strokeDasharray="16 16" opacity="0.9" strokeLinecap="round" />
-        <line x1="540" y1="860" x2="540" y2="780" stroke="#FFFFFF" strokeWidth="6" strokeDasharray="14 14" opacity="0.9" strokeLinecap="round" />
-        <line x1="540" y1="750" x2="540" y2="685" stroke="#FFFFFF" strokeWidth="5" strokeDasharray="12 12" opacity="0.9" strokeLinecap="round" />
+          {/* Archway Lintel */}
+          <rect x="8" y="10" width="104" height="18" rx="6" fill="#F59E0B" stroke="#B45309" strokeWidth="2.5" />
+          <rect x="12" y="13" width="96" height="6" rx="3" fill="#FEF3C7" />
+
+          {/* Golden Lightning Bolt Emblem */}
+          <circle cx="60" cy="50" r="26" fill="#FDE047" stroke="#F59E0B" strokeWidth="3" />
+          <polygon points="62,35 48,51 58,51 56,66 72,47 62,47" fill="#B45309" />
+
+          {/* Floating Reward Stars */}
+          <polygon points="20,0 23,6 29,7 24,12 26,18 20,15 14,18 16,12 11,7 17,6" fill="#FDE047" opacity={gateGlow} />
+          <polygon points="100,2 103,7 109,8 104,13 106,19 100,16 94,19 96,13 91,8 97,7" fill="#FDE047" opacity={gateGlow} />
+        </g>
+
+        {/* DESTINATION 2 (RIGHT): Serene Mountaintop Summit with Rocky Peak, Flourishing Tree & Flag */}
+        <g transform="translate(850, 110)">
+          {/* Heavenly Golden Sunbeams */}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <line
+              key={i}
+              x1="55"
+              y1="40"
+              x2={55 + 65 * Math.cos(((i * 30 + 190) * Math.PI) / 180)}
+              y2={40 + 65 * Math.sin(((i * 30 + 190) * Math.PI) / 180)}
+              stroke="#FEF08A"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              opacity={0.45 * sunShimmer}
+            />
+          ))}
+
+          {/* Mountaintop Rocky Peak Base with Solid Plateau (Connecting cleanly with trail) */}
+          <polygon points="10,90 55,26 95,90" fill="#E2E8F0" stroke="#94A3B8" strokeWidth="2.5" />
+          <polygon points="32,90 55,26 78,90" fill="#F8FAFC" />
+          {/* Ground Plateau Base Rim */}
+          <ellipse cx="55" cy="90" rx="46" ry="12" fill="#CBD5E1" stroke="#64748B" strokeWidth="2" />
+
+          {/* Flourishing Little Mountaintop Tree (Foreshadowing Scene 4 Tree of Patience) */}
+          <g transform="translate(18, 52)">
+            <ellipse cx="14" cy="14" rx="14" ry="16" fill="#10B981" />
+            <ellipse cx="14" cy="11" rx="10" ry="12" fill="#34D399" />
+            <rect x="12" y="24" width="5" height="14" rx="2" fill="#78350F" />
+          </g>
+
+          {/* Summit Golden Flagpole & Waving Banner */}
+          <line x1="55" y1="26" x2="55" y2="2" stroke="#78350F" strokeWidth="3" strokeLinecap="round" />
+          <circle cx="55" cy="2" r="3.5" fill="#F59E0B" />
+          <path
+            d="M55 4 Q72 8 86 4 Q72 16 55 18 Z"
+            fill="#10B981"
+            stroke="#047857"
+            strokeWidth="1.5"
+          />
+        </g>
       </svg>
 
       {/* =========================================================================

@@ -38,6 +38,8 @@ export interface PopElementProps {
   children: React.ReactNode;
   /** Frame relatif scene saat elemen meletup muncul */
   triggerFrame?: number;
+  /** Alias untuk triggerFrame sesuai standar Point E */
+  startFrame?: number;
   /** Jenis efek suara saat elemen muncul. Default: "pop" */
   sound?: PopSoundType;
   /** Volume SFX (0.0 s/d 1.0). Default: 0.22 (sejajar BGM, di bawah vokal narator) */
@@ -64,11 +66,12 @@ export interface PopElementProps {
  * 1. No Instant Appear (tidak pernah muncul mendadak di frame 0).
  * 2. Bouncy Overshoot Spring (0 -> 1.08 -> 1.0).
  * 3. Playful Tilt Rotation (-8deg -> 0deg).
- * 4. Micro-Auditory Feedback otomatis (pop / whip / ding) pada triggerFrame.
+ * 4. Micro-Auditory Feedback otomatis (pop / whip / ding) pada triggerFrame/startFrame.
  */
 export const PopElement: React.FC<PopElementProps> = ({
   children,
   triggerFrame = 0,
+  startFrame,
   sound = "pop",
   volume = 0.22,
   tilt = -8,
@@ -79,8 +82,9 @@ export const PopElement: React.FC<PopElementProps> = ({
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const isTriggered = frame >= triggerFrame;
-  const elapsed = Math.max(0, frame - triggerFrame);
+  const targetFrame = startFrame ?? triggerFrame;
+  const isTriggered = frame >= targetFrame;
+  const elapsed = Math.max(0, frame - targetFrame);
 
   // Elastic Spring Scale (0 -> 1.08 -> 1.0)
   const scale = isTriggered
@@ -111,7 +115,7 @@ export const PopElement: React.FC<PopElementProps> = ({
     <>
       {/* Micro-SFX diputar tepat pada saat elemen meletup muncul */}
       {sfxSrc && (
-        <Sequence from={triggerFrame}>
+        <Sequence from={targetFrame}>
           <Audio src={sfxSrc} volume={volume} />
         </Sequence>
       )}

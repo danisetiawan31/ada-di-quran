@@ -6,8 +6,8 @@ import { PopElement } from "../../../src/components/PopElement";
 
 export const Scene2ForkInTheRoad: React.FC = () => {
   const frame = useCurrentFrame();
-  // Relative frame from 0 (starts at global frame 558)
-  const relFrame = Math.max(0, frame - 558);
+  // Frame is 0-indexed relative to Scene 2 via Sequence wrapper
+  const relFrame = frame;
 
   const { colors } = EP02_THEME;
 

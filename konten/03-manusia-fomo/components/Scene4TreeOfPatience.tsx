@@ -7,8 +7,8 @@ import { PopElement } from "../../../src/components/PopElement";
 export const Scene4TreeOfPatience: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  // Relative frame from global frame 1239
-  const relFrame = Math.max(0, frame - 1239);
+  // Frame is 0-indexed relative to Scene 4 via Sequence wrapper
+  const relFrame = frame;
 
   const { colors } = EP02_THEME;
 

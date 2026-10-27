@@ -6,8 +6,8 @@ import { PopElement } from "../../../src/components/PopElement";
 
 export const Scene3SoilRoots: React.FC = () => {
   const frame = useCurrentFrame();
-  // Relative frame from global frame 915
-  const relFrame = Math.max(0, frame - 915);
+  // Frame is 0-indexed relative to Scene 3 via Sequence wrapper
+  const relFrame = frame;
 
   const { colors } = EP02_THEME;
 

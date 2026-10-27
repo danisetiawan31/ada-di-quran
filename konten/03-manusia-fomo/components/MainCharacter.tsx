@@ -37,6 +37,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        filter: "drop-shadow(0 8px 18px rgba(0,0,0,0.14))",
         pointerEvents: "none",
         ...style,
       }}
@@ -65,11 +66,6 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
             <stop offset="0%" stopColor="#FEF08A" />
             <stop offset="100%" stopColor={colors.charSkin} />
           </linearGradient>
-
-          {/* Soft Shadow */}
-          <filter id="charDropShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="8" stdDeviation="6" floodOpacity="0.18" />
-          </filter>
         </defs>
 
         {/* =========================================================================
@@ -88,7 +84,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
            ========================================================================= */}
         {pose === "peaceful" ? (
           // Sitting legs
-          <g filter="url(#charDropShadow)">
+          <g>
             {/* Left bent leg */}
             <path
               d="M130 380 Q100 420 80 455 L125 455 Q135 425 145 385 Z"
@@ -105,7 +101,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
           </g>
         ) : (
           // Standing legs
-          <g filter="url(#charDropShadow)">
+          <g>
             {/* Left Leg */}
             <rect
               x="122"
@@ -140,7 +136,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
         {/* =========================================================================
             3. TORSO / HOODIE
            ========================================================================= */}
-        <g filter="url(#charDropShadow)">
+        <g>
           {/* Main Torso */}
           <path
             d={
@@ -170,7 +166,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
            ========================================================================= */}
         {pose === "panic" && (
           // Hands clutching head
-          <g filter="url(#charDropShadow)">
+          <g>
             {/* Left Arm bending upward to head */}
             <path
               d="M105 230 C75 200 70 140 115 115"
@@ -195,7 +191,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
 
         {pose === "hopeful" && (
           // Clutched hands near chest in admiration
-          <g filter="url(#charDropShadow)">
+          <g>
             {/* Left Arm to chest */}
             <path
               d="M105 230 C90 260 120 280 150 270"
@@ -219,7 +215,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
 
         {pose === "gloomy" && (
           // Limp arms hanging straight down
-          <g filter="url(#charDropShadow)">
+          <g>
             <path
               d="M105 230 Q92 290 92 340"
               fill="none"
@@ -241,7 +237,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
 
         {pose === "impatient" && (
           // Left arm on hip, right arm checking watch
-          <g filter="url(#charDropShadow)">
+          <g>
             {/* Left Arm on hip */}
             <path
               d="M105 230 C75 250 80 300 110 305"
@@ -270,7 +266,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
 
         {pose === "peaceful" && (
           // Relaxed arms resting naturally
-          <g filter="url(#charDropShadow)">
+          <g>
             <path
               d="M105 230 C85 270 100 320 130 340"
               fill="none"
@@ -297,7 +293,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
         <rect x="145" y="180" width="30" height="30" rx="6" fill={colors.charSkinShadow} />
 
         {/* Head Base */}
-        <g filter="url(#charDropShadow)">
+        <g>
           {/* Head Shape */}
           <ellipse
             cx="160"

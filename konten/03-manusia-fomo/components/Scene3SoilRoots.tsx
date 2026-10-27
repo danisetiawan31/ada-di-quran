@@ -1,7 +1,8 @@
 import React from "react";
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Easing, interpolate, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { EP02_THEME } from "../theme";
 import { MainCharacter } from "./MainCharacter";
+import { PopElement } from "../../../src/components/PopElement";
 
 export const Scene3SoilRoots: React.FC = () => {
   const frame = useCurrentFrame();
@@ -49,6 +50,19 @@ export const Scene3SoilRoots: React.FC = () => {
         overflow: "hidden",
       }}
     >
+      {/* =====================================================================
+          AUDIO: CINEMATIC DIVE & ILLUMINATION SFX (Max 2-3 triggers)
+         ===================================================================== */}
+      {/* 1. Subterranean Dive Whoosh at Frame 210 */}
+      <Sequence from={210} durationInFrames={40}>
+        <Audio src={staticFile("sfx/whoosh.wav")} volume={0.18} />
+      </Sequence>
+
+      {/* 2. Sacred Root Glow Chime/Ting at Frame 275 */}
+      <Sequence from={275} durationInFrames={40}>
+        <Audio src={staticFile("sfx/ting.wav")} volume={0.15} />
+      </Sequence>
+
       {/* =====================================================================
           CAMERA PAN WRAPPER (Transforms smoothly from Y=0 to Y=-1980px)
          ===================================================================== */}
@@ -295,6 +309,7 @@ export const Scene3SoilRoots: React.FC = () => {
           {/* -----------------------------------------------------------------
               B. MICRO THOUGHT BUBBLE: "MAUNYA LANGSUNG PANEN APEL!" 🍎
                  (Visualizing the comical instant gratification expectation)
+                 Integrated with PopElement for playful bouncy entrance & SFX
              ----------------------------------------------------------------- */}
           {relFrame < 210 && (
             <div
@@ -302,81 +317,89 @@ export const Scene3SoilRoots: React.FC = () => {
                 position: "absolute",
                 top: 730,
                 left: 170,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
                 zIndex: 45,
                 opacity: charOpacity,
-                transform: "scale(1.15)",
                 transformOrigin: "bottom center",
               }}
             >
-              {/* Thought Card Container */}
-              <div
-                style={{
-                  backgroundColor: "#FFFFFF",
-                  borderRadius: 22,
-                  padding: "14px 22px",
-                  boxShadow: "0 16px 36px rgba(0,0,0,0.18)",
-                  border: "2.5px solid #FCD34D",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 14,
-                }}
-              >
-                {/* Lush Apple Fruit Vector */}
-                <svg width="48" height="48" viewBox="0 0 100 100">
-                  <defs>
-                    <linearGradient id="appleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#F87171" />
-                      <stop offset="50%" stopColor="#EF4444" />
-                      <stop offset="100%" stopColor="#B91C1C" />
-                    </linearGradient>
-                  </defs>
-                  {/* Stem & Leaf */}
-                  <path d="M50 22 Q52 8 62 6" fill="none" stroke="#78350F" strokeWidth="6" strokeLinecap="round" />
-                  <path d="M56 16 Q72 8 76 22 Q64 26 56 16 Z" fill="#22C55E" />
-                  {/* Apple Body */}
-                  <path
-                    d="M50 28 C40 22 20 25 18 48 C16 75 35 92 50 92 C65 92 84 75 82 48 C80 25 60 22 50 28 Z"
-                    fill="url(#appleGrad)"
+              <PopElement triggerFrame={70} sound="pop" volume={0.22} tilt={-5}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    transform: "scale(1.15)",
+                    transformOrigin: "bottom center",
+                  }}
+                >
+                  {/* Thought Card Container */}
+                  <div
+                    style={{
+                      backgroundColor: "#FFFFFF",
+                      borderRadius: 22,
+                      padding: "14px 22px",
+                      boxShadow: "0 16px 36px rgba(0,0,0,0.18)",
+                      border: "2.5px solid #FCD34D",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 14,
+                    }}
+                  >
+                    {/* Lush Apple Fruit Vector */}
+                    <svg width="48" height="48" viewBox="0 0 100 100">
+                      <defs>
+                        <linearGradient id="appleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stopColor="#F87171" />
+                          <stop offset="50%" stopColor="#EF4444" />
+                          <stop offset="100%" stopColor="#B91C1C" />
+                        </linearGradient>
+                      </defs>
+                      {/* Stem & Leaf */}
+                      <path d="M50 22 Q52 8 62 6" fill="none" stroke="#78350F" strokeWidth="6" strokeLinecap="round" />
+                      <path d="M56 16 Q72 8 76 22 Q64 26 56 16 Z" fill="#22C55E" />
+                      {/* Apple Body */}
+                      <path
+                        d="M50 28 C40 22 20 25 18 48 C16 75 35 92 50 92 C65 92 84 75 82 48 C80 25 60 22 50 28 Z"
+                        fill="url(#appleGrad)"
+                      />
+                      {/* Apple Sparkle Shine */}
+                      <ellipse cx="34" cy="45" rx="6" ry="14" fill="#FFFFFF" opacity="0.6" transform="rotate(-20 34 45)" />
+                    </svg>
+
+                    {/* Expectation Text */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      <span style={{ fontSize: 13, fontWeight: 800, color: "#DC2626", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                        Besok Pagi?
+                      </span>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: "#475569" }}>
+                        Langsung Berbuah
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Trailing Dots connecting to character */}
+                  <div
+                    style={{
+                      width: 13,
+                      height: 13,
+                      borderRadius: "50%",
+                      backgroundColor: "#FFFFFF",
+                      border: "2px solid #FCD34D",
+                      marginTop: 8,
+                    }}
                   />
-                  {/* Apple Sparkle Shine */}
-                  <ellipse cx="34" cy="45" rx="6" ry="14" fill="#FFFFFF" opacity="0.6" transform="rotate(-20 34 45)" />
-                </svg>
-
-                {/* Expectation Text */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <span style={{ fontSize: 13, fontWeight: 800, color: "#DC2626", textTransform: "uppercase", letterSpacing: 0.5 }}>
-                    Besok Pagi?
-                  </span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#475569" }}>
-                    Langsung Berbuah
-                  </span>
+                  <div
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: "50%",
+                      backgroundColor: "#FFFFFF",
+                      border: "1.5px solid #FCD34D",
+                      marginTop: 5,
+                    }}
+                  />
                 </div>
-              </div>
-
-              {/* Trailing Dots connecting to character */}
-              <div
-                style={{
-                  width: 13,
-                  height: 13,
-                  borderRadius: "50%",
-                  backgroundColor: "#FFFFFF",
-                  border: "2px solid #FCD34D",
-                  marginTop: 8,
-                }}
-              />
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  backgroundColor: "#FFFFFF",
-                  border: "1.5px solid #FCD34D",
-                  marginTop: 5,
-                }}
-              />
+              </PopElement>
             </div>
           )}
 

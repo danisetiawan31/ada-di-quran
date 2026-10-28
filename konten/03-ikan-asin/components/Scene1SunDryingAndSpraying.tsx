@@ -476,13 +476,13 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
           )}
 
           {/* =========================================================================
-              LAYER 3: FOREGROUND — TANGAN OKNUM & KALENG SEMPROT RACUN (Frame 15 - 240)
-              MENGGUNAKAN as="g" AGAR ELEMEN SVG VALID DAN TAMPIL 100%
+              LAYER 3: FOREGROUND — TANGAN OKNUM & KALENG SEMPROT RACUN
+              Kemunculan 1: Frame 15 - 235 (Pengenalan Semprot Ikan)
+              Kemunculan 2: Frame 384 - 540 (Semprot Usir Lalat saat Narasi Belatung)
              ========================================================================= */}
-          {frame < 240 && (
-            <PopElement as="g" startFrame={15} sfxType="whip" volume={0.22}>
-              <g id="hand-spray-can" transform="translate(140, 440)" filter="url(#softShadow)">
-                {/* Lengan Baju Siluet Oknum Nakal (Kiri Atas) */}
+          {frame < 235 && (
+            <PopElement as="g" startFrame={15} endFrame={235} sfxType="whip" volume={0.22}>
+              <g id="hand-spray-can-1" transform="translate(140, 440)" filter="url(#softShadow)">
                 <path
                   d="M-80 180 Q-10 100 110 90 L130 150 Q40 180 -30 260 Z"
                   fill="#1E293B"
@@ -490,24 +490,12 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
                   strokeWidth="5"
                   strokeLinejoin="round"
                 />
-
-                {/* Telapak Tangan Memegang Kaleng */}
                 <ellipse cx="140" cy="115" rx="32" ry="26" fill="#D98A52" stroke="#12233F" strokeWidth="4.5" />
-                {/* Jari Telunjuk Menekan Nozel Semprot */}
                 <rect x="130" y="55" width="22" height="40" rx="10" fill="#D98A52" stroke="#12233F" strokeWidth="4.5" />
-
-                {/* -------------------------------------------------------------------
-                    KALENG SEMPROT INSEKTISIDA MERAH-HITAM (IKON TENGKORAK MURNI)
-                   ------------------------------------------------------------------- */}
-                <g id="spray-can" transform="translate(130, 40) rotate(-22)">
-                  {/* Nozel Semprot Hitam Mengarah ke Ikan */}
+                <g id="spray-can-1" transform="translate(130, 40) rotate(-22)">
                   <rect x="22" y="-22" width="18" height="26" rx="5" fill="#0F172A" stroke="#12233F" strokeWidth="3.5" />
                   <path d="M40 -16 L54 -16 L54 -8 L40 -8 Z" fill="#EF4444" />
-
-                  {/* Kubah Atas Kaleng */}
                   <ellipse cx="32" cy="4" rx="42" ry="15" fill="#DC2626" stroke="#12233F" strokeWidth="4.5" />
-
-                  {/* Tabung Kaleng Semprot Silinder Besar */}
                   <rect
                     x="-10"
                     y="4"
@@ -518,11 +506,7 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
                     stroke="#12233F"
                     strokeWidth="5.5"
                   />
-
-                  {/* Strip Hitam Bahaya di Tengah Kaleng */}
                   <rect x="-10" y="65" width="84" height="85" fill="#0F172A" />
-
-                  {/* IKON TENGKORAK BAHAYA KIMIA MURNI (Sesuai Rule 11 & Batasan Brief) */}
                   <g transform="translate(32, 108)">
                     <circle cx="0" cy="-7" r="17" fill="#FFFFFF" stroke="#12233F" strokeWidth="2.5" />
                     <rect x="-10" y="5" width="20" height="12" rx="4" fill="#FFFFFF" stroke="#12233F" strokeWidth="2.5" />
@@ -533,8 +517,49 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
                     <line x1="0" y1="10" x2="0" y2="16" stroke="#0F172A" strokeWidth="2" />
                     <line x1="5" y1="10" x2="5" y2="16" stroke="#0F172A" strokeWidth="2" />
                   </g>
+                  <ellipse cx="32" cy="234" rx="42" ry="15" fill="#7F1D1D" stroke="#12233F" strokeWidth="4.5" />
+                </g>
+              </g>
+            </PopElement>
+          )}
 
-                  {/* Dasar Bawah Kaleng */}
+          {frame >= 384 && (
+            <PopElement as="g" startFrame={384} sfxType="whip" volume={0.22}>
+              <g id="hand-spray-can-2" transform="translate(130, 420)" filter="url(#softShadow)">
+                <path
+                  d="M-80 180 Q-10 100 110 90 L130 150 Q40 180 -30 260 Z"
+                  fill="#1E293B"
+                  stroke="#0F172A"
+                  strokeWidth="5"
+                  strokeLinejoin="round"
+                />
+                <ellipse cx="140" cy="115" rx="32" ry="26" fill="#D98A52" stroke="#12233F" strokeWidth="4.5" />
+                <rect x="130" y="55" width="22" height="40" rx="10" fill="#D98A52" stroke="#12233F" strokeWidth="4.5" />
+                <g id="spray-can-2" transform="translate(130, 40) rotate(-26)">
+                  <rect x="22" y="-22" width="18" height="26" rx="5" fill="#0F172A" stroke="#12233F" strokeWidth="3.5" />
+                  <path d="M40 -16 L54 -16 L54 -8 L40 -8 Z" fill="#EF4444" />
+                  <ellipse cx="32" cy="4" rx="42" ry="15" fill="#DC2626" stroke="#12233F" strokeWidth="4.5" />
+                  <rect
+                    x="-10"
+                    y="4"
+                    width="84"
+                    height="230"
+                    rx="10"
+                    fill="url(#canBodyGrad)"
+                    stroke="#12233F"
+                    strokeWidth="5.5"
+                  />
+                  <rect x="-10" y="65" width="84" height="85" fill="#0F172A" />
+                  <g transform="translate(32, 108)">
+                    <circle cx="0" cy="-7" r="17" fill="#FFFFFF" stroke="#12233F" strokeWidth="2.5" />
+                    <rect x="-10" y="5" width="20" height="12" rx="4" fill="#FFFFFF" stroke="#12233F" strokeWidth="2.5" />
+                    <ellipse cx="-6" cy="-7" rx="4" ry="5.5" fill="#0F172A" />
+                    <ellipse cx="6" cy="-7" rx="4" ry="5.5" fill="#0F172A" />
+                    <polygon points="0,0 -2.5,5 2.5,5" fill="#0F172A" />
+                    <line x1="-5" y1="10" x2="-5" y2="16" stroke="#0F172A" strokeWidth="2" />
+                    <line x1="0" y1="10" x2="0" y2="16" stroke="#0F172A" strokeWidth="2" />
+                    <line x1="5" y1="10" x2="5" y2="16" stroke="#0F172A" strokeWidth="2" />
+                  </g>
                   <ellipse cx="32" cy="234" rx="42" ry="15" fill="#7F1D1D" stroke="#12233F" strokeWidth="4.5" />
                 </g>
               </g>
@@ -542,28 +567,23 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
           )}
 
           {/* =========================================================================
-              BADGE INFO POP-UP: SILANG BELATUNG & BAHAYA KIMIA (Frame 390 - 540)
-              MENGGUNAKAN as="g" AGAR ELEMEN TAMPIL SOLID DI DALAM SVG
+              BADGE INFO POP-UP: SILANG BELATUNG & BAHAYA KIMIA (Frame 415 - 540)
+              Posisikan di kanan (X: 720) agar seimbang dengan kaleng semprot di kiri (X: 130)
              ========================================================================= */}
-          {frame >= 390 && (
-            <PopElement as="g" startFrame={390} sfxType="whip" volume={0.22}>
-              <g transform="translate(540, 520)" filter="url(#softShadow)">
-                {/* Lingkaran Luar Badge Merah Bahaya */}
-                <circle cx="0" cy="0" r="130" fill="#0F172A" stroke="#EF4444" strokeWidth="9" />
-                <circle cx="0" cy="0" r="112" fill="#FEF2F2" />
-
-                {/* Ilustrasi Lalat/Belatung Disilang Merah Tebal */}
-                <g transform="translate(0, -12)">
-                  <ellipse cx="-18" cy="6" rx="24" ry="16" fill="#334155" />
-                  <circle cx="8" cy="2" r="11" fill="#DC2626" />
-                  <ellipse cx="-24" cy="-16" rx="18" ry="10" fill="#BAE6FD" opacity="0.85" />
-                  {/* TANDA SILANG MERAH BESAR (X) */}
-                  <line x1="-65" y1="-65" x2="65" y2="65" stroke="#DC2626" strokeWidth="18" strokeLinecap="round" />
-                  <line x1="65" y1="-65" x2="-65" y2="65" stroke="#DC2626" strokeWidth="18" strokeLinecap="round" />
+          {frame >= 415 && (
+            <PopElement as="g" startFrame={415} sfxType="whip" volume={0.22}>
+              <g transform="translate(720, 480)" filter="url(#softShadow)">
+                <circle cx="0" cy="0" r="115" fill="#0F172A" stroke="#EF4444" strokeWidth="8" />
+                <circle cx="0" cy="0" r="98" fill="#FEF2F2" />
+                <g transform="translate(0, -10)">
+                  <ellipse cx="-16" cy="5" rx="20" ry="14" fill="#334155" />
+                  <circle cx="7" cy="2" r="9.5" fill="#DC2626" />
+                  <ellipse cx="-20" cy="-14" rx="15" ry="8.5" fill="#BAE6FD" opacity="0.85" />
+                  <line x1="-42" y1="-42" x2="42" y2="42" stroke="#EF4444" strokeWidth="12" strokeLinecap="round" />
+                  <line x1="42" y1="-42" x2="-42" y2="42" stroke="#EF4444" strokeWidth="12" strokeLinecap="round" />
                 </g>
-
                 {/* Ikon Bahaya Tengkorak Kecil di Bawah */}
-                <g transform="translate(0, 62) scale(0.95)">
+                <g transform="translate(0, 52) scale(0.95)">
                   <circle cx="0" cy="-5" r="12" fill="#EF4444" />
                   <rect x="-7" y="5" width="14" height="8" rx="2" fill="#EF4444" />
                   <circle cx="-4" cy="-5" r="3" fill="#FFFFFF" />

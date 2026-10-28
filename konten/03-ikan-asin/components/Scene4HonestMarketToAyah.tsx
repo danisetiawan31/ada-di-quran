@@ -41,6 +41,11 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
   const awningWave = Math.sin(frame / 8) * 3;
   const sparklePulse = 0.85 + Math.sin(frame / 4) * 0.25;
 
+  const tableOpacity = interpolate(frame, [130, 145], [1, 0.35], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
   return (
     <AbsoluteFill
       style={{
@@ -145,7 +150,7 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
           }}
         >
           <MainCharacter
-            pose={frame < 130 ? "datar" : "senang"}
+            pose={frame < 130 ? "sedih" : "senang"}
             scale={1.85}
           />
         </div>
@@ -160,6 +165,7 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
             left: 0,
             width: "100%",
             zIndex: 15,
+            opacity: tableOpacity,
           }}
         >
           <svg viewBox="0 0 1080 350" width="100%" height="350">

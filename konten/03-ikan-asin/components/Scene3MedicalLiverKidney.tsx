@@ -32,7 +32,12 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
   // CONTINUOUS SECONDARY MOTION (Denyut Bahaya Organ & Pusing)
   // ---------------------------------------------------------------------------
   const organPulse = 1 + Math.sin(frame / 4.5) * 0.06;
+  const toxicPulse = 1 + Math.sin(frame / 3) * 0.15;
   const dizzySpin = (frame * 10) % 360;
+  const roomDimOpacity = interpolate(frame, [118, 135], [0, 0.45], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 
   return (
     <AbsoluteFill
@@ -217,6 +222,23 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
           </svg>
         </div>
 
+        {/* Dimming overlay saat X-Ray scanner aktif untuk kontras maksimal */}
+        {frame >= 118 && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: 1080,
+              height: 1920,
+              backgroundColor: "#0B132B",
+              opacity: roomDimOpacity,
+              zIndex: 20,
+              pointerEvents: "none",
+            }}
+          />
+        )}
+
         {/* =========================================================================
             LAYER 4: PEMINDAI ANATOMI MEDIS X-RAY (HATI & SEPASANG GINJAL)
             (Aktif Frame 120 lokal | Frame 1005 global)
@@ -319,11 +341,11 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                     transformOrigin="20 15"
                   />
                   {/* Bintik-bintik Racun Hijau Tertimbun di Jaringan Hati */}
-                  <circle cx="20" cy="-10" r="9" fill="#4ADE80" stroke="#15803D" strokeWidth="2.5" />
-                  <circle cx="95" cy="15" r="11" fill="#4ADE80" stroke="#15803D" strokeWidth="2.5" />
-                  <circle cx="-50" cy="12" r="8" fill="#4ADE80" stroke="#15803D" strokeWidth="2.5" />
-                  <circle cx="145" cy="24" r="7" fill="#86EFAC" />
-                  <circle cx="-100" cy="10" r="7" fill="#86EFAC" />
+                  <circle cx="20" cy="-10" r={9 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="2.5" />
+                  <circle cx="95" cy="15" r={11 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="2.5" />
+                  <circle cx="-50" cy="12" r={8 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="2.5" />
+                  <circle cx="145" cy="24" r={7 * toxicPulse} fill="#86EFAC" />
+                  <circle cx="-100" cy="10" r={7 * toxicPulse} fill="#86EFAC" />
                 </g>
 
                 {/* -------------------------------------------------------------------
@@ -338,8 +360,8 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                     strokeWidth="4.5"
                     transform={`scale(${organPulse})`}
                   />
-                  <circle cx="10" cy="0" r="8" fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
-                  <circle cx="-10" cy="14" r="6" fill="#86EFAC" />
+                  <circle cx="10" cy="0" r={8 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
+                  <circle cx="-10" cy="14" r={6 * toxicPulse} fill="#86EFAC" />
                 </g>
 
                 {/* Ginjal Kanan (Bawah Kanan) */}
@@ -351,8 +373,8 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                     strokeWidth="4.5"
                     transform={`scale(${organPulse})`}
                   />
-                  <circle cx="-10" cy="0" r="8" fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
-                  <circle cx="10" cy="14" r="6" fill="#86EFAC" />
+                  <circle cx="-10" cy="0" r={8 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
+                  <circle cx="10" cy="14" r={6 * toxicPulse} fill="#86EFAC" />
                 </g>
               </svg>
             </PopElement>

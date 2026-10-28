@@ -44,22 +44,24 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
   });
 
   // ---------------------------------------------------------------------------
-  // TAHAP 2: UJI GUYURAN AIR CUCI BIRU (Frame 220 - 275 lokal | Frame 760 global)
+  // TAHAP 2: UJI GUYURAN AIR CUCI BIRU (Frame 255 - 302 lokal | Frame 795 - 842 global)
+  // Sinkron dengan narasi "cuma dengan dicuci air" (Frame 804 - 845 global)
   // ---------------------------------------------------------------------------
-  const isWaterWash = frame >= 220 && frame < 275;
-  const waterFlowX = interpolate(frame, [220, 275], [-400, 1200], {
+  const isWaterWash = frame >= 255 && frame < 302;
+  const waterFlowX = interpolate(frame, [255, 302], [-400, 1200], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
   const waterOpacity = isWaterWash
-    ? interpolate(frame, [220, 230, 265, 275], [0, 0.85, 0.85, 0])
+    ? interpolate(frame, [255, 265, 295, 302], [0, 0.85, 0.85, 0])
     : 0;
 
   // ---------------------------------------------------------------------------
-  // TAHAP 3: UJI MINYAK GORENG PANAS MENDIDIH (Frame 275 - 345 lokal | Frame 815 global)
+  // TAHAP 3: UJI MINYAK GORENG PANAS MENDIDIH (Frame 302 - 345 lokal | Frame 842 - 885 global)
+  // Sinkron dengan narasi "atau digoreng panas!" (Frame 845 - 885 global)
   // ---------------------------------------------------------------------------
-  const isHotOil = frame >= 275;
-  const oilTransition = interpolate(frame, [275, 295], [0, 1], {
+  const isHotOil = frame >= 302;
+  const oilTransition = interpolate(frame, [302, 320], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -72,8 +74,8 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
       }}
     >
       <CameraRig
-        scale={cameraScale}
-        whooshAtFrames={[0]} // Transisi masuk dari Scene 1
+        zoom={cameraScale}
+        whooshAtFrames={[0, 258, 302]} // Transisi masuk, uji air, dan uji goreng
       >
         <svg
           viewBox="0 0 1080 1920"
@@ -332,23 +334,44 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
 
           {/* =========================================================================
               LAYER 4: BADGE INDIKATOR STATUS PERINGATAN (Uji Air & Uji Minyak)
+              Desain tematik: Tetesan Air Disilang & Api Penggorengan Disilang
              ========================================================================= */}
-          {/* Status Uji Cuci Air (Frame 220 - 275) */}
+          {/* Status Uji Cuci Air (Frame 255 - 302) */}
           {waterOpacity > 0 && (
-            <g transform="translate(540, 520)" filter="url(#meatShadow)">
-              <circle cx="0" cy="0" r="56" fill="#EF4444" stroke="#FFFFFF" strokeWidth="6" />
-              <line x1="-26" y1="-26" x2="26" y2="26" stroke="#FFFFFF" strokeWidth="9" strokeLinecap="round" />
-              <line x1="26" y1="-26" x2="-26" y2="26" stroke="#FFFFFF" strokeWidth="9" strokeLinecap="round" />
-            </g>
+            <PopElement as="g" startFrame={258} sfxType="ding" volume={0.22}>
+              <g transform="translate(540, 520)" filter="url(#meatShadow)">
+                <circle cx="0" cy="0" r="72" fill="#0F172A" stroke="#38BDF8" strokeWidth="6" />
+                <circle cx="0" cy="0" r="62" fill="#1E293B" />
+                {/* Ikon Tetesan Air Biru */}
+                <path
+                  d="M0 -30 C15 -10 24 10 24 22 C24 35 13 46 0 46 C-13 46 -24 35 -24 22 C-24 10 -15 -10 0 -30 Z"
+                  fill="#38BDF8"
+                  stroke="#BAE6FD"
+                  strokeWidth="3"
+                />
+                {/* Palang Merah Larangan / Kegagalan Cuci */}
+                <line x1="-36" y1="-36" x2="36" y2="36" stroke="#EF4444" strokeWidth="11" strokeLinecap="round" />
+                <line x1="36" y1="-36" x2="-36" y2="36" stroke="#EF4444" strokeWidth="11" strokeLinecap="round" />
+              </g>
+            </PopElement>
           )}
 
-          {/* Status Uji Minyak Panas Mendidih (Frame 285+) */}
+          {/* Status Uji Minyak Panas Mendidih (Frame 302+) */}
           {isHotOil && (
-            <PopElement as="g" startFrame={285} sfxType="whip" volume={0.22}>
+            <PopElement as="g" startFrame={304} sfxType="whip" volume={0.22}>
               <g transform="translate(540, 520)" filter="url(#meatShadow)">
-                <circle cx="0" cy="0" r="62" fill="#DC2626" stroke="#FEF08A" strokeWidth="6" />
-                <line x1="-28" y1="-28" x2="28" y2="28" stroke="#FFFFFF" strokeWidth="10" strokeLinecap="round" />
-                <line x1="28" y1="-28" x2="-28" y2="28" stroke="#FFFFFF" strokeWidth="10" strokeLinecap="round" />
+                <circle cx="0" cy="0" r="76" fill="#0F172A" stroke="#F59E0B" strokeWidth="6" />
+                <circle cx="0" cy="0" r="66" fill="#1E293B" />
+                {/* Ikon Api Penggorengan Oranye */}
+                <path
+                  d="M0 -34 C12 -18 20 -2 20 16 C20 34 10 46 0 46 C-10 46 -20 34 -20 16 C-20 6 -14 -6 -4 -16 C-4 -6 2 2 6 2 C10 2 12 -6 0 -34 Z"
+                  fill="#F59E0B"
+                  stroke="#FEF08A"
+                  strokeWidth="3"
+                />
+                {/* Palang Merah Kegagalan Goreng Panas */}
+                <line x1="-38" y1="-38" x2="38" y2="38" stroke="#EF4444" strokeWidth="12" strokeLinecap="round" />
+                <line x1="38" y1="-38" x2="-38" y2="38" stroke="#EF4444" strokeWidth="12" strokeLinecap="round" />
               </g>
             </PopElement>
           )}

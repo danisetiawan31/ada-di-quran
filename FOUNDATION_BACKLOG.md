@@ -93,3 +93,30 @@ Tujuan: Memastikan seluruh pondasi berjalan lancar sebelum mulai produksi konten
   - Uji fungsi `generateProportionalSubtitles()`, simulasi kamera `<CameraRig />`, pastikan `<Freeze />` menahan ilustrasi latar saat `<AyahCard />` muncul mem-blur di atasnya, dan uji pemotongan 10 detik + *fade-out*.
 - [x] **Task 6.3 — Test Render & Git Commit Pondasi:**
   - Lakukan test render singkat ke `.mp4` dan commit seluruh kode pondasi ke branch `main`.
+
+---
+
+## Phase 5: Reusable Playful Elements, Auto-SFX & Global Character (Upgrade Pondasi)
+
+Tujuan: Membangun komponen gerakan membal (`<PopElement />`), integrasi suara `@remotion/sfx` otomatis, serta karakter utama global agar Antigravity tidak perlu membuat ulang logika animasi/SFX dan anatomi karakter di setiap episode baru.
+
+- [x] **Task 5.1 — Instalasi `@remotion/sfx` & Upgrade `<CameraRig />`:**
+  - **Action:** Jalankan `npm install @remotion/sfx`.
+  - **File:** `src/components/stage/CameraRig.tsx` & `src/components/CameraRig.tsx`
+  - **Spesifikasi:** Tambahkan prop opsional `whooshAtFrames?: number[]`. Setiap frame yang terdaftar di array tersebut akan memutar suara `whoosh` dari `@remotion/sfx` menggunakan `<Sequence from={frame} layout="none"><Audio src={whoosh} volume={0.18} /></Sequence>`.
+
+- [x] **Task 5.2 — Komponen Global `<PopElement />` (Auto-Bouncy + Auto-SFX):**
+  - **File:** `src/components/elements/PopElement.tsx` & `src/components/PopElement.tsx`
+  - **Spesifikasi:**
+    - Props: `startFrame: number`, `endFrame?: number`, `sfxType?: 'whip' | 'pageTurn' | 'mouseClick' | 'whoosh' | 'ding' | 'none'` (default: `'whip'`), `volume?: number` (default: `0.22`), `children: React.ReactNode`, `style?: React.CSSProperties`.
+    - **Animasi Masuk Otomatis:** Menggunakan `spring()` (`damping: 11`, `stiffness: 130`) mulai dari `startFrame` untuk mengubah `scale` dari `0` $\rightarrow$ `1.08` $\rightarrow$ `1` dan rotasi `rotate` dari `-8deg` $\rightarrow$ `0deg`.
+    - **Micro-SFX Otomatis:** Di dalam komponen, render `<Sequence from={startFrame} layout="none">` yang memutar `<Audio src={sfx} volume={volume} />` dari `@remotion/sfx` (kecuali jika `sfxType === 'none'`).
+
+- [x] **Task 5.3 — Komponen Karakter Utama Global (`<MainCharacter />`):**
+  - **File:** `src/components/characters/MainCharacter.tsx`
+  - **Spesifikasi:**
+    - Satu desain karakter manusia 2D *flat-geometric* yang proporsional, *playful*, dan terkunci anatominya untuk dipakai lintas episode.
+    - Dilengkapi *continuous secondary motion* bawaan: dada/bahu bernapas halus (`Math.sin(frame / 15)`) dan mata berkedip otomatis setiap ~90 frames.
+    - Props ekspresi dan gestur yang siap dipakai di episode mana pun:
+      `pose: 'idle' | 'panic' | 'hopeful' | 'gloomy' | 'impatient' | 'dizzy' | 'peaceful' | 'pointing'`
+

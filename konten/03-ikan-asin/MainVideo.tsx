@@ -82,7 +82,7 @@ export const MainVideo: React.FC = () => {
 
       <AbsoluteFill style={{ zIndex: 10 }}>
         <Series>
-          {/* SEKUENS 1: Narasi Utama (vo_main.wav) + Subtitle Proporsional (1320 frames) */}
+          {/* SEKUENS 1: Narasi Utama (vo_main.wav) + Subtitle Proporsional (1365 frames) */}
           <Series.Sequence
             durationInFrames={voMainFrames}
             name="Sekuens 1: Narasi Utama Ikan Asin"

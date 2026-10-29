@@ -110,7 +110,7 @@ export const EP03_SUBTITLE_SEGMENTS: SubtitleSegment[] = [
     highlightWords: ["merusak", "hati dan ginjal."],
   },
 
-  // PARAGRAF 5 (Frame 1080 - 1320 | 36.0s - 44.0s)
+  // PARAGRAF 5 (Frame 1080 - 1365 | 36.0s - 45.5s)
   {
     startFrame: 1080,
     endFrame: 1140,
@@ -131,7 +131,7 @@ export const EP03_SUBTITLE_SEGMENTS: SubtitleSegment[] = [
   },
   {
     startFrame: 1272,
-    endFrame: 1320,
+    endFrame: 1365,
     text: "Surah Asy-Syu'ara ayat 183.",
     highlightWords: ["Surah Asy-Syu'ara", "ayat 183."],
   },

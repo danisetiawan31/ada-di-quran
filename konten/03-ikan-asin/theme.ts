@@ -3,7 +3,7 @@ export const EP03_THEME = {
     width: 1080,
     height: 1920,
     fps: 30,
-    voMainFrames: 1320, // 44.0s (sesuai naskah & audio)
+    voMainFrames: 1365, // 45.5s (menampung vo_main.wav 44.96s = 1349f + 16f jeda hening transisi mulia sebelum ayat)
     ayahFrames: 248, // ~8.26s (sesuai ayah.mp3 QS. 26:183)
     voCtaFrames: 107, // ~3.56s (sesuai vo_cta.wav)
     get totalDurationFrames() {

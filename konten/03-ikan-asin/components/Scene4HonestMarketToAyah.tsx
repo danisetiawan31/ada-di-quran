@@ -17,7 +17,7 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
   const c = EP03_THEME.colors;
 
   // ---------------------------------------------------------------------------
-  // KAMERA & TRANSISI (Frame 1080 - 1320 global | Frame 0 - 240 lokal)
+  // KAMERA & TRANSISI (Frame 1080 - 1365 global | Frame 0 - 285 lokal)
   // ---------------------------------------------------------------------------
   const cameraZoom = interpolate(frame, [130, 165], [1.0, 1.08], {
     extrapolateLeft: "clamp",
@@ -28,8 +28,8 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
     extrapolateRight: "clamp",
   });
 
-  // Efek blur lembut di 12 frame terakhir untuk transisi mulus ke AyahCard
-  const endBlur = interpolate(frame, [228, 240], [0, 8], {
+  // Efek blur lembut di 15 frame terakhir untuk transisi mulus ke AyahCard
+  const endBlur = interpolate(frame, [270, 285], [0, 8], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });

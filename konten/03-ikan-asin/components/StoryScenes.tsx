@@ -27,8 +27,8 @@ export const StoryScenes: React.FC = () => {
         <Scene3MedicalLiverKidney />
       </Sequence>
 
-      {/* SCENE 4: Pasar Pagi Jujur & Preamble Ayat Al-Qur'an (Frame 1080 - 1320) */}
-      <Sequence from={1080} durationInFrames={240} name="Scene 4: Honest Market to Ayah">
+      {/* SCENE 4: Pasar Pagi Jujur & Preamble Ayat Al-Qur'an (Frame 1080 - 1365) */}
+      <Sequence from={1080} durationInFrames={285} name="Scene 4: Honest Market to Ayah">
         <Scene4HonestMarketToAyah />
       </Sequence>
     </AbsoluteFill>

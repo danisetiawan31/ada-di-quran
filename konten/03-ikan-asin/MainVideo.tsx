@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Audio, Freeze, Series, useCurrentFrame } from "remotion";
+import { AbsoluteFill, Audio, Freeze, Sequence, Series, useCurrentFrame } from "remotion";
 import { EP03_THEME } from "./theme";
 import { AyahCard } from "../../src/components/AyahCard";
 import { DynamicSubtitle } from "../../src/components/DynamicSubtitle";
@@ -62,15 +62,17 @@ export const MainVideo: React.FC = () => {
           BGM / AMBIENCE LAYER (Adaptif):
           BGM santai aktif pada Sekuens 1 (volume default 25% per SSOT), dan
           DIMATIKAN TOTAL saat masuk ke Ayat Al-Qur'an (Zona Hening Mutlak).
+          Menggunakan <Sequence durationInFrames={...}> agar siklus hidup audio stabil
+          dan tidak memicu DOMException pause saat scrubbing timeline di Remotion Studio.
          ========================================================================= */}
-      {currentFrame < voMainFrames && (
+      <Sequence durationInFrames={voMainFrames} layout="none">
         <BackgroundMusic
           track="bossa"
           volume={0.25}
           durationInFrames={voMainFrames}
           fadeOutFrames={30}
         />
-      )}
+      </Sequence>
 
       {/* =========================================================================
           LAYER 2: SEQUENTIAL AUDIO & OVERLAY LAYER (<Series>)

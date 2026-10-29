@@ -67,9 +67,9 @@ export const CameraRig: React.FC<CameraRigProps> = ({
 
   return (
     <CameraContext.Provider value={{ panX: finalPanX, panY: finalPanY, zoom }}>
-      {/* Auto-SFX Whoosh pada frame-frame pergerakan kamera (Aset lokal: zero-latency & offline safe) */}
+      {/* Auto-SFX Whoosh pada frame-frame pergerakan kamera (Aset lokal: zero-latency, durasi 30 frame agar audio selesai tuntas) */}
       {whooshAtFrames.map((triggerF) => (
-        <Sequence key={`whoosh-${triggerF}`} from={triggerF} layout="none">
+        <Sequence key={`whoosh-${triggerF}`} from={triggerF} durationInFrames={30} layout="none">
           <Audio src={staticFile("sfx/whoosh.wav")} volume={whooshVolume} />
         </Sequence>
       ))}

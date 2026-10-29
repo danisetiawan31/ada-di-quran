@@ -57,7 +57,7 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
       <CameraRig
         zoom={cameraZoom}
         panY={cameraPanY}
-        whooshAtFrames={[0, 135]}
+        whooshAtFrames={[0]} // Transisi masuk dari Scene 3
       >
         {/* =========================================================================
             LAYER 1: BACKGROUND PASAR PAGI ISLAMI (LANGIT CERAH & TENDA KIOS)

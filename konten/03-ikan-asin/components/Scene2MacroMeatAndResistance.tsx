@@ -75,7 +75,7 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
     >
       <CameraRig
         zoom={cameraScale}
-        whooshAtFrames={[0, 258, 302]} // Transisi masuk, uji air, dan uji goreng
+        whooshAtFrames={[0]} // Transisi masuk dari Scene 1
       >
         <svg
           viewBox="0 0 1080 1920"

@@ -81,8 +81,8 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
       }}
     >
       <CameraRig
-        scale={cameraZoom}
-        translateY={cameraPanY}
+        zoom={cameraZoom}
+        panY={cameraPanY}
         whooshAtFrames={[240]}
       >
         <svg

@@ -49,7 +49,7 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
       <CameraRig
         zoom={cameraZoom}
         panY={cameraPanY}
-        whooshAtFrames={[0, 120]}
+        whooshAtFrames={[0]} // Transisi masuk dari Scene 2
       >
         {/* =========================================================================
             LAYER 1: BACKGROUND RUANG MAKAN (DINDING, JENDELA, LANTAI)

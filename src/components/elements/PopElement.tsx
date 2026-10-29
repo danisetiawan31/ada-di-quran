@@ -146,9 +146,9 @@ export const PopElement: React.FC<PopElementProps> = ({
 
   return (
     <>
-      {/* Micro-SFX diputar tepat pada saat elemen meletup muncul */}
+      {/* Micro-SFX diputar tepat pada saat elemen meletup muncul (durasi 45 frame = 1.5 detik agar siklus audio selesai tuntas) */}
       {sfxSrc && (
-        <Sequence from={targetFrame} layout="none">
+        <Sequence from={targetFrame} durationInFrames={45} layout="none">
           <Audio src={sfxSrc} volume={volume} />
         </Sequence>
       )}

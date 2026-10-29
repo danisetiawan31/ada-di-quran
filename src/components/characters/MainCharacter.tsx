@@ -13,6 +13,7 @@ export type CharacterPose =
   | "angry"
   | "calming"
   | "regret"
+  | "spraying"
   // Aliases
   | "senang"
   | "berbicara"
@@ -30,6 +31,8 @@ export type CharacterPose =
   | "menyesal"
   | "malu"
   | "embarrassed"
+  | "spray"
+  | "menyemprot"
   | "happy"
   | "panic"
   | "hopeful"
@@ -120,7 +123,8 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
     | "holding"
     | "angry"
     | "calming"
-    | "regret" = "idle";
+    | "regret"
+    | "spraying" = "idle";
 
   if (["idle", "senang", "happy", "datar"].includes(rawKey)) activePose = "idle";
   else if (["explaining", "berbicara", "hopeful"].includes(rawKey)) activePose = "explaining";
@@ -133,6 +137,7 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
   else if (["angry", "marah", "furious"].includes(rawKey)) activePose = "angry";
   else if (["calming", "menenangkan", "advising", "sabar"].includes(rawKey)) activePose = "calming";
   else if (["regret", "menyesal", "malu", "embarrassed"].includes(rawKey)) activePose = "regret";
+  else if (["spraying", "spray", "menyemprot"].includes(rawKey)) activePose = "spraying";
 
   const c: CharacterColors = { ...DEFAULT_CHARACTER_COLORS, ...customColors };
 
@@ -590,6 +595,56 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
                 <path d="M 210 115 C 205 125 198 132 208 135 C 218 132 215 125 210 115 Z" fill="#38BDF8" stroke={c.outline} strokeWidth="1.5" />
               </g>
             )}
+
+            {/* 12. SPRAYING (Menyemprotkan Kaleng Racun / Insektisida ke Depan) */}
+            {activePose === "spraying" && (
+              <g id="arms-spraying">
+                {/* Lengan Kiri Santai Bertolak Pinggang (Sikap Acuh / Menyepelekan) */}
+                <path d="M 90 228 Q 62 268 76 305 L 94 290" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 Q 62 268 76 305 L 94 290" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <g transform="translate(98, 288)">
+                  <circle cx="0" cy="0" r="10" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  <path d="M -5 -4 L 5 -4" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                  <path d="M -5 1 L 5 1" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                </g>
+
+                {/* Lengan Kanan Terulur Mantap Memegang Kaleng Semprot (Miring Menembak ke Bawah) */}
+                <path d="M 190 228 Q 235 240 252 268" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 Q 235 240 252 268" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="244" y="258" width="16" height="8" rx="2.5" fill={c.outfitShade} stroke={c.outline} strokeWidth="1.8" transform="rotate(35 252 262)" />
+
+                {/* TANGAN & KALENG SEMPROT AEROSOL (X: 258, Y: 275) */}
+                <g transform="translate(258, 275) rotate(-35)">
+                  {/* Tabung Kaleng Semprot Merah */}
+                  <rect x="-12" y="10" width="34" height="78" rx="5" fill="#EF4444" stroke={c.outline} strokeWidth="3" />
+                  <path d="M -12 10 Q 5 -2 22 10 Z" fill="#DC2626" stroke={c.outline} strokeWidth="2.5" />
+                  <rect x="-12" y="32" width="34" height="32" fill="#0F172A" />
+
+                  {/* Ikon Bahaya Tengkorak Kuning di Kaleng */}
+                  <g transform="translate(5, 48)">
+                    <circle cx="0" cy="-4" r="6" fill="#FACC15" />
+                    <rect x="-3" y="1" width="6" height="4" rx="1.5" fill="#FACC15" />
+                    <circle cx="-2" cy="-4" r="1.2" fill="#0F172A" />
+                    <circle cx="2" cy="-4" r="1.2" fill="#0F172A" />
+                    <line x1="-1.5" y1="2" x2="-1.5" y2="5" stroke="#0F172A" strokeWidth="1" />
+                    <line x1="1.5" y1="2" x2="1.5" y2="5" stroke="#0F172A" />
+                  </g>
+
+                  {/* Nozel Semprot Hitam */}
+                  <rect x="0" y="-8" width="10" height="10" rx="2" fill="#0F172A" stroke={c.outline} strokeWidth="2" />
+                  <circle cx="10" cy="-3" r="2.2" fill="#EF4444" />
+
+                  {/* Jari-Jari Tangan Menggenggam Tabung */}
+                  <g transform="translate(-2, 28)">
+                    <rect x="-6" y="-6" width="14" height="9" rx="3.5" fill={c.skin} stroke={c.outline} strokeWidth="2.2" />
+                    <rect x="-6" y="5" width="14" height="9" rx="3.5" fill={c.skin} stroke={c.outline} strokeWidth="2.2" />
+                    <rect x="-6" y="16" width="14" height="9" rx="3.5" fill={c.skin} stroke={c.outline} strokeWidth="2.2" />
+                  </g>
+                  {/* Ibu Jari Menekan Katup Nozel */}
+                  <ellipse cx="4" cy="-2" rx="6" ry="8" fill={c.skin} stroke={c.outline} strokeWidth="2.2" transform="rotate(-15 4 -2)" />
+                </g>
+              </g>
+            )}
           </g>
 
           {/* ===================================================================
@@ -820,6 +875,12 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
                   <path d="M 108 116 Q 120 120 131 118" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
                   <path d="M 149 110 Q 160 102 172 110" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
                 </>
+              ) : activePose === "spraying" ? (
+                <>
+                  {/* Alis Licik / Acuh Menukik Miring */}
+                  <path d="M 108 116 L 132 112" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                  <path d="M 172 112 L 148 116" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                </>
               ) : (
                 <>
                   <path d="M 108 118 Q 120 112 131 118" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
@@ -912,6 +973,19 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
                   <circle cx="163.8" cy="130.5" r="1.6" fill="#FFFFFF" />
                   <circle cx="160" cy="134" r="0.8" fill="#FFFFFF" />
                 </>
+              ) : activePose === "spraying" ? (
+                <>
+                  {/* Mata Melirik Fokus & Licik ke Arah Semprotan Racun */}
+                  <ellipse cx="120" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="123" cy="135" rx="5" ry="5.8" fill="#5A3825" />
+                  <circle cx="123.5" cy="135" r="2.8" fill={c.outline} />
+                  <circle cx="124.8" cy="132.8" r="1.5" fill="#FFFFFF" />
+
+                  <ellipse cx="160" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="163" cy="135" rx="5" ry="5.8" fill="#5A3825" />
+                  <circle cx="163.5" cy="135" r="2.8" fill={c.outline} />
+                  <circle cx="164.8" cy="132.8" r="1.5" fill="#FFFFFF" />
+                </>
               ) : isBlinking ? (
                 <>
                   <path d="M 112 135 L 128 135" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
@@ -974,6 +1048,8 @@ export const MainCharacter: React.FC<MainCharacterProps> = ({
                 <path d="M 133 165 Q 137 160 140 165 T 147 163" fill="none" stroke={c.outline} strokeWidth="2.5" strokeLinecap="round" />
               ) : activePose === "curious" ? (
                 <path d="M 136 163 Q 142 166 146 162" fill="none" stroke={c.outline} strokeWidth="2.6" strokeLinecap="round" />
+              ) : activePose === "spraying" ? (
+                <path d="M 133 165 Q 140 171 150 163" fill="none" stroke={c.outline} strokeWidth="2.8" strokeLinecap="round" />
               ) : activePose === "regret" ? (
                 <path d="M 134 165 Q 140 160 146 164" fill="none" stroke={c.outline} strokeWidth="2.6" strokeLinecap="round" />
               ) : (

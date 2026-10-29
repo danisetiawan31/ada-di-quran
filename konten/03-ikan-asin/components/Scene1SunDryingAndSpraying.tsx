@@ -8,6 +8,7 @@ import {
 } from "remotion";
 import { PopElement } from "../../../src/components/PopElement";
 import { CameraRig } from "../../../src/components/CameraRig";
+import { MainCharacter } from "../../../src/components/characters/MainCharacter";
 
 export const Scene1SunDryingAndSpraying: React.FC = () => {
   const frame = useCurrentFrame();
@@ -95,7 +96,13 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
           viewBox="0 0 1080 1920"
           width="100%"
           height="100%"
-          style={{ overflow: "visible" }}
+          style={{
+            overflow: "visible",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 5,
+          }}
         >
           <defs>
             {/* Gradasi Langit Pesisir Siang Cerah */}
@@ -452,6 +459,79 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
               <circle cx="227" cy="46" r="2.5" fill="#FFFFFF" />
             </g>
           </g>
+        </svg>
+
+        {/* =========================================================================
+            LAYER 2: MAIN CHARACTER OKNUM NAKAL MENYEMPROT IKAN (SSOT DESIGN SYSTEM)
+            - Full-body MainCharacter (Sahabat / Oknum Nelayan)
+            - Pose: spraying (memegang kaleng aerosol merah berlogo hazard tengkorak)
+            - Pijakan kaki grounded kokoh di pasir pantai (Y = 1201)
+            - Tanpa stickman primitif!
+           ========================================================================= */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 740,
+            zIndex: 10,
+            transform: `translate(${sprayRecoil}px, ${stealthBob}px)`,
+          }}
+        >
+          <MainCharacter
+            pose="spraying"
+            scale={1.34}
+            breathe={false}
+            hasGlasses={false}
+            outfitType="tshirt"
+            hairStyle="messy"
+            customColors={{
+              outfitMain: "#1E293B",
+              outfitShade: "#0F172A",
+              pants: "#334155",
+              pantsDark: "#1E293B",
+            }}
+          />
+        </div>
+
+        {/* =========================================================================
+            LAYER 3: FOREGROUND VFX (Semburan Jet Aerosol, Kabut Racun, Lalat, Badge)
+            Berada di zIndex: 15 agar semburan kabut racun menutupi ikan & nozel kaleng.
+           ========================================================================= */}
+        <svg
+          viewBox="0 0 1080 1920"
+          width="100%"
+          height="100%"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 15,
+            overflow: "visible",
+            pointerEvents: "none",
+          }}
+        >
+          <defs>
+            <linearGradient id="aerosolJetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.95" />
+              <stop offset="25%" stopColor="#86EFAC" stopOpacity="0.85" />
+              <stop offset="60%" stopColor="#4ADE80" stopOpacity="0.65" />
+              <stop offset="100%" stopColor="#22C55E" stopOpacity="0.1" />
+            </linearGradient>
+
+            <radialGradient id="toxicCloudGrad" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stopColor="#BBF7D0" stopOpacity="0.95" />
+              <stop offset="35%" stopColor="#4ADE80" stopOpacity="0.85" />
+              <stop offset="70%" stopColor="#22C55E" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#15803D" stopOpacity="0" />
+            </radialGradient>
+
+            <filter id="softShadowFg" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="10" stdDeviation="14" floodColor="#0F172A" floodOpacity="0.35" />
+            </filter>
+            <filter id="glowToxicFg" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="0" stdDeviation="24" floodColor="#4ADE80" floodOpacity="0.9" />
+            </filter>
+          </defs>
 
           {/* =========================================================================
               GELOMBANG AROMA AMIS DI UDARA (Frame 240 - 384)
@@ -502,7 +582,7 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
                 const wingFlap = Math.sin(frame * 1.8) * 18;
 
                 return (
-                  <g transform={`translate(${flyX}, ${flyY}) rotate(${flyAngle})`} filter="url(#softShadow)">
+                  <g transform={`translate(${flyX}, ${flyY}) rotate(${flyAngle})`} filter="url(#softShadowFg)">
                     <ellipse cx="-12" cy={-16 + wingFlap} rx="16" ry="9" fill="#E0F2FE" opacity="0.85" stroke="#38BDF8" strokeWidth="2.5" />
                     <ellipse cx="12" cy={-16 - wingFlap} rx="16" ry="9" fill="#E0F2FE" opacity="0.85" stroke="#38BDF8" strokeWidth="2.5" />
                     <ellipse cx="0" cy="0" rx="18" ry="13" fill="#1E293B" stroke="#0F172A" strokeWidth="3.5" />
@@ -534,7 +614,7 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
                 const wingFlap = Math.cos(frame * 1.8) * 18;
 
                 return (
-                  <g transform={`translate(${flyX}, ${flyY}) rotate(${flyAngle})`} filter="url(#softShadow)">
+                  <g transform={`translate(${flyX}, ${flyY}) rotate(${flyAngle})`} filter="url(#softShadowFg)">
                     <ellipse cx="-11" cy={-15 + wingFlap} rx="15" ry="8" fill="#E0F2FE" opacity="0.85" stroke="#38BDF8" strokeWidth="2" />
                     <ellipse cx="11" cy={-15 - wingFlap} rx="15" ry="8" fill="#E0F2FE" opacity="0.85" stroke="#38BDF8" strokeWidth="2" />
                     <ellipse cx="0" cy="0" rx="16" ry="12" fill="#1E293B" stroke="#0F172A" strokeWidth="3" />
@@ -558,40 +638,48 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
 
           {/* =========================================================================
               LAYER 4: SEMBURAN JET AEROSOL & KABUT RACUN (DIARAHKAN KE IKAN ASIN!)
-              Arah semburan: Miring 45° dari nozel kaleng di (340, 680) langsung ke
-              permukaan meja dan ikan asin! Fisika realistis, bukan awan melayang!
+              Arah semburan: Miring 25° dari nozel kaleng di (347, 867) langsung ke
+              permukaan meja dan ikan asin! Fisika realistis, terkoneksi presisi.
              ========================================================================= */}
           {/* Semburan 1A: Hook Semprot Ikan Asin (Frame 18 - 225) */}
           {sprayCloudOpacity > 0 && (
-            <g opacity={sprayCloudOpacity} filter="url(#glowToxic)">
-              {/* Kerucut Jet Tekanan Tinggi Langsung dari Lubang Nozel ke Meja */}
+            <g
+              transform={`translate(${sprayRecoil}, ${stealthBob})`}
+              opacity={sprayCloudOpacity}
+              filter="url(#glowToxicFg)"
+            >
+              {/* Kerucut Jet Tekanan Tinggi Langsung dari Lubang Nozel (307, 907) ke Meja */}
               <path
-                d="M 335 680 Q 420 710 680 880 Q 520 1020 340 760 Z"
+                d="M 305 902 Q 460 820 740 870 Q 550 990 310 914 Z"
                 fill="url(#aerosolJetGrad)"
               />
               {/* Gumpalan Partikel Uap Racun Kimia Melapisi Permukaan Ikan */}
-              <circle cx="500" cy="880" r={115 * sprayProgressA} fill="url(#toxicCloudGrad)" />
-              <circle cx="640" cy="910" r={140 * sprayProgressA} fill="url(#toxicCloudGrad)" />
-              <circle cx="760" cy="890" r={120 * sprayProgressA} fill="url(#toxicCloudGrad)" />
+              <circle cx="470" cy="900" r={115 * sprayProgressA} fill="url(#toxicCloudGrad)" />
+              <circle cx="610" cy="915" r={140 * sprayProgressA} fill="url(#toxicCloudGrad)" />
+              <circle cx="740" cy="890" r={120 * sprayProgressA} fill="url(#toxicCloudGrad)" />
               {/* Butiran Tetesan Aerosol Racun Serangga Mengendap di Atas Ikan */}
-              <circle cx="430" cy="780" r={8} fill="#BBF7D0" />
-              <circle cx="540" cy="850" r={10} fill="#4ADE80" />
-              <circle cx="660" cy="880" r={11} fill="#86EFAC" />
-              <circle cx="720" cy="940" r={8} fill="#BBF7D0" />
-              <circle cx="800" cy="890" r={7} fill="#4ADE80" />
+              <circle cx="390" cy="890" r={8} fill="#BBF7D0" />
+              <circle cx="500" cy="895" r={10} fill="#4ADE80" />
+              <circle cx="620" cy="910" r={11} fill="#86EFAC" />
+              <circle cx="690" cy="925" r={8} fill="#BBF7D0" />
+              <circle cx="760" cy="890" r={7} fill="#4ADE80" />
             </g>
           )}
 
           {/* Semburan 1B: Mengusir Lalat saat Narasi Belatung (Frame 384 - 490) */}
           {repelSprayOpacity > 0 && (
-            <g opacity={repelSprayOpacity} filter="url(#glowToxic)">
+            <g
+              transform={`translate(${sprayRecoil}, ${stealthBob})`}
+              opacity={repelSprayOpacity}
+              filter="url(#glowToxicFg)"
+            >
               <path
-                d="M 335 680 Q 480 620 720 720 Q 580 920 340 760 Z"
+                d="M 305 902 Q 460 680 740 710 Q 550 890 310 914 Z"
                 fill="url(#aerosolJetGrad)"
               />
-              <circle cx="560" cy="740" r={165} fill="url(#toxicCloudGrad)" />
-              <circle cx="420" cy="700" r={135} fill="url(#toxicCloudGrad)" />
-              <circle cx="720" cy="710" r={140} fill="url(#toxicCloudGrad)" />
+              <circle cx="570" cy="720" r={165} fill="url(#toxicCloudGrad)" />
+              <circle cx="430" cy="740" r={135} fill="url(#toxicCloudGrad)" />
+              <circle cx="730" cy="700" r={140} fill="url(#toxicCloudGrad)" />
             </g>
           )}
 
@@ -600,7 +688,7 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
               Tampil di depan kabut racun untuk menciptakan visual ironi yang tajam!
              ========================================================================= */}
           {fakeCleanGleam > 0 && (
-            <g opacity={fakeCleanGleam} filter="url(#softShadow)">
+            <g opacity={fakeCleanGleam} filter="url(#softShadowFg)">
               {/* Bintang Berlian Emas 4-Titik di Ikan Tengah */}
               <g transform={`translate(680, 930) scale(${1.0 + Math.sin(frame / 4) * 0.2}) rotate(${frame * 3})`}>
                 <path
@@ -625,155 +713,12 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
           )}
 
           {/* =========================================================================
-              LAYER 5: KARAKTER STICKMAN "OKNUM NAKAL" DENGAN POSE LEANING MASUK AKAL
-              Postur menyelinap condong ke arah meja (Leaning Forward), memegang kaleng
-              aerosol yang dimiringkan 40° menembak langsung ke arah ikan asin!
-             ========================================================================= */}
-          <g id="stickman-oknum-nakal" transform={`translate(0, ${stealthBob})`}>
-            {/* Bayangan Kaki Stickman di Pasir Pantai */}
-            <ellipse cx="140" cy="1120" rx="32" ry="12" fill="#451A03" opacity="0.45" />
-            <ellipse cx="210" cy="1105" rx="30" ry="11" fill="#451A03" opacity="0.45" />
-
-            {/* Kaki Kiri & Kanan (Postur Kuda-Kuda Condong ke Depan) */}
-            <path
-              d="M 160 880 L 140 1115 L 115 1120"
-              fill="none"
-              stroke="#0F172A"
-              strokeWidth="16"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M 195 880 L 210 1100 L 235 1105"
-              fill="none"
-              stroke="#0F172A"
-              strokeWidth="16"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-
-            {/* Sandal Jepit Biru Pedagang Pesisir */}
-            <rect x="110" y="1115" width="30" height="9" rx="4.5" fill="#3B82F6" stroke="#0F172A" strokeWidth="2.5" />
-            <rect x="205" y="1100" width="30" height="9" rx="4.5" fill="#3B82F6" stroke="#0F172A" strokeWidth="2.5" />
-
-            {/* Badan: Kaos Singlet Hitam Miring Condong ke Meja (Leaning Torso) */}
-            <path
-              d="M 155 690 L 225 680 L 215 885 L 140 885 Z"
-              fill="#1E293B"
-              stroke="#0F172A"
-              strokeWidth="6"
-              strokeLinejoin="round"
-            />
-
-            {/* Lengan Kiri (Bertumpu di Tepi Meja Bambu dengan Gaya Menyelinap) */}
-            <path
-              d="M 155 700 L 105 765 L 135 830"
-              fill="none"
-              stroke="#0F172A"
-              strokeWidth="15"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-
-            {/* Leher & Kepala Stickman */}
-            <line x1="185" y1="685" x2="185" y2="655" stroke="#0F172A" strokeWidth="12" strokeLinecap="round" />
-            <circle
-              cx="190"
-              cy="615"
-              r="44"
-              fill="#FDE68A"
-              stroke="#0F172A"
-              strokeWidth="6"
-            />
-
-            {/* Topi Caping Anyaman Bambu (Miring Proporsional di Atas Kepala) */}
-            <polygon
-              points="100,600 190,520 280,600"
-              fill="#D97706"
-              stroke="#451A03"
-              strokeWidth="5"
-            />
-            <line x1="190" y1="520" x2="190" y2="600" stroke="#B45309" strokeWidth="3.5" />
-            <line x1="135" y1="570" x2="245" y2="570" stroke="#B45309" strokeWidth="3" />
-            {/* Tali Dagu Caping */}
-            <path d="M 150 600 Q 185 645 220 600" fill="none" stroke="#78350F" strokeWidth="2.5" />
-
-            {/* Ekspresi Wajah Licik (Mata Sipit Miring & Senyum Seringai Jahil) */}
-            <path d="M 165 608 L 180 612 L 168 618" fill="none" stroke="#0F172A" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M 194 612 L 208 608 L 204 618" fill="none" stroke="#0F172A" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path
-              d="M 172 632 Q 190 646 210 626"
-              fill="none"
-              stroke="#0F172A"
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-
-            {/* Lengan Kanan Terulur Memegang Kaleng Semprot (Dengan Recoil Getaran) */}
-            <g transform={`translate(${sprayRecoil}, 0)`}>
-              {/* Lengan Atas ke Siku */}
-              <path
-                d="M 220 700 Q 265 725 295 685"
-                fill="none"
-                stroke="#0F172A"
-                strokeWidth="16"
-                strokeLinecap="round"
-              />
-
-              {/* Tangan & Kaleng Aerosol Insektisida Merah (Menukik Miring -40° ke Arah Ikan!) */}
-              <g transform="translate(290, 665) rotate(-38)">
-                {/* Jari Tangan Menekan Tombol Katup Nozel */}
-                <ellipse cx="18" cy="16" rx="15" ry="12" fill="#FDE68A" stroke="#0F172A" strokeWidth="4" />
-                <rect x="12" y="-10" width="12" height="22" rx="6" fill="#FDE68A" stroke="#0F172A" strokeWidth="3.5" />
-
-                {/* Nozel Semprot Hitam */}
-                <rect x="18" y="-22" width="15" height="22" rx="4" fill="#0F172A" stroke="#1E293B" strokeWidth="3" />
-                {/* Lubang Semprotan Merah (Arah Keluarnya Gas Aerosol) */}
-                <circle cx="33" cy="-11" r="3.5" fill="#EF4444" />
-
-                {/* Tutup Atas Kaleng Melengkung */}
-                <ellipse cx="26" cy="4" rx="32" ry="11" fill="#DC2626" stroke="#0F172A" strokeWidth="4" />
-
-                {/* Tabung Silinder Kaleng Semprot Merah (Proporsional!) */}
-                <rect
-                  x="-6"
-                  y="4"
-                  width="64"
-                  height="165"
-                  rx="7"
-                  fill="url(#canBodyGrad)"
-                  stroke="#0F172A"
-                  strokeWidth="5"
-                />
-
-                {/* Pita Hitam Peringatan Bahaya */}
-                <rect x="-6" y="48" width="64" height="65" fill="#0F172A" />
-
-                {/* Lambang Tengkorak Bahaya Racun Kimia */}
-                <g transform="translate(26, 80)">
-                  <circle cx="0" cy="-6" r="13" fill="#FACC15" stroke="#0F172A" strokeWidth="2.5" />
-                  <rect x="-7" y="4" width="14" height="9" rx="3" fill="#FACC15" stroke="#0F172A" strokeWidth="2.5" />
-                  <ellipse cx="-4.5" cy="-6" rx="3" ry="4" fill="#0F172A" />
-                  <ellipse cx="4.5" cy="-6" rx="3" ry="4" fill="#0F172A" />
-                  <polygon points="0,0 -2,3.5 2,3.5" fill="#0F172A" />
-                  <line x1="-3.5" y1="7" x2="-3.5" y2="12" stroke="#0F172A" strokeWidth="2" />
-                  <line x1="0" y1="7" x2="0" y2="12" stroke="#0F172A" strokeWidth="2" />
-                  <line x1="3.5" y1="7" x2="3.5" y2="12" stroke="#0F172A" strokeWidth="2" />
-                </g>
-
-                {/* Dasar Bawah Kaleng */}
-                <ellipse cx="26" cy="169" rx="32" ry="11" fill="#7F1D1D" stroke="#0F172A" strokeWidth="4" />
-              </g>
-            </g>
-          </g>
-
-          {/* =========================================================================
               BADGE POP-UP: SILANG LALAT & PERINGATAN BAHAYA RACUN (Frame 415 - 540)
               Posisikan di Kanan Atas (X: 800, Y: 490) - Mencolok, Bersih, Bebas Subtitle
              ========================================================================= */}
           {frame >= 415 && (
             <PopElement as="g" startFrame={415} sfxType="whip" volume={0.22}>
-              <g transform="translate(800, 490)" filter="url(#softShadow)">
+              <g transform="translate(800, 490)" filter="url(#softShadowFg)">
                 <circle cx="0" cy="0" r="120" fill="#0F172A" stroke="#EF4444" strokeWidth="8" />
                 <circle cx="0" cy="0" r="105" fill="#FEF2F2" />
 

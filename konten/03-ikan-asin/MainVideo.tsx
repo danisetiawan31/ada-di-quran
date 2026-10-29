@@ -7,6 +7,7 @@ import { BackgroundMusic } from "../../src/shared/components/BackgroundMusic";
 import { generateProportionalSubtitles } from "../../src/utils/subtitleTiming";
 import { StoryScenes } from "./components/StoryScenes";
 import { ClosingCta } from "./components/ClosingCta";
+import { SoundEffects } from "./components/SoundEffects";
 import { Watermark } from "../../src/components/SacredLight";
 
 // Audio & Image Assets (Self-contained di folder konten/03-ikan-asin/)
@@ -57,6 +58,12 @@ export const MainVideo: React.FC = () => {
           <StoryScenes />
         </Freeze>
       </AbsoluteFill>
+
+      {/* =========================================================================
+          SFX LAYER: POP-SCIENCE TACTILE SOUND ENGINE
+          Ditenagai oleh SoundEffects dengan programmatic guard hening mutlak
+         ========================================================================= */}
+      <SoundEffects />
 
       {/* =========================================================================
           BGM / AMBIENCE LAYER (Adaptif):

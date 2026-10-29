@@ -42,16 +42,20 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
   // ---------------------------------------------------------------------------
   // ACT 1: TETESAN & REMBESAN RACUN DI TALENAN DAPUR (Frame 0 - 210)
   // ---------------------------------------------------------------------------
-  // Tetesan racun hijau jatuh dari atas (Frame 35 - 72)
+  // Tetesan racun hijau jatuh dari atas & squash impact (Frame 35 - 80)
   const dropY = interpolate(frame, [35, 72], [360, 800], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const dropScaleY = interpolate(frame, [35, 68, 72], [1.4, 1.2, 0.4], {
+  const dropScaleX = interpolate(frame, [35, 68, 72, 78], [0.85, 0.9, 2.1, 2.6], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const dropOpacity = interpolate(frame, [35, 42, 70, 78], [0, 1, 1, 0], {
+  const dropScaleY = interpolate(frame, [35, 68, 72, 78], [1.45, 1.25, 0.35, 0.12], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const dropOpacity = interpolate(frame, [35, 42, 72, 80], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -85,6 +89,17 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
     config: { damping: 13, stiffness: 120 },
   });
 
+  // Comedic tactile camera shake saat stempel merah menghantam (Frame 255 & 295)
+  const stamp1Shake = interpolate(frame, [255, 258, 270], [0, 8, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const stamp2Shake = interpolate(frame, [295, 298, 310], [0, 8, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const cameraShake = Math.max(stamp1Shake, stamp2Shake);
+
   // Dinamika Pose Host Peci Hitam
   const hostPose: CharacterPose =
     frame < 90 ? "curious" : frame < 210 ? "alert" : "explaining";
@@ -99,6 +114,7 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
       <CameraRig
         zoom={cameraZoom}
         panY={cameraPanY}
+        shake={cameraShake}
         whooshAtFrames={[0, 210]}
       >
         {/* =========================================================================
@@ -354,10 +370,10 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                 )}
               </g>
 
-              {/* TETESAN RACUN INSEKTISIDA KARTUN JATUH (Frame 35 - 78) */}
+              {/* TETESAN RACUN INSEKTISIDA KARTUN JATUH & SQUASH IMPACT (Frame 35 - 80) */}
               {dropOpacity > 0 && (
                 <g
-                  transform={`translate(728, ${dropY}) scale(1.2, ${dropScaleY})`}
+                  transform={`translate(728, ${dropY}) scale(${dropScaleX}, ${dropScaleY})`}
                   opacity={dropOpacity}
                   filter="url(#toxicBubbleGlow)"
                 >

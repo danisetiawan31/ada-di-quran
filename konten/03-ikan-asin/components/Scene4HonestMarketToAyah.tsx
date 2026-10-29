@@ -268,13 +268,20 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
                 <circle cx="-32" cy="-3" r="3" fill="#1E293B" />
               </g>
 
-              {/* Kristal Garam Laut Putih Alami Berkilau */}
+              {/* Kristal Garam Laut Putih Alami Berkilau & Bintang Kilau Emas/Biru */}
               <g fill="#FFFFFF" stroke="#93C5FD" strokeWidth="1.5" opacity={sparklePulse}>
                 <polygon points="-40,-10 -36,-17 -32,-10 -36,-3" />
                 <polygon points="10,-15 13,-22 16,-15 13,-8" />
                 <polygon points="55,-8 58,-14 61,-8 58,-2" />
                 <circle cx="-8" cy="10" r="2.8" />
                 <circle cx="25" cy="12" r="3" />
+                {/* Bintang Kilau Berlian Alami 4-Titik */}
+                <g transform={`translate(-20, -22) scale(${0.7 + Math.sin(frame / 3) * 0.3}) rotate(${frame * 4})`} fill="#FEF08A" stroke="#F59E0B" strokeWidth="1">
+                  <path d="M 0 -16 Q 0 0 16 0 Q 0 0 0 16 Q 0 0 -16 0 Q 0 0 0 -16 Z" />
+                </g>
+                <g transform={`translate(42, -18) scale(${0.6 + Math.cos(frame / 3) * 0.3}) rotate(${-frame * 4})`} fill="#BAE6FD" stroke="#38BDF8" strokeWidth="1">
+                  <path d="M 0 -14 Q 0 0 14 0 Q 0 0 0 14 Q 0 0 -14 0 Q 0 0 0 -14 Z" />
+                </g>
               </g>
             </g>
           </svg>
@@ -349,6 +356,26 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
             "sudah dilarang keras di dalam Al-Qur'an, Surah Asy-Syu'ara ayat 183."
             Split-Screen di sisi kanan (top: 360, left: 490, width: 550, height: 480)
            ========================================================================= */}
+        {/* Halo Emas Mengembang Melindungi Preamble Ayat Al-Qur'an */}
+        {frame >= 135 && (
+          <div
+            style={{
+              position: "absolute",
+              top: 340,
+              left: 470,
+              width: 590,
+              height: 520,
+              borderRadius: "50%",
+              background:
+                "radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(217, 119, 6, 0.2) 55%, transparent 75%)",
+              filter: "blur(40px)",
+              transform: `scale(${1 + Math.sin(frame * 0.1) * 0.08})`,
+              pointerEvents: "none",
+              zIndex: 33,
+            }}
+          />
+        )}
+
         {frame >= 135 && (
           <div
             style={{

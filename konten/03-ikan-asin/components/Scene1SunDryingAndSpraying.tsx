@@ -9,6 +9,7 @@ import {
 import { PopElement } from "../../../src/components/PopElement";
 import { CameraRig } from "../../../src/components/CameraRig";
 import { MainCharacter } from "../../../src/components/characters/MainCharacter";
+import { FONTS } from "../../../src/theme/fonts";
 
 export const Scene1SunDryingAndSpraying: React.FC = () => {
   const frame = useCurrentFrame();
@@ -588,13 +589,21 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
                     <ellipse cx="0" cy="0" rx="18" ry="13" fill="#1E293B" stroke="#0F172A" strokeWidth="3.5" />
                     <circle cx="12" cy="-2" r="9" fill="#DC2626" stroke="#0F172A" strokeWidth="2.5" />
                     {isRepelled ? (
-                      <path
-                        d="M 12 -2 m -4,0 a 4,4 0 1,0 8,0 a 7,7 0 1,0 -14,0"
-                        fill="none"
-                        stroke="#FEF08A"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                      />
+                      <>
+                        <path
+                          d="M 12 -2 m -4,0 a 4,4 0 1,0 8,0 a 7,7 0 1,0 -14,0"
+                          fill="none"
+                          stroke="#FEF08A"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                        />
+                        {/* Bintang Pusing Kartun Berputar Mengelilingi Lalat */}
+                        <g transform={`rotate(${frame * 18})`} fill="#FACC15" stroke="#B45309" strokeWidth="1.5">
+                          <polygon points="0,-26 3,-18 10,-18 5,-13 7,-5 0,-10 -7,-5 -5,-13 -10,-18 -3,-18" />
+                          <polygon points="22,14 25,22 32,22 27,27 29,35 22,30 15,35 17,27 12,22 19,22" />
+                          <polygon points="-22,14 -19,22 -12,22 -17,27 -15,35 -22,30 -29,35 -27,27 -32,22 -25,22" />
+                        </g>
+                      </>
                     ) : (
                       <circle cx="14" cy="-3" r="3.5" fill="#FEE2E2" />
                     )}
@@ -743,6 +752,114 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
             </PopElement>
           )}
         </svg>
+
+        {/* =========================================================================
+            LAYER 5: PLAYFUL COMIC OVERLAYS & STICKERS (HTML/CSS)
+           ========================================================================= */}
+        {/* 1. Opening Comic Badge: "AWAS IKAN ASIN! ⚠️" (Frame 8 - 190) */}
+        {frame >= 8 && frame < 190 && (
+          <div
+            style={{
+              position: "absolute",
+              top: 240,
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 35,
+              pointerEvents: "none",
+            }}
+          >
+            <PopElement startFrame={8} tilt={-3} sfxType="none">
+              <div
+                style={{
+                  backgroundColor: "#FACC15",
+                  border: "5px solid #0F172A",
+                  borderRadius: 22,
+                  padding: "10px 32px",
+                  boxShadow: "4px 8px 0px #0F172A",
+                  fontSize: 32,
+                  fontWeight: 900,
+                  fontFamily: FONTS.title,
+                  color: "#0F172A",
+                  letterSpacing: "1.2px",
+                  textTransform: "uppercase",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                AWAS IKAN ASIN! ⚠️
+              </div>
+            </PopElement>
+          </div>
+        )}
+
+        {/* 2. Stiker Semprotan: "PSSSHHH! 💨" (Frame 22 - 140) */}
+        {frame >= 22 && frame < 140 && (
+          <div
+            style={{
+              position: "absolute",
+              top: 790,
+              left: 340,
+              transform: `rotate(-12deg) scale(${1 + Math.sin(frame * 2) * 0.08})`,
+              zIndex: 36,
+              pointerEvents: "none",
+            }}
+          >
+            <PopElement startFrame={22} tilt={-12} sfxType="none">
+              <div
+                style={{
+                  backgroundColor: "#38BDF8",
+                  border: "4px solid #0F172A",
+                  borderRadius: 14,
+                  padding: "6px 20px",
+                  boxShadow: "3px 5px 0px #0F172A",
+                  fontSize: 22,
+                  fontWeight: 900,
+                  fontFamily: FONTS.title,
+                  color: "#FFFFFF",
+                  letterSpacing: "0.8px",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                PSSSHHH! 💨
+              </div>
+            </PopElement>
+          </div>
+        )}
+
+        {/* 3. Reaksi Pusing Lalat: "K.O.! 💫" (Frame 388 - 510) */}
+        {frame >= 388 && frame < 510 && (
+          <div
+            style={{
+              position: "absolute",
+              top: 540,
+              right: 120,
+              transform: `rotate(12deg) scale(${1 + Math.sin(frame * 0.4) * 0.08})`,
+              zIndex: 36,
+              pointerEvents: "none",
+            }}
+          >
+            <PopElement startFrame={388} tilt={10} sfxType="none">
+              <div
+                style={{
+                  backgroundColor: "#EF4444",
+                  border: "4px solid #FFFFFF",
+                  borderRadius: 16,
+                  padding: "6px 20px",
+                  boxShadow: "4px 6px 0px #0F172A",
+                  fontSize: 24,
+                  fontWeight: 900,
+                  fontFamily: FONTS.title,
+                  color: "#FFFFFF",
+                  letterSpacing: "1px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                K.O.! 💫
+              </div>
+            </PopElement>
+          </div>
+        )}
       </CameraRig>
     </AbsoluteFill>
   );

@@ -303,7 +303,7 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
           />
         </div>
 
-        {/* Efek Bintang Pusing Komik Melayang Halus di Sekitar Kepala Karakter (Bebas Duplikasi Spiral) */}
+        {/* Efek Bintang Pusing, Keringat Dingin & Uap Mual di Sekitar Kepala Karakter */}
         {frame >= 15 && (
           <div
             style={{
@@ -311,13 +311,45 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
               top: 724,
               left: 175 + charWobbleX,
               width: 150,
-              height: 70,
+              height: 100,
               zIndex: 12,
               pointerEvents: "none",
             }}
           >
             <PopElement startFrame={15} sfxType="none" style={{ width: "100%", height: "100%" }}>
-              <svg width="150" height="70" viewBox="-75 -35 150 70" style={{ overflow: "visible" }}>
+              <svg width="150" height="100" viewBox="-75 -50 150 100" style={{ overflow: "visible" }}>
+                {/* Uap Mual / Pusing Bergelombang Ungu-Hijau */}
+                <path
+                  d={`M -30 25 Q ${-38 + Math.sin(frame * 0.2) * 6} 5 -30 -15 T ${-30 + Math.sin(frame * 0.2) * 6} -35`}
+                  stroke="#A855F7"
+                  strokeWidth="3.2"
+                  fill="none"
+                  opacity="0.8"
+                  strokeLinecap="round"
+                />
+                <path
+                  d={`M 35 25 Q ${43 - Math.sin(frame * 0.2) * 6} 5 35 -15 T ${35 - Math.sin(frame * 0.2) * 6} -35`}
+                  stroke="#22C55E"
+                  strokeWidth="3.2"
+                  fill="none"
+                  opacity="0.8"
+                  strokeLinecap="round"
+                />
+                <path
+                  d={`M 5 30 Q ${-5 + Math.cos(frame * 0.2) * 5} 10 5 -10 T ${5 + Math.cos(frame * 0.2) * 5} -30`}
+                  stroke="#C084FC"
+                  strokeWidth="2.5"
+                  fill="none"
+                  opacity="0.65"
+                  strokeLinecap="round"
+                />
+
+                {/* Butiran Keringat Dingin Besar Menetes */}
+                <g transform={`translate(52, ${-10 + Math.sin(frame * 0.1) * 3}) scale(${1 + Math.sin(frame * 0.3) * 0.1})`}>
+                  <path d="M 0 -14 C 5 -7 7 0 0 7 C -7 0 -5 -7 0 -14 Z" fill="#38BDF8" stroke="#0284C7" strokeWidth="1.8" />
+                  <ellipse cx="-2" cy="0" rx="1.5" ry="3" fill="#FFFFFF" opacity="0.85" />
+                </g>
+
                 {/* Bintang Pusing Kuning Terang Kiri & Kanan Mendampingi Spiral Asli Karakter */}
                 <polygon
                   points="0,-9 2.5,-2.5 9,-2.5 4,2 5.5,8 0,4.5 -5.5,8 -4,2 -9,-2.5 -2.5,-2.5"
@@ -368,13 +400,18 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                 width: "100%",
                 background: "linear-gradient(180deg, #0F172A 0%, #1E293B 55%, #0B132B 100%)",
                 borderRadius: 26,
-                border: "2px solid rgba(56, 189, 248, 0.45)",
-                boxShadow: "0 20px 45px rgba(15, 23, 42, 0.35), inset 0 0 25px rgba(56, 189, 248, 0.08)",
+                border: frame >= 115
+                  ? `3.5px solid rgba(239, 68, 68, ${0.6 + Math.sin(frame * 0.35) * 0.4})`
+                  : "2px solid rgba(56, 189, 248, 0.45)",
+                boxShadow: frame >= 115
+                  ? `0 20px 45px rgba(239, 68, 68, 0.45), 0 0 ${25 + Math.sin(frame * 0.35) * 15}px rgba(239, 68, 68, 0.7), inset 0 0 25px rgba(239, 68, 68, 0.2)`
+                  : "0 20px 45px rgba(15, 23, 42, 0.35), inset 0 0 25px rgba(56, 189, 248, 0.08)",
                 padding: "20px 22px 18px 22px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 boxSizing: "border-box",
+                transition: "border 0.2s ease, box-shadow 0.2s ease",
               }}
             >
               {/* --- HEADER KARTU: BADGE & JUDUL (HTML/REACT DOM, ZERO SVG TEXT) --- */}

@@ -4,14 +4,14 @@ import { MainCharacter, CharacterPose } from "./MainCharacter";
 import { PopElement } from "../elements/PopElement";
 
 const POSES: { pose: CharacterPose; label: string; desc: string }[] = [
-  { pose: "idle", label: "1. IDLE", desc: "Berdiri tegak, tangan samping, senyum ramah" },
-  { pose: "panic", label: "2. PANIC", desc: "Tangan pegang kepala, mata membelalak, mulut getar" },
-  { pose: "hopeful", label: "3. HOPEFUL", desc: "Tangan di dada, mata berbinar ke atas, pipi merona" },
-  { pose: "gloomy", label: "4. GLOOMY", desc: "Bahu bungkuk, tangan lemas, mata setengah tertutup" },
-  { pose: "impatient", label: "5. IMPATIENT", desc: "Tangan pinggang, cek arloji merah, ketuk kaki" },
-  { pose: "dizzy", label: "6. DIZZY", desc: "Pegang dahi & perut mual, mata spiral, pipi pucat" },
-  { pose: "peaceful", label: "7. PEACEFUL", desc: "Duduk bersila santai, mata melengkung, senyum damai" },
-  { pose: "pointing", label: "8. POINTING", desc: "Tangan kanan menunjuk mantap ke depan/atas" },
+  { pose: "idle", label: "1. IDLE", desc: "Berdiri tegak ramah, tangan santai, menapak lantai" },
+  { pose: "explaining", label: "2. EXPLAINING", desc: "Tangan terbuka santun, gestur menerangkan materi" },
+  { pose: "pointing", label: "3. POINTING", desc: "Telunjuk kanan menunjuk mantap ke samping/atas" },
+  { pose: "curious", label: "4. CURIOUS", desc: "Tangan di dagu, kepala miring berpikir penasaran" },
+  { pose: "alert", label: "5. ALERT", desc: "Kedua tangan terangkat waspada, mata membelalak" },
+  { pose: "dizzy", label: "6. DIZZY", desc: "Tangan di dahi & perut mual, spiral pusing berputar" },
+  { pose: "peaceful", label: "7. PEACEFUL", desc: "Tangan bersedekap santun/tawadhu', senyum damai" },
+  { pose: "holding", label: "8. HOLDING", desc: "Tangan terulur memegang properti adegan" },
 ];
 
 export const CharacterShowcase: React.FC = () => {
@@ -23,19 +23,19 @@ export const CharacterShowcase: React.FC = () => {
         backgroundColor: "#0B1120",
         color: "#FFFFFF",
         fontFamily: "'Plus Jakarta Sans', sans-serif",
-        padding: "50px 40px",
+        padding: "45px 36px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
       }}
     >
-      {/* Header */}
-      <div style={{ textAlign: "center", marginBottom: 36 }}>
-        <h1 style={{ fontSize: 46, fontWeight: 800, margin: "0 0 10px 0", color: "#38BDF8" }}>
-          Ada di Quran — MainCharacter Global
+      {/* Header Showcase */}
+      <div style={{ textAlign: "center", marginBottom: 28 }}>
+        <h1 style={{ fontSize: 44, fontWeight: 900, margin: "0 0 8px 0", color: "#38BDF8", letterSpacing: 1.2 }}>
+          Ada di Quran — MainCharacter Global (Full-Body)
         </h1>
-        <p style={{ fontSize: 22, color: "#94A3B8", margin: 0 }}>
-          Frame {frame} · 8 Poses Anatomy Lock · Secondary Breathing & Blinking Motion
+        <p style={{ fontSize: 20, color: "#94A3B8", margin: 0 }}>
+          Natural Human Proportions · 8 Core Story Poses · Secondary Motion & Ground Contact
         </p>
       </div>
 
@@ -44,7 +44,7 @@ export const CharacterShowcase: React.FC = () => {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(2, 1fr)",
-          gap: "24px 28px",
+          gap: "18px 22px",
           width: "100%",
           maxWidth: 1000,
           flex: 1,
@@ -53,32 +53,32 @@ export const CharacterShowcase: React.FC = () => {
         {POSES.map((item, idx) => (
           <PopElement
             key={item.pose}
-            startFrame={idx * 4}
+            startFrame={idx * 3}
             sfxType="none"
             style={{ width: "100%" }}
           >
             <div
               style={{
-                backgroundColor: "rgba(15, 23, 42, 0.85)",
-                borderRadius: 22,
-                border: "2px solid rgba(56, 189, 248, 0.28)",
-                padding: "16px 20px",
+                backgroundColor: "rgba(15, 23, 42, 0.92)",
+                borderRadius: 24,
+                border: "2px solid rgba(56, 189, 248, 0.35)",
+                padding: "16px 18px",
                 display: "flex",
                 alignItems: "center",
-                boxShadow: "0 12px 28px rgba(0,0,0,0.35)",
-                height: 330,
+                boxShadow: "0 12px 28px rgba(0,0,0,0.45)",
+                height: 350,
                 boxSizing: "border-box",
                 overflow: "hidden",
                 position: "relative",
               }}
             >
               {/* Text Info (Left side of card) */}
-              <div style={{ flex: 1, paddingRight: 12 }}>
+              <div style={{ flex: 1, paddingRight: 10, zIndex: 2 }}>
                 <span
                   style={{
                     display: "inline-block",
-                    fontSize: 20,
-                    fontWeight: 800,
+                    fontSize: 21,
+                    fontWeight: 900,
                     color: "#FDE047",
                     marginBottom: 8,
                     letterSpacing: 1.1,
@@ -86,19 +86,20 @@ export const CharacterShowcase: React.FC = () => {
                 >
                   {item.label}
                 </span>
-                <p style={{ fontSize: 16, color: "#94A3B8", margin: 0, lineHeight: 1.4 }}>
+                <p style={{ fontSize: 16, color: "#94A3B8", margin: 0, lineHeight: 1.45, fontWeight: 500 }}>
                   {item.desc}
                 </p>
               </div>
 
-              {/* Character Figure (Right side of card) */}
+              {/* Character Figure (Right side of card, clearly visible & grounded!) */}
               <div
                 style={{
-                  width: 200,
-                  height: 300,
+                  width: 210,
+                  height: 320,
                   display: "flex",
                   alignItems: "flex-end",
                   justifyContent: "center",
+                  zIndex: 1,
                 }}
               >
                 <MainCharacter pose={item.pose} scale={0.62} />

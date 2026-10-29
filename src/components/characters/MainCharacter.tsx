@@ -2,669 +2,991 @@ import React from "react";
 import { useCurrentFrame } from "remotion";
 
 export type CharacterPose =
-  // Bahasa Indonesia (Native User Names)
-  | "senang"
-  | "tertawa"
-  | "terkejut"
-  | "sedih"
-  | "marah"
-  | "bingung"
-  | "wink"
-  | "penasaran"
-  | "datar"
-  | "pusing"
-  | "panik"
-  // English Aliases / Compatibility
   | "idle"
-  | "happy"
-  | "laugh"
-  | "shocked"
-  | "sad"
-  | "angry"
-  | "confused"
+  | "explaining"
+  | "pointing"
   | "curious"
-  | "neutral"
+  | "alert"
   | "dizzy"
+  | "peaceful"
+  | "holding"
+  | "angry"
+  | "calming"
+  | "regret"
+  // Aliases
+  | "senang"
+  | "berbicara"
+  | "menunjuk"
+  | "penasaran"
+  | "panik"
+  | "pusing"
+  | "tenang"
+  | "memegang"
+  | "marah"
+  | "furious"
+  | "menenangkan"
+  | "advising"
+  | "sabar"
+  | "menyesal"
+  | "malu"
+  | "embarrassed"
+  | "happy"
   | "panic"
   | "hopeful"
   | "gloomy"
   | "impatient"
-  | "peaceful"
-  | "pointing";
+  | "datar"
+  | "sedih"
+  | "terkejut";
 
 export interface CharacterColors {
   skin: string;
-  skinShade: string;
+  skinShadow: string;
   hair: string;
-  hairLine: string;
-  brow: string;
-  iris: string;
-  koko: string;
-  kokoShade: string;
-  kokoCollar: string;
-  kokoButton: string;
-  outline: string;
+  hairHighlight: string;
+  outfitMain: string;
+  outfitShade: string;
+  outfitCollar: string;
+  outfitAccent: string;
+  pants: string;
+  pantsDark: string;
+  shoeBase: string;
+  shoeWhite: string;
   glasses: string;
-  // Aliases untuk backward compatibility jika ada yang memanggil hoodie
-  hoodie?: string;
-  hoodieDark?: string;
-  batikGold?: string;
+  outline: string;
 }
 
 export const DEFAULT_CHARACTER_COLORS: CharacterColors = {
-  skin: "#EBA875",
-  skinShade: "#D98A52",
-  hair: "#33200F",
-  hairLine: "#241408",
-  brow: "#2E1C10",
-  iris: "#6B3F1D",
-  koko: "#FFFFFF", // Putih Bersih Islami
-  kokoShade: "#E2E8F0", // Bayangan lembut kain katun
-  kokoCollar: "#FFFFFF", // Kerah Shanghai Putih
-  kokoButton: "#C2A15A", // Kancing emas serasi kacamata
-  outline: "#12233F",
-  glasses: "#C2A15A",
-  hoodieDark: "#1E293B",
-  batikGold: "#C2A15A",
+  skin: "#FBD5B5",
+  skinShadow: "#E8B28B",
+  hair: "#1E293B", // Modern dark slate
+  hairHighlight: "#334155",
+  outfitMain: "#F8FAFC", // Clean modern Koko / Shirt
+  outfitShade: "#E2E8F0",
+  outfitCollar: "#FFFFFF",
+  outfitAccent: "#D97706", // Gold buttons
+  pants: "#334155", // Modern dark slate chinos
+  pantsDark: "#1E293B",
+  shoeBase: "#0F172A", // Modern sneakers
+  shoeWhite: "#FFFFFF",
+  glasses: "#0F172A", // Modern stylish dark wireframe
+  outline: "#0F172A",
 };
 
 export interface MainCharacterProps {
   pose?: CharacterPose;
-  expression?: CharacterPose; // Alias untuk pose
+  expression?: CharacterPose;
   scale?: number;
   flip?: boolean;
   breathe?: boolean;
   blink?: boolean;
-  tilt?: number; // Derajat kemiringan kepala manual (-15 sampai 15)
+  tilt?: number;
+  hasGlasses?: boolean;
+  outfitType?: "koko" | "tshirt";
+  hairStyle?: "peci" | "quiff" | "messy";
   customColors?: Partial<CharacterColors>;
   style?: React.CSSProperties;
 }
 
-const MOUTH_PROPS = {
-  stroke: "#12233F",
-  strokeWidth: 4,
-  strokeLinejoin: "round" as const,
-};
-
-function brow(d: string, color = "#2E1C10", width = 9) {
-  return <path d={d} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" />;
-}
-
-function mouthOpen(y: number, h: number) {
-  return (
-    <>
-      <path
-        d={`M166 ${y} Q200 ${y - 8} 234 ${y} Q231 ${y + h} 200 ${y + h + 4} Q169 ${y + h} 166 ${y}Z`}
-        fill="#7F1D2D"
-        {...MOUTH_PROPS}
-      />
-      <path
-        d={`M172 ${y + 2} Q200 ${y - 4} 228 ${y + 2} Q226 ${y + 10} 200 ${y + 10} Q174 ${y + 10} 172 ${y + 2}Z`}
-        fill="#fff"
-      />
-      <ellipse cx="200" cy={y + h - 4} rx="13" ry="6" fill="#FB7185" />
-    </>
-  );
-}
-
-/**
- * `<MainCharacter />` — Karakter Maskot 2D Modern Resmi Channel "Ada di Quran".
- *
- * Fitur Unggulan (Hasil Peningkatan):
- * 1. Desain SVG Orisinal: Rambut ikal bervolume, kacamata bulat emas, bintik pipi manis, kerah hoodie motif batik.
- * 2. Secondary Motion & Nafas Alami: Bahu dan kepala memiliki ritme bernapas halus (tanpa kaku seperti gambar mati).
- * 3. Auto-Blinking Engine: Mata berkedip natural otomatis setiap ~3 detik (frame % 90), kecuali pada pose tertawa/merem.
- * 4. 11 Spektrum Ekspresi: Termasuk ekspresi 'pusing' (keracunan/dizzy) & 'panik' yang sangat krusial untuk Episode 03.
- * 5. Dynamic Gestures: Mendukung gestur tangan kartun (pointing, thinking, stop, wave).
- */
 export const MainCharacter: React.FC<MainCharacterProps> = ({
-  pose,
+  pose = "idle",
   expression,
   scale = 1.0,
   flip = false,
   breathe = true,
   blink = true,
-  tilt,
+  tilt = 0,
+  hasGlasses = true,
+  outfitType = "koko",
+  hairStyle = "peci",
   customColors,
   style,
 }) => {
   const frame = useCurrentFrame();
-
-  // Mapping nama pose / alias ke normalized key
-  const activePoseKey = (expression || pose || "senang").toLowerCase();
-
-  let normalizedPose = "senang";
-  if (["senang", "idle", "happy", "peaceful"].includes(activePoseKey)) normalizedPose = "senang";
-  else if (["tertawa", "laugh"].includes(activePoseKey)) normalizedPose = "tertawa";
-  else if (["terkejut", "shocked"].includes(activePoseKey)) normalizedPose = "terkejut";
-  else if (["sedih", "gloomy", "sad"].includes(activePoseKey)) normalizedPose = "sedih";
-  else if (["marah", "angry"].includes(activePoseKey)) normalizedPose = "marah";
-  else if (["bingung", "confused"].includes(activePoseKey)) normalizedPose = "bingung";
-  else if (["wink"].includes(activePoseKey)) normalizedPose = "wink";
-  else if (["penasaran", "hopeful", "curious"].includes(activePoseKey)) normalizedPose = "penasaran";
-  else if (["datar", "impatient", "neutral"].includes(activePoseKey)) normalizedPose = "datar";
-  else if (["pusing", "dizzy"].includes(activePoseKey)) normalizedPose = "pusing";
-  else if (["panik", "panic"].includes(activePoseKey)) normalizedPose = "panik";
-  else if (activePoseKey === "pointing") {
-    normalizedPose = "senang";
-  }
-
-  const c: CharacterColors = {
-    ...DEFAULT_CHARACTER_COLORS,
-    ...customColors,
-  };
-
-  // Scoped unique SVG ID untuk pola batik
   const rawId = React.useId();
-  const uid = rawId.replace(/[^a-zA-Z0-9]/g, "");
+  const instanceId = rawId.replace(/[^a-zA-Z0-9]/g, "");
+  const hairGradId = `charHair_${instanceId}`;
+  const outfitGradId = `charOutfit_${instanceId}`;
 
-  // Rigging: Gerakan Nafas Halus
-  const breatheOffset = breathe ? Math.sin(frame / 16) * 3 : 0;
-  const chestBreathe = breathe ? Math.sin(frame / 16 + 0.4) * 1.8 : 0;
+  const rawKey = (expression || pose || "idle").toLowerCase();
+  let activePose:
+    | "idle"
+    | "explaining"
+    | "pointing"
+    | "curious"
+    | "alert"
+    | "dizzy"
+    | "peaceful"
+    | "holding"
+    | "angry"
+    | "calming"
+    | "regret" = "idle";
 
-  // Auto-Blink: Kedip natural setiap 90 frames (~3 detik), durasi 4 frames
-  const blinkCycle = frame % 90;
-  const isBlinking = blink && blinkCycle >= 86 && blinkCycle <= 89;
+  if (["idle", "senang", "happy", "datar"].includes(rawKey)) activePose = "idle";
+  else if (["explaining", "berbicara", "hopeful"].includes(rawKey)) activePose = "explaining";
+  else if (["pointing", "menunjuk"].includes(rawKey)) activePose = "pointing";
+  else if (["curious", "penasaran"].includes(rawKey)) activePose = "curious";
+  else if (["alert", "panik", "panic", "terkejut"].includes(rawKey)) activePose = "alert";
+  else if (["dizzy", "pusing", "gloomy", "sedih"].includes(rawKey)) activePose = "dizzy";
+  else if (["peaceful", "tenang", "impatient"].includes(rawKey)) activePose = "peaceful";
+  else if (["holding", "memegang"].includes(rawKey)) activePose = "holding";
+  else if (["angry", "marah", "furious"].includes(rawKey)) activePose = "angry";
+  else if (["calming", "menenangkan", "advising", "sabar"].includes(rawKey)) activePose = "calming";
+  else if (["regret", "menyesal", "malu", "embarrassed"].includes(rawKey)) activePose = "regret";
 
-  // Head Tilt Alami berdasarkan ekspresi jika tidak diatur manual
-  let defaultTilt = 0;
-  if (normalizedPose === "penasaran") defaultTilt = -3.5;
-  else if (normalizedPose === "bingung") defaultTilt = 3.5;
-  else if (normalizedPose === "pusing") defaultTilt = Math.sin(frame / 10) * 4;
-  else if (normalizedPose === "panik") defaultTilt = Math.sin(frame * 1.5) * 2;
-  const finalTilt = tilt !== undefined ? tilt : defaultTilt;
+  const c: CharacterColors = { ...DEFAULT_CHARACTER_COLORS, ...customColors };
 
-  // Helper render mata terbuka dengan dukungan kedip otomatis
-  const renderEye = (cx: number, cy: number, s = 1, dx = 0, canBlink = true) => {
-    if (canBlink && isBlinking) {
-      return (
-        <path
-          d={`M${cx - 18 * s} ${cy + 2} Q${cx} ${cy - 8 * s} ${cx + 18 * s} ${cy + 2}`}
-          fill="none"
-          stroke={c.outline}
-          strokeWidth={4.5 * s}
-          strokeLinecap="round"
-        />
-      );
-    }
-    return (
-      <g>
-        <circle cx={cx} cy={cy} r={20 * s} fill="#fff" stroke={c.outline} strokeWidth="2" />
-        <circle cx={cx + dx} cy={cy + 1} r={13 * s} fill={c.iris} />
-        <circle cx={cx + dx} cy={cy + 1} r={7 * s} fill={c.outline} />
-        <circle cx={cx + dx + 5 * s} cy={cy - 5 * s} r={3.5 * s} fill="#fff" />
-      </g>
-    );
-  };
-
-  const renderEyeClosed = (cx: number, cy: number) => (
-    <path
-      d={`M${cx - 20} ${cy} Q${cx} ${cy - 22} ${cx + 20} ${cy}`}
-      fill="none"
-      stroke={c.outline}
-      strokeWidth="6"
-      strokeLinecap="round"
-    />
-  );
-
-  // Render 11 Macam Ekspresi Wajah
-  const renderFaceContent = () => {
-    switch (normalizedPose) {
-      case "tertawa":
-        return (
-          <>
-            {brow("M128 122 Q160 108 192 122", c.brow)}
-            {brow("M208 122 Q240 108 272 122", c.brow)}
-            {renderEyeClosed(160, 154)}
-            {renderEyeClosed(240, 154)}
-            {mouthOpen(200, 48)}
-            <ellipse cx="118" cy="188" rx="14" ry="8" fill="#FB7185" opacity=".4" />
-            <ellipse cx="282" cy="188" rx="14" ry="8" fill="#FB7185" opacity=".4" />
-          </>
-        );
-
-      case "terkejut":
-        return (
-          <>
-            {brow("M128 106 Q160 92 192 106", c.brow)}
-            {brow("M208 106 Q240 92 272 106", c.brow)}
-            {renderEye(160, 152, 1.15, 0, false)}
-            {renderEye(240, 152, 1.15, 0, false)}
-            <ellipse cx="200" cy="224" rx="18" ry="22" fill="#7F1D2D" {...MOUTH_PROPS} />
-            <ellipse cx="200" cy="232" rx="12" ry="8" fill="#FB7185" />
-          </>
-        );
-
-      case "sedih":
-        return (
-          <>
-            {brow("M128 116 L192 132", c.brow)}
-            {brow("M272 116 L208 132", c.brow)}
-            <ellipse cx="160" cy="154" rx="16" ry="11" fill="#fff" stroke={c.outline} strokeWidth="2" />
-            <circle cx="160" cy="158" r="8" fill={c.iris} />
-            <circle cx="160" cy="158" r="4" fill={c.outline} />
-            <ellipse cx="240" cy="154" rx="16" ry="11" fill="#fff" stroke={c.outline} strokeWidth="2" />
-            <circle cx="240" cy="158" r="8" fill={c.iris} />
-            <circle cx="240" cy="158" r="4" fill={c.outline} />
-            {/* Tetes air mata berkilau */}
-            <path
-              d="M138 170 Q132 186 140 192 Q148 186 142 170Z"
-              fill="#38BDF8"
-              stroke={c.outline}
-              strokeWidth="2.5"
-              strokeLinejoin="round"
-            />
-            <path d="M170 234 Q200 216 230 234" fill="none" stroke={c.outline} strokeWidth="5" strokeLinecap="round" />
-          </>
-        );
-
-      case "marah":
-        return (
-          <>
-            {brow("M124 112 L194 134", c.brow, 10)}
-            {brow("M276 112 L206 134", c.brow, 10)}
-            <ellipse cx="160" cy="154" rx="17" ry="10" fill="#fff" stroke={c.outline} strokeWidth="2" />
-            <circle cx="160" cy="155" r="8" fill={c.iris} />
-            <circle cx="160" cy="155" r="4" fill={c.outline} />
-            <ellipse cx="240" cy="154" rx="17" ry="10" fill="#fff" stroke={c.outline} strokeWidth="2" />
-            <circle cx="240" cy="155" r="8" fill={c.iris} />
-            <circle cx="240" cy="155" r="4" fill={c.outline} />
-            <path
-              d="M172 234 L186 226 L200 234 L214 226 L228 234"
-              fill="none"
-              stroke={c.outline}
-              strokeWidth="5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            {/* Vena marah kecil di pelipis kanan */}
-            <path
-              d="M272 100 L280 106 L288 102 M280 106 L282 114"
-              fill="none"
-              stroke="#EF4444"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
-          </>
-        );
-
-      case "bingung":
-        return (
-          <>
-            {brow("M128 106 Q160 92 192 106", c.brow)}
-            <path d="M210 128 L272 128" fill="none" stroke={c.brow} strokeWidth="9" strokeLinecap="round" />
-            {renderEye(160, 152, 1.08, 0, true)}
-            {renderEye(240, 152, 0.82, 0, true)}
-            <path
-              d="M172 220 Q186 208 200 220 Q214 232 228 220"
-              fill="none"
-              stroke={c.outline}
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-          </>
-        );
-
-      case "wink":
-        return (
-          <>
-            {brow("M128 122 Q160 108 192 122", c.brow)}
-            {brow("M208 122 Q240 108 272 122", c.brow)}
-            {renderEyeClosed(160, 154)}
-            {renderEye(240, 152, 1, 0, false)}
-            <path d="M168 214 Q205 236 238 208" fill="none" stroke={c.outline} strokeWidth="5" strokeLinecap="round" />
-            <ellipse cx="282" cy="188" rx="14" ry="7" fill="#FB923C" opacity=".35" />
-          </>
-        );
-
-      case "penasaran":
-        return (
-          <>
-            {brow("M128 108 Q160 94 192 108", c.brow)}
-            {brow("M208 108 Q240 94 272 108", c.brow)}
-            {/* Melirik ke atas samping */}
-            {renderEye(160, 152, 1.0, 5, true)}
-            {renderEye(240, 152, 1.0, 5, true)}
-            <ellipse cx="202" cy="218" rx="14" ry="16" fill="#7F1D2D" {...MOUTH_PROPS} />
-            <ellipse cx="202" cy="224" rx="8" ry="6" fill="#FB7185" />
-            <ellipse cx="120" cy="188" rx="12" ry="7" fill="#FB923C" opacity=".25" />
-            <ellipse cx="280" cy="188" rx="12" ry="7" fill="#FB923C" opacity=".25" />
-          </>
-        );
-
-      case "datar":
-        return (
-          <>
-            {brow("M130 124 L190 124", c.brow)}
-            {brow("M210 124 L270 124", c.brow)}
-            {renderEye(160, 152, 0.88, 0, true)}
-            {renderEye(240, 152, 0.88, 0, true)}
-            <path d="M172 220 L228 220" fill="none" stroke={c.outline} strokeWidth="5" strokeLinecap="round" />
-          </>
-        );
-
-      case "pusing": {
-        // Spiral dizziness untuk keracunan / pestisida (Episode 03 Scene 3)
-        const rot = (frame * 10) % 360;
-        return (
-          <>
-            {brow("M128 116 Q160 128 192 116", c.brow)}
-            {brow("M208 116 Q240 128 272 116", c.brow)}
-            {/* Mata Spiral Berputar Kiri */}
-            <g transform={`rotate(${rot} 160 152)`}>
-              <circle cx="160" cy="152" r="22" fill="#FEF08A" stroke={c.outline} strokeWidth="2" />
-              <path
-                d="M160 152 m-3,0 a3,3 0 1,0 6,0 a6,6 0 1,0 -12,0 a9,9 0 1,0 18,0 a13,13 0 1,0 -26,0"
-                fill="none"
-                stroke={c.outline}
-                strokeWidth="2.8"
-                strokeLinecap="round"
-              />
-            </g>
-            {/* Mata Spiral Berputar Kanan (Berlawanan arah) */}
-            <g transform={`rotate(${-rot} 240 152)`}>
-              <circle cx="240" cy="152" r="22" fill="#FEF08A" stroke={c.outline} strokeWidth="2" />
-              <path
-                d="M240 152 m-3,0 a3,3 0 1,0 6,0 a6,6 0 1,0 -12,0 a9,9 0 1,0 18,0 a13,13 0 1,0 -26,0"
-                fill="none"
-                stroke={c.outline}
-                strokeWidth="2.8"
-                strokeLinecap="round"
-              />
-            </g>
-            {/* Mulut lemas bergelombang */}
-            <path
-              d="M174 226 Q187 218 200 226 Q213 234 226 226"
-              fill="none"
-              stroke={c.outline}
-              strokeWidth="5"
-              strokeLinecap="round"
-            />
-            {/* Rona pucat kehijauan mual */}
-            <ellipse cx="118" cy="188" rx="16" ry="9" fill="#84CC16" opacity=".35" />
-            <ellipse cx="282" cy="188" rx="16" ry="9" fill="#84CC16" opacity=".35" />
-            {/* Bintang pusing kecil di atas kepala */}
-            <path
-              d="M192 18 L196 8 L200 18 L210 18 L202 24 L205 34 L196 28 L187 34 L190 24 L182 18 Z"
-              fill="#FACC15"
-              stroke={c.outline}
-              strokeWidth="2"
-            />
-          </>
-        );
-      }
-
-      case "panik": {
-        // Panik tertekan (tremor pupil + tetes keringat biru)
-        const shake = Math.sin(frame * 2.2) * 2;
-        return (
-          <>
-            {brow("M128 106 L192 120", c.brow, 10)}
-            {brow("M272 106 L208 120", c.brow, 10)}
-            {/* Mata melotot dengan pupil bergetar ketakutan */}
-            <circle cx="160" cy="152" r="22" fill="#fff" stroke={c.outline} strokeWidth="2.5" />
-            <circle cx={160 + shake} cy="153" r="7" fill={c.outline} />
-            <circle cx={160 + shake + 2} cy="150" r="2.5" fill="#fff" />
-
-            <circle cx="240" cy="152" r="22" fill="#fff" stroke={c.outline} strokeWidth="2.5" />
-            <circle cx={240 + shake} cy="153" r="7" fill={c.outline} />
-            <circle cx={240 + shake + 2} cy="150" r="2.5" fill="#fff" />
-
-            {/* Mulut teriak panik */}
-            <ellipse cx="200" cy="226" rx="20" ry="16" fill="#7F1D2D" {...MOUTH_PROPS} />
-            <ellipse cx="200" cy="232" rx="12" ry="7" fill="#FB7185" />
-            {/* Tetesan keringat dingin besar di pelipis kiri */}
-            <path
-              d="M94 112 Q84 132 94 140 Q104 132 94 112Z"
-              fill="#38BDF8"
-              stroke={c.outline}
-              strokeWidth="2.5"
-              strokeLinejoin="round"
-            />
-          </>
-        );
-      }
-
-      case "senang":
-      default:
-        return (
-          <>
-            {brow("M128 122 Q160 108 192 122", c.brow)}
-            {brow("M208 122 Q240 108 272 122", c.brow)}
-            {renderEye(160, 152, 1, 0, true)}
-            {renderEye(240, 152, 1, 0, true)}
-            {mouthOpen(208, 32)}
-            <ellipse cx="118" cy="188" rx="13" ry="7" fill="#FB923C" opacity=".3" />
-            <ellipse cx="282" cy="188" rx="13" ry="7" fill="#FB923C" opacity=".3" />
-          </>
-        );
-    }
-  };
-
-  const finalWidth = 400 * scale;
-  const finalHeight = 360 * scale;
+  // Secondary Motion
+  const breatheY = breathe ? Math.sin(frame / 16) * 2.2 : 0;
+  const shakeX = activePose === "alert" || activePose === "angry" ? Math.sin(frame * 0.9) * 3 : 0;
+  const dizzyWobble = activePose === "dizzy" ? Math.sin(frame * 0.22) * 3.5 : 0;
+  const headTilt = activePose === "curious" ? 6 : activePose === "dizzy" ? -6 : activePose === "angry" ? 4 : tilt;
+  const isBlinking = blink && frame % 90 < 4 && !["dizzy", "peaceful", "angry"].includes(activePose);
 
   return (
     <div
       style={{
-        display: "inline-flex",
+        width: 280,
+        height: 560,
+        transform: `scale(${scale}) scaleX(${flip ? -1 : 1}) translate(${shakeX + dizzyWobble}px, 0px)`,
+        transformOrigin: "bottom center",
+        display: "flex",
+        alignItems: "center",
         justifyContent: "center",
-        alignItems: "flex-end",
-        width: finalWidth,
-        height: finalHeight,
-        transform: flip ? "scaleX(-1)" : undefined,
-        overflow: "visible",
+        pointerEvents: "none",
         ...style,
       }}
     >
       <svg
-        viewBox="0 0 400 360"
-        width={finalWidth}
-        height={finalHeight}
+        viewBox="0 0 280 560"
+        width="100%"
+        height="100%"
         style={{ overflow: "visible" }}
       >
         <defs>
-          {/* Pola Batik Khas Kerah Hoodie */}
-          <pattern id={`batik-${uid}`} width="26" height="26" patternUnits="userSpaceOnUse">
-            <rect width="26" height="26" fill={c.hoodieDark} />
-            <path d="M13 4 L19 13 L13 22 L7 13Z" fill="none" stroke={c.batikGold} strokeWidth="2" />
-            <circle cx="13" cy="13" r="3" fill={c.batikGold} />
-            <circle cx="2" cy="2" r="2" fill={c.batikGold} opacity=".7" />
-            <circle cx="24" cy="24" r="2" fill={c.batikGold} opacity=".7" />
-          </pattern>
+          <linearGradient id={hairGradId} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor={c.hairHighlight} />
+            <stop offset="100%" stopColor={c.hair} />
+          </linearGradient>
+
+          <linearGradient id={outfitGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={c.outfitCollar} />
+            <stop offset="60%" stopColor={c.outfitMain} />
+            <stop offset="100%" stopColor={c.outfitShade} />
+          </linearGradient>
         </defs>
 
-        {/* =========================================================================
-            LAYER 1: TUBUH & BAJU KOKO MODERN (Solid, Rapi, Bebas Celah)
-           ========================================================================= */}
-        <g id="body-layer" transform={`translate(0, ${chestBreathe})`}>
-          {/* Leher */}
-          <rect
-            x="180"
-            y="238"
-            width="40"
-            height="46"
-            rx="10"
-            fill={c.skin}
-            stroke={c.outline}
-            strokeWidth="4"
-          />
+        {/* =====================================================================
+            1. GROUND CONTACT SHADOW (Menapak Kokoh Tepat di Bawah Sol Sepatu)
+           ===================================================================== */}
+        {/* Bayangan Kontak Presisi di Bawah Kedua Kaki (Zero Floating Gap!) */}
+        <ellipse cx="111" cy="516" rx="32" ry="7" fill="rgba(0, 0, 0, 0.28)" />
+        <ellipse cx="169" cy="516" rx="32" ry="7" fill="rgba(0, 0, 0, 0.28)" />
+        {/* Bayangan Ambient Halus Penyatuan Pijakan */}
+        <ellipse cx="140" cy="517" rx="68" ry="9" fill="rgba(0, 0, 0, 0.16)" />
 
-          {/* Badan Baju Koko Modern — Solid Utuh dari Bahu ke Leher */}
-          <path
-            d="M86 360 L86 314 Q130 284 176 270 L224 270 Q270 284 314 314 L314 360 Z"
-            fill={c.koko}
-            stroke={c.outline}
-            strokeWidth="5"
-            strokeLinejoin="round"
-          />
-
-          {/* Saku Dada Kiri (Breast Pocket) */}
-          <g id="koko-pocket">
-            <rect
-              x="240"
-              y="308"
-              width="28"
-              height="32"
-              rx="4"
-              fill={c.koko}
-              stroke={c.outline}
-              strokeWidth="3.5"
-            />
-            {/* Aksen Garis Emas di Atas Saku */}
+        {/* =====================================================================
+            2. LEGS & SNEAKERS (Kaki Proporsional & Natural A-Stance)
+           ===================================================================== */}
+        <g id="legs-and-shoes">
+          {/* Kaki Kiri */}
+          <g transform="rotate(-2, 120, 360)">
+            {/* Celana Chino Kiri dengan Lekukan Natural */}
             <path
-              d="M241 314 L267 314"
-              stroke={c.kokoButton}
-              strokeWidth="2.5"
-              strokeLinecap="round"
-            />
-          </g>
-
-          {/* Plaket Kancing Dada Vertikal */}
-          <rect
-            x="193"
-            y="284"
-            width="14"
-            height="76"
-            rx="2"
-            fill={c.koko}
-            stroke={c.outline}
-            strokeWidth="3.5"
-          />
-
-          {/* 3 Kancing Elegan (Warna Emas Kacamata) */}
-          <circle cx="200" cy="302" r="3.5" fill={c.kokoButton} stroke={c.outline} strokeWidth="1.5" />
-          <circle cx="200" cy="322" r="3.5" fill={c.kokoButton} stroke={c.outline} strokeWidth="1.5" />
-          <circle cx="200" cy="342" r="3.5" fill={c.kokoButton} stroke={c.outline} strokeWidth="1.5" />
-
-          {/* Kerah Shanghai / Mandarin Collar (Melingkar Pas di Pangkal Leher) */}
-          <g id="mandarin-collar">
-            <path
-              d="M172 274 Q200 258 228 274 L224 286 Q200 272 176 286 Z"
-              fill={c.kokoCollar}
+              d="M 106 360 L 102 430 L 100 488 L 132 488 L 134 430 L 134 360 Z"
+              fill={c.pants}
               stroke={c.outline}
-              strokeWidth="4"
+              strokeWidth="3.2"
               strokeLinejoin="round"
             />
-            {/* Aksen Jahitan Emas Halus di Tepi Atas Kerah */}
+            {/* Lipatan Seterika Celana Rapi */}
+            <line x1="117" y1="375" x2="115" y2="475" stroke={c.pantsDark} strokeWidth="1.5" opacity="0.6" strokeLinecap="round" />
+            {/* Lipatan Ujung Celana */}
+            <rect x="99" y="480" width="34" height="8" rx="3" fill={c.pantsDark} stroke={c.outline} strokeWidth="2" />
+            {/* Sneaker Kiri (Desain Modern Minimalis) */}
+            <g transform="translate(86, 486)">
+              {/* Bagian Atas Sepatu */}
+              <path
+                d="M 4 14 C 12 6 28 4 46 8 L 47 24 L 2 24 C 0 19 1 16 4 14 Z"
+                fill={c.shoeBase}
+                stroke={c.outline}
+                strokeWidth="2.8"
+                strokeLinejoin="round"
+              />
+              {/* Tali Sepatu Minimalis */}
+              <line x1="20" y1="11" x2="28" y2="10" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" />
+              <line x1="22" y1="15" x2="30" y2="14" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" />
+              {/* Sol Putih Sneaker Tebal & Datar Menapak Lantai */}
+              <rect x="0" y="21" width="50" height="9" rx="3" fill={c.shoeWhite} stroke={c.outline} strokeWidth="2.2" />
+              <line x1="0" y1="28" x2="50" y2="28" stroke={c.outline} strokeWidth="1.5" />
+            </g>
+          </g>
+
+          {/* Kaki Kanan */}
+          <g transform="rotate(2, 160, 360)">
+            {/* Celana Chino Kanan dengan Lekukan Natural */}
             <path
-              d="M174 274 Q200 260 226 274"
-              fill="none"
-              stroke={c.kokoButton}
-              strokeWidth="2"
-              strokeLinecap="round"
+              d="M 146 360 L 146 430 L 148 488 L 180 488 L 178 430 L 174 360 Z"
+              fill={c.pants}
+              stroke={c.outline}
+              strokeWidth="3.2"
+              strokeLinejoin="round"
             />
-            {/* Celah Kancing Kerah Tengah */}
-            <line x1="200" y1="274" x2="200" y2="284" stroke={c.outline} strokeWidth="2.5" />
+            {/* Lipatan Seterika Celana Rapi */}
+            <line x1="163" y1="375" x2="165" y2="475" stroke={c.pantsDark} strokeWidth="1.5" opacity="0.6" strokeLinecap="round" />
+            {/* Lipatan Ujung Celana */}
+            <rect x="147" y="480" width="34" height="8" rx="3" fill={c.pantsDark} stroke={c.outline} strokeWidth="2" />
+            {/* Sneaker Kanan (Desain Modern Minimalis) */}
+            <g transform="translate(144, 486)">
+              {/* Bagian Atas Sepatu */}
+              <path
+                d="M 4 8 C 22 4 38 6 46 14 C 49 16 50 19 48 24 L 3 24 L 4 8 Z"
+                fill={c.shoeBase}
+                stroke={c.outline}
+                strokeWidth="2.8"
+                strokeLinejoin="round"
+              />
+              {/* Tali Sepatu Minimalis */}
+              <line x1="22" y1="10" x2="30" y2="11" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" />
+              <line x1="20" y1="14" x2="28" y2="15" stroke="#94A3B8" strokeWidth="2" strokeLinecap="round" />
+              {/* Sol Putih Sneaker Tebal & Datar Menapak Lantai */}
+              <rect x="0" y="21" width="50" height="9" rx="3" fill={c.shoeWhite} stroke={c.outline} strokeWidth="2.2" />
+              <line x1="0" y1="28" x2="50" y2="28" stroke={c.outline} strokeWidth="1.5" />
+            </g>
           </g>
         </g>
 
-        {/* =========================================================================
-            LAYER 2: KEPALA & WAJAH (Dengan Secondary Motion Nafas & Head Tilt)
-           ========================================================================= */}
-        <g
-          id="head-layer"
-          transform={`translate(0, ${breatheOffset}) rotate(${finalTilt} 200 160)`}
-        >
-          {/* Telinga Kiri & Kanan */}
-          <circle cx="98" cy="165" r="26" fill={c.skin} stroke={c.outline} strokeWidth="4" />
-          <circle cx="302" cy="165" r="26" fill={c.skin} stroke={c.outline} strokeWidth="4" />
-          <path
-            d="M92 158 Q98 168 92 176"
-            fill="none"
-            stroke={c.skinShade}
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-          <path
-            d="M308 158 Q302 168 308 176"
-            fill="none"
-            stroke={c.skinShade}
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
+        {/* =====================================================================
+            3. UPPER BODY & HEAD GROUP (Bernapas Halus, Badan Atletis Rapi)
+           ===================================================================== */}
+        <g id="upper-body-group" transform={`translate(0, ${breatheY})`}>
+          {/* Rambut Belakang Leher (Ikut HeadTilt saat Kepala Menoleh/Miring) */}
+          <g id="back-hair" transform={`rotate(${headTilt} 140 145)`}>
+            <path
+              d="M 112 142 C 110 180 120 198 128 202 L 152 202 C 160 198 170 180 168 142 Z"
+              fill={c.hair}
+            />
+          </g>
 
-          {/* Bentuk Kepala Utama */}
-          <ellipse
-            cx="200"
-            cy="160"
-            rx="103"
-            ry="96"
-            fill={c.skin}
+          {/* Leher Proporsional (Simetris di Tengah X: 140) */}
+          <path
+            d="M 128 178 L 128 218 Q 140 222 152 218 L 152 178 Z"
+            fill={c.skinShadow}
             stroke={c.outline}
-            strokeWidth="5"
+            strokeWidth="3.2"
           />
 
-          {/* Shading Pipi Halus */}
-          <ellipse cx="122" cy="175" rx="14" ry="26" fill={c.skinShade} opacity=".15" />
-          <ellipse cx="278" cy="175" rx="14" ry="26" fill={c.skinShade} opacity=".15" />
+          {/* BADAN: KOKO MODERN ATAU T-SHIRT KASUAL (Bahu Tegap, Simetris di X: 140) */}
+          <g id="torso">
+            <path
+              d="M 88 220 L 192 220 L 182 364 Q 140 370 98 364 Z"
+              fill={`url(#${outfitGradId})`}
+              stroke={c.outline}
+              strokeWidth="3.8"
+              strokeLinejoin="round"
+            />
 
-          {/* Rambut Ikal Bervolume */}
-          <path
-            d="M96 148 C78 118 84 78 110 62 C102 40 128 28 148 38 C148 18 178 12 196 26 C210 10 240 16 246 36 C268 22 294 36 288 58 C312 72 320 112 304 148 C296 122 278 112 260 118 C248 104 228 104 214 116 C200 102 182 102 168 116 C150 104 130 110 118 122 C106 112 98 128 96 148 Z"
-            fill={c.hair}
-            stroke={c.outline}
-            strokeWidth="4"
-            strokeLinejoin="round"
-          />
+            {outfitType === "koko" ? (
+              <>
+                {/* Kerah Shanghai Modern Rapi */}
+                <path
+                  d="M 120 214 Q 140 226 160 214 L 160 225 Q 140 236 120 225 Z"
+                  fill={c.outfitCollar}
+                  stroke={c.outline}
+                  strokeWidth="2.8"
+                />
 
-          {/* Tekstur Ikal Rambut */}
-          <g fill="none" stroke={c.hairLine} strokeWidth="3" opacity=".45" strokeLinecap="round">
-            <path d="M132 58 Q150 44 170 58" />
-            <path d="M190 42 Q210 28 230 42" />
-            <path d="M248 58 Q268 46 284 62" />
-            <path d="M150 102 Q165 92 180 102" />
-            <path d="M220 102 Q235 92 250 102" />
+                {/* Belahan Kancing Tengah & Kancing Emas */}
+                <line x1="140" y1="225" x2="140" y2="345" stroke={c.outfitShade} strokeWidth="3" />
+                <circle cx="140" cy="242" r="3.2" fill={c.outfitAccent} stroke={c.outline} strokeWidth="1.2" />
+                <circle cx="140" cy="268" r="3.2" fill={c.outfitAccent} stroke={c.outline} strokeWidth="1.2" />
+                <circle cx="140" cy="294" r="3.2" fill={c.outfitAccent} stroke={c.outline} strokeWidth="1.2" />
+                <circle cx="140" cy="320" r="3.2" fill={c.outfitAccent} stroke={c.outline} strokeWidth="1.2" />
+
+                {/* Saku Minimalis di Dada Kiri */}
+                <rect x="156" y="248" width="18" height="22" rx="3" fill="none" stroke={c.outfitShade} strokeWidth="2" />
+                <line x1="156" y1="248" x2="174" y2="248" stroke={c.outfitAccent} strokeWidth="2" strokeLinecap="round" />
+              </>
+            ) : (
+              <>
+                {/* Kerah Crewneck Kasual Kaos/Sweater */}
+                <path
+                  d="M 122 216 Q 140 234 158 216"
+                  fill="none"
+                  stroke={c.outfitCollar}
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M 122 216 Q 140 234 158 216"
+                  fill="none"
+                  stroke={c.outline}
+                  strokeWidth="2.2"
+                />
+              </>
+            )}
           </g>
 
-          {/* Hidung Kartun Minimalis */}
-          <path
-            d="M192 188 Q200 198 208 188"
-            fill="none"
-            stroke="#C97A45"
-            strokeWidth="3.5"
-            strokeLinecap="round"
-          />
+          {/* ===================================================================
+              4. LENGAN & TANGAN (THE POSE ENGINE - PROPORSIONAL & NATURAL)
+             =================================================================== */}
+          <g id="arms">
+            {/* 1. IDLE (Tangan Santai di Samping Paha, Jempol Hadap Dalam Medial Natural) */}
+            {activePose === "idle" && (
+              <g>
+                {/* Lengan Kiri */}
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="73" y="372" width="20" height="7" rx="3" fill={c.outfitShade} stroke={c.outline} strokeWidth="2" />
+                <ellipse cx="85" cy="392" rx="9" ry="12" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                {/* Jempol Hadap Dalam ke Arah Badan (Anatomi Benar) */}
+                <ellipse cx="92" cy="388" rx="3.5" ry="5" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
 
-          {/* Bintik Manis di Pipi (Freckles) */}
-          <g fill="#B96A35" opacity=".35">
-            <circle cx="130" cy="188" r="2" />
-            <circle cx="142" cy="194" r="1.8" />
-            <circle cx="124" cy="196" r="1.8" />
-            <circle cx="270" cy="188" r="2" />
-            <circle cx="258" cy="194" r="1.8" />
-            <circle cx="276" cy="196" r="1.8" />
+                {/* Lengan Kanan */}
+                <path d="M 190 228 C 206 275 206 340 196 380" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 C 206 275 206 340 196 380" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="187" y="372" width="20" height="7" rx="3" fill={c.outfitShade} stroke={c.outline} strokeWidth="2" />
+                <ellipse cx="195" cy="392" rx="9" ry="12" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                {/* Jempol Hadap Dalam ke Arah Badan (Anatomi Benar) */}
+                <ellipse cx="188" cy="388" rx="3.5" ry="5" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
+              </g>
+            )}
+
+            {/* 2. EXPLAINING (Tangan Kiri Santai Proporsional, Tangan Kanan Terbuka Menerangkan Santun) */}
+            {activePose === "explaining" && (
+              <g>
+                {/* Lengan Kiri Santai Konsisten */}
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="73" y="372" width="20" height="7" rx="3" fill={c.outfitShade} stroke={c.outline} strokeWidth="2" />
+                <ellipse cx="85" cy="392" rx="9" ry="12" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                <ellipse cx="92" cy="388" rx="3.5" ry="5" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
+
+                {/* Lengan Kanan Mengangkat Terbuka Santun */}
+                <path d="M 190 228 Q 224 285 208 305 L 230 270" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 Q 224 285 208 305 L 230 270" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="221" y="268" width="16" height="7" rx="3" fill={c.outfitShade} stroke={c.outline} strokeWidth="1.8" transform="rotate(-30 229 271)" />
+                <g transform="translate(238, 262) rotate(-15)">
+                  <ellipse cx="0" cy="0" rx="10" ry="13" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  {/* Jari Santun Terbuka */}
+                  <line x1="-3" y1="-11" x2="-3" y2="-2" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                  <line x1="3" y1="-11" x2="3" y2="-2" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                  <ellipse cx="-8" cy="2" rx="4" ry="5" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
+                </g>
+              </g>
+            )}
+
+            {/* 3. POINTING (Menunjuk Mantap & Jangkauan Penuh Percaya Diri dengan Manset Rapi) */}
+            {activePose === "pointing" && (
+              <g>
+                {/* Lengan Kiri Santai Konsisten */}
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="73" y="372" width="20" height="7" rx="3" fill={c.outfitShade} stroke={c.outline} strokeWidth="2" />
+                <ellipse cx="85" cy="392" rx="9" ry="12" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                <ellipse cx="92" cy="388" rx="3.5" ry="5" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
+
+                {/* Lengan Kanan Terentang Menunjuk dengan Manset Pergelangan */}
+                <path d="M 190 226 L 246 186" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 226 L 246 186" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="238" y="180" width="8" height="18" rx="2.5" fill={c.outfitShade} stroke={c.outline} strokeWidth="1.8" transform="rotate(-34 242 189)" />
+                <g transform="translate(256, 184) rotate(-22)">
+                  <ellipse cx="0" cy="0" rx="9" ry="9" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  {/* Telunjuk Menunjuk Mantap */}
+                  <rect x="4" y="-5" width="22" height="8" rx="4" fill={c.skin} stroke={c.outline} strokeWidth="2.2" />
+                  {/* Jempol Terlipat */}
+                  <ellipse cx="-2" cy="-4" rx="4" ry="3.5" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
+                </g>
+              </g>
+            )}
+
+            {/* 4. CURIOUS (Tangan di Dagu, Siku V Bersih, Berpikir Penasaran) */}
+            {activePose === "curious" && (
+              <g>
+                {/* Lengan Kiri Santai Konsisten */}
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="73" y="372" width="20" height="7" rx="3" fill={c.outfitShade} stroke={c.outline} strokeWidth="2" />
+                <ellipse cx="85" cy="392" rx="9" ry="12" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                <ellipse cx="92" cy="388" rx="3.5" ry="5" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
+
+                {/* Lengan Kanan Menekuk ke Dagu (Lipatan Siku V Bersih) */}
+                <path d="M 190 228 L 222 280 L 176 195" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M 190 228 L 222 280 L 176 195" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+                <rect x="172" y="194" width="14" height="6" rx="2.5" fill={c.outfitShade} stroke={c.outline} strokeWidth="1.8" transform="rotate(-30 179 197)" />
+                <g transform="translate(172, 188) rotate(-10)">
+                  <ellipse cx="0" cy="0" rx="8.5" ry="9" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  <rect x="-6" y="-7" width="14" height="6.5" rx="3.2" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
+                </g>
+              </g>
+            )}
+
+            {/* 5. ALERT / PANIC (Kedua Tangan Memegang Pipi, Jari-Jari Mencengkeram Waspada) */}
+            {activePose === "alert" && (
+              <g>
+                {/* Lengan Kiri Menempel Pipi */}
+                <path d="M 90 228 Q 58 210 68 168" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 Q 58 210 68 168" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <g transform="translate(70, 158) rotate(15)">
+                  <ellipse cx="0" cy="0" rx="9" ry="10" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  <path d="M 4 -7 Q 9 -4 4 -1" fill="none" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M 4 -1 Q 9 2 4 5" fill="none" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                </g>
+
+                {/* Lengan Kanan Menempel Pipi */}
+                <path d="M 190 228 Q 222 210 212 168" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 Q 222 210 212 168" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <g transform="translate(210, 158) rotate(-15)">
+                  <ellipse cx="0" cy="0" rx="9" ry="10" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  <path d="M -4 -7 Q -9 -4 -4 -1" fill="none" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                  <path d="M -4 -1 Q -9 2 -4 5" fill="none" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                </g>
+
+                {/* Keringat Dingin Panik */}
+                <path d="M 64 128 C 60 136 56 143 64 145 C 72 143 68 136 64 128 Z" fill="#38BDF8" stroke={c.outline} strokeWidth="1.5" />
+              </g>
+            )}
+
+            {/* 6. DIZZY (Tangan di Dahi & Perut Mual) */}
+            {activePose === "dizzy" && (
+              <g>
+                {/* Tangan Kiri di Perut */}
+                <path d="M 90 228 Q 98 300 130 300" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 Q 98 300 130 300" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <ellipse cx="134" cy="300" rx="10" ry="10" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+
+                {/* Tangan Kanan Memegang Dahi Pusing */}
+                <path d="M 190 228 Q 232 215 190 134" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 Q 232 215 190 134" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <ellipse cx="184" cy="130" rx="10" ry="10" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+
+                {/* Spiral Bintang Pusing Berputar */}
+                <g transform={`translate(140, 48) rotate(${(frame * 8) % 360})`} opacity="0.85">
+                  <path d="M 0 0 m -5,0 a 5,5 0 1,0 10,0 a 10,10 0 1,0 -20,0 a 15,15 0 1,0 30,0" fill="none" stroke="#F59E0B" strokeWidth="2.8" strokeLinecap="round" />
+                </g>
+              </g>
+            )}
+
+            {/* 7. PEACEFUL (Tangan Bersedekap Santun Tawadhu' Berlapisp Kanan di Atas Kiri) */}
+            {activePose === "peaceful" && (
+              <g>
+                {/* Lengan Kiri Menyilang di Bawah */}
+                <path d="M 90 228 Q 80 295 125 310 L 155 310" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 Q 80 295 125 310 L 155 310" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="145" y="304" width="16" height="12" rx="3" fill={c.skin} stroke={c.outline} strokeWidth="2.4" />
+
+                {/* Lengan Kanan Menyilang di Atas (Sedekap Kanan di Atas Kiri) */}
+                <path d="M 190 228 Q 200 295 155 304 L 120 304" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 Q 200 295 155 304 L 120 304" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                {/* Tangan Kanan Menggenggam Lengan Kiri Santun */}
+                <g transform="translate(122, 304)">
+                  <ellipse cx="0" cy="0" rx="8" ry="9" fill={c.skin} stroke={c.outline} strokeWidth="2.4" />
+                  <path d="M -3 -6 Q 2 -8 5 -5" fill="none" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                </g>
+              </g>
+            )}
+
+            {/* 8. HOLDING (Tangan Terulur Memegang Properti Adegan) */}
+            {activePose === "holding" && (
+              <g>
+                {/* Lengan Kiri Santai Konsisten */}
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="73" y="372" width="20" height="7" rx="3" fill={c.outfitShade} stroke={c.outline} strokeWidth="2" />
+                <ellipse cx="85" cy="392" rx="9" ry="12" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                <ellipse cx="92" cy="388" rx="3.5" ry="5" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
+
+                {/* Lengan Kanan Memegang Properti di Depan Perut/Pinggang */}
+                <path d="M 190 228 Q 230 270 216 295" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 Q 230 270 216 295" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="207" y="290" width="8" height="15" rx="2.5" fill={c.outfitShade} stroke={c.outline} strokeWidth="1.8" transform="rotate(25 211 297)" />
+                {/* Tangan Mencengkeram/Memegang Mantap (Grip Pose) */}
+                <g transform="translate(216, 295)">
+                  <ellipse cx="0" cy="0" rx="9.5" ry="10" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  {/* Jempol Mengunci */}
+                  <path d="M -6 -5 Q -2 -9 2 -5" fill="none" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                  {/* Jari-Jari Mencengkeram */}
+                  <path d="M 4 -3 Q 8 0 4 3" fill="none" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                  <path d="M 3 3 Q 7 6 3 9" fill="none" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                </g>
+              </g>
+            )}
+
+            {/* 9. ANGRY (Kedua Tangan Mengepal Kuat Penuh Emosi / Bergetar) */}
+            {activePose === "angry" && (
+              <g>
+                {/* Lengan Kiri Mengepal di Pinggang */}
+                <path d="M 90 228 Q 62 268 76 305 L 94 290" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 Q 62 268 76 305 L 94 290" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                {/* Kepalan Tinju Kiri */}
+                <g transform="translate(98, 288)">
+                  <circle cx="0" cy="0" r="10" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  <path d="M -5 -4 L 5 -4" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                  <path d="M -5 1 L 5 1" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                  <path d="M -7 -2 Q -3 -8 1 -3" fill="none" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                </g>
+
+                {/* Lengan Kanan Mengepal Tegak Menantang */}
+                <path d="M 190 228 Q 224 250 216 210 L 202 185" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 Q 224 250 216 210 L 202 185" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                {/* Kepalan Tinju Kanan Terangkat */}
+                <g transform="translate(198, 178) rotate(-15)">
+                  <circle cx="0" cy="0" r="10.5" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  <path d="M -4 -4 L 5 -4" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                  <path d="M -4 1 L 5 1" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                  <path d="M -6 -2 Q -2 -7 2 -2" fill="none" stroke={c.outline} strokeWidth="2" strokeLinecap="round" />
+                </g>
+
+                {/* Simbol Emosi Marah / Urat Berdenyut (Comic Anger Vein 💢) */}
+                <g transform="translate(72, 110) scale(0.9)" opacity="0.95">
+                  <path d="M -8 -8 L -2 -2 M -8 8 L -2 2 M 8 -8 L 2 -2 M 8 8 L 2 2" stroke="#EF4444" strokeWidth="3" strokeLinecap="round" />
+                  <rect x="-7" y="-7" width="14" height="14" rx="2" fill="none" stroke="#EF4444" strokeWidth="2.5" />
+                </g>
+              </g>
+            )}
+
+            {/* 10. CALMING (Kedua Tangan Terangkat Menenangkan: "Sabar, Tenang") */}
+            {activePose === "calming" && (
+              <g>
+                {/* Lengan Kiri Terulur ke Depan Santun */}
+                <path d="M 90 228 Q 70 280 108 275 L 126 265" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 Q 70 280 108 275 L 126 265" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <g transform="translate(132, 260) rotate(-20)">
+                  <ellipse cx="0" cy="0" rx="9" ry="11" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  <line x1="-3" y1="-9" x2="-3" y2="-2" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="3" y1="-9" x2="3" y2="-2" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                </g>
+
+                {/* Lengan Kanan Terulur Menenangkan */}
+                <path d="M 190 228 Q 220 280 185 270 L 165 255" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 Q 220 280 185 270 L 165 255" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <g transform="translate(158, 250) rotate(15)">
+                  <ellipse cx="0" cy="0" rx="9" ry="11" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  <line x1="-3" y1="-9" x2="-3" y2="-2" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                  <line x1="3" y1="-9" x2="3" y2="-2" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                </g>
+              </g>
+            )}
+
+            {/* 11. REGRET (Menggaruk Belakang Kepala Canggung & Sadar Nasihat) */}
+            {activePose === "regret" && (
+              <g>
+                {/* Lengan Kiri Santai Konsisten */}
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 90 228 C 74 275 74 340 84 380" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <rect x="73" y="372" width="20" height="7" rx="3" fill={c.outfitShade} stroke={c.outline} strokeWidth="2" />
+                <ellipse cx="85" cy="392" rx="9" ry="12" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                <ellipse cx="92" cy="388" rx="3.5" ry="5" fill={c.skin} stroke={c.outline} strokeWidth="1.8" />
+
+                {/* Lengan Kanan Menekuk ke Belakang Kepala (Menggaruk Malu) */}
+                <path d="M 190 228 Q 236 215 204 140 L 192 125" fill="none" stroke={c.outfitMain} strokeWidth="19" strokeLinecap="round" />
+                <path d="M 190 228 Q 236 215 204 140 L 192 125" fill="none" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                <g transform="translate(188, 122) rotate(-35)">
+                  <ellipse cx="0" cy="0" rx="9" ry="9" fill={c.skin} stroke={c.outline} strokeWidth="2.6" />
+                  <path d="M -4 -3 Q 0 -7 4 -3" fill="none" stroke={c.outline} strokeWidth="1.8" strokeLinecap="round" />
+                </g>
+
+                {/* Keringat Malu/Canggung Besar */}
+                <path d="M 210 115 C 205 125 198 132 208 135 C 218 132 215 125 210 115 Z" fill="#38BDF8" stroke={c.outline} strokeWidth="1.5" />
+              </g>
+            )}
           </g>
 
-          {/* Layer Ekspresi Wajah (Alis, Mata, Mulut, Emosi) */}
-          <g id="face-expression">{renderFaceContent()}</g>
+          {/* ===================================================================
+              5. KEPALA, RAMBUT & WAJAH (SIMETRIS, RAPI, YOUTHFUL & BERSIH)
+             =================================================================== */}
+          <g id="head-and-face" transform={`rotate(${headTilt} 140 145)`}>
+            {/* Telinga Kiri & Kanan (Simetris: 140 - 54 = 86, 140 + 54 = 194) */}
+            <circle cx="86" cy="146" r="13" fill={c.skin} stroke={c.outline} strokeWidth="3" />
+            <circle cx="194" cy="146" r="13" fill={c.skin} stroke={c.outline} strokeWidth="3" />
+            <path d="M 84 143 Q 88 148 84 151" fill="none" stroke={c.skinShadow} strokeWidth="2" strokeLinecap="round" />
+            <path d="M 196 143 Q 192 148 196 151" fill="none" stroke={c.skinShadow} strokeWidth="2" strokeLinecap="round" />
 
-          {/* Kacamata Bulat Emas Ikonik */}
-          <g fill="none" stroke={c.glasses} strokeWidth="5" strokeLinecap="round">
-            <circle cx="160" cy="152" r="38" />
-            <circle cx="240" cy="152" r="38" />
-            <path d="M182 140 Q200 128 218 140" />
-            <path d="M118 150 L100 144" />
-            <path d="M282 150 L300 144" />
+            {/* Bentuk Wajah Utama Oval Proporsional (Simetris di Tengah X: 140) */}
+            <ellipse
+              cx="140"
+              cy="142"
+              rx="49"
+              ry="53"
+              fill={c.skin}
+              stroke={c.outline}
+              strokeWidth="3.2"
+            />
+
+            {/* Rona Pipi Manis Halus (Merah Terbakar saat Marah) */}
+            <ellipse cx="108" cy="154" rx={activePose === "angry" ? "10" : "7"} ry={activePose === "angry" ? "6" : "4.5"} fill={activePose === "angry" ? "#EF4444" : "#FDA4AF"} opacity={activePose === "angry" ? 0.65 : 0.32} />
+            <ellipse cx="172" cy="154" rx={activePose === "angry" ? "10" : "7"} ry={activePose === "angry" ? "6" : "4.5"} fill={activePose === "angry" ? "#EF4444" : "#FDA4AF"} opacity={activePose === "angry" ? 0.65 : 0.32} />
+
+            {/* HEADWEAR & RAMBUT (Peci Hitam Host vs Textured Fringe Sahabat vs Quiff) */}
+            {hairStyle === "peci" ? (
+              <g id="headwear-peci">
+                {/* Siluet Utama Peci Hitam Nasional / Kopiah Modern Elegan
+                    - Ketinggian dipangkas pas & proporsional (puncak Y: 60, bukan 45 yang terlalu tinggi)
+                    - Melengkung rapi di atas daun telinga (Y: 126-128) tanpa memotong telinga
+                    - Memiliki jambang tipis rapi di depan telinga (lebar 5px, Y: 142)
+                    - Lengkungan rim dahi proporsional (Y: 98-100), dahi terbuka cerdas & ramah
+                    - Siluet modern songkok / peci nasional yang pas di kepala */}
+                <path
+                  d="M 82 134 
+                     C 84 112 88 88 96 74 
+                     C 106 63 120 60 140 60 
+                     C 160 60 174 63 184 74 
+                     C 192 88 196 112 198 134 
+                     C 197 126 192 126 190 128 
+                     L 190 142 
+                     L 185 142 
+                     L 185 124 
+                     C 180 112 164 98 140 98 
+                     C 116 98 100 112 95 124 
+                     L 95 142 
+                     L 90 142 
+                     L 90 128 
+                     C 88 126 83 126 82 134 Z"
+                  fill={`url(#${hairGradId})`}
+                  stroke={c.outline}
+                  strokeWidth="3.2"
+                  strokeLinejoin="round"
+                />
+
+                {/* Garis Lipatan / Jahitan Rim Bawah Peci (Seam Line Elegan) */}
+                <path
+                  d="M 96 122 C 104 112 118 101 140 101 C 162 101 176 112 184 122"
+                  fill="none"
+                  stroke={c.hairHighlight}
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  opacity="0.75"
+                />
+
+                {/* Kilau Halus Kain Beludru Peci (Velvet Sheen) */}
+                <path
+                  d="M 116 66 Q 140 62 164 66"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth="2.5"
+                  opacity="0.16"
+                  strokeLinecap="round"
+                />
+              </g>
+            ) : hairStyle === "messy" ? (
+              <g id="hair-textured-fringe">
+                {/* Silhouette Utama: Textured Crop / Two-Block Kasual Trendy
+                    - Tidak memotong telinga: melengkung rapi di atas daun telinga (Y: 126-128)
+                    - Sideburns / jambang presisi berketebalan natural (lebar 5px, Y: 142)
+                    - Mahkota bervolume dinamis natural bertekstur modern (Y: 60-64)
+                    - Poni bertekstur lembut di atas dahi (Y: 104-108), proporsional & bebas taring tajam */}
+                <path
+                  d="M 82 134 
+                     C 83 112 86 90 94 76 
+                     C 102 65 114 62 126 64 
+                     C 134 60 148 60 162 64 
+                     C 174 66 184 76 191 86 
+                     C 196 98 198 114 198 134 
+                     C 197 126 192 126 190 128 
+                     L 190 142 
+                     L 185 142 
+                     L 185 124 
+                     C 184 114 178 106 170 106 
+                     C 164 104 156 104 150 108 
+                     C 144 103 136 103 130 108 
+                     C 122 104 112 105 104 110 
+                     C 98 114 96 120 95 124 
+                     L 95 142 
+                     L 90 142 
+                     L 90 128 
+                     C 88 126 83 126 82 134 Z"
+                  fill={`url(#${hairGradId})`}
+                  stroke={c.outline}
+                  strokeWidth="3.2"
+                  strokeLinejoin="round"
+                />
+
+                {/* Detail Garis Helai Poni Bertekstur (Layering Alami) */}
+                <path
+                  d="M 129 108 C 133 113 139 114 145 111"
+                  fill="none"
+                  stroke={c.outline}
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M 150 108 C 154 113 160 114 166 111"
+                  fill="none"
+                  stroke={c.outline}
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                />
+
+                {/* Aksen Aliran Tekstur Rambut di Mahkota Kepala */}
+                <g fill="none" stroke={c.hairHighlight} strokeWidth="2.2" opacity="0.75" strokeLinecap="round">
+                  <path d="M 112 74 Q 128 68 144 71" />
+                  <path d="M 148 70 Q 164 72 176 80" />
+                  <path d="M 124 83 Q 138 80 154 82" />
+                </g>
+              </g>
+            ) : (
+              <g id="hair-modern-quiff">
+                {/* Silhouette Utama: Modern Side-Part Quiff Taper Fade Host
+                    - Taper fade rapi di sisi kiri (Y: 82), menyatu ke belahan rambut (X: 112, Y: 80)
+                    - Quiff bervolume maskulin menyisir ke kanan (puncak Y: 56 pada X: 150)
+                    - Melengkung bersih di atas telinga tanpa memotong daun telinga
+                    - Jambang (sideburns) presisi berketebalan 5px di depan telinga (Y: 142)
+                    - Garis dahi elegan, terbuka cerdas & santun (Y: 96-102) */}
+                <path
+                  d="M 82 134 
+                     C 83 110 86 90 94 82 
+                     C 100 76 106 78 112 80 
+                     C 118 66 132 56 150 56 
+                     C 168 56 184 65 191 80 
+                     C 196 90 198 108 198 134 
+                     C 197 126 192 126 190 128 
+                     L 190 142 
+                     L 185 142 
+                     L 185 124 
+                     C 184 110 178 98 168 96 
+                     C 152 92 134 92 118 97 
+                     C 110 100 104 106 102 114 
+                     C 98 118 96 122 95 126 
+                     L 95 142 
+                     L 90 142 
+                     L 90 128 
+                     C 88 126 83 126 82 134 Z"
+                  fill={`url(#${hairGradId})`}
+                  stroke={c.outline}
+                  strokeWidth="3.2"
+                  strokeLinejoin="round"
+                />
+
+                {/* Garis Aksen Belahan Rambut (Side-Part) */}
+                <path
+                  d="M 108 80 C 111 88 113 96 118 97"
+                  fill="none"
+                  stroke={c.hairHighlight}
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  opacity="0.85"
+                />
+
+                {/* Garis Aliran Sisiran Quiff (Volume & Direction) */}
+                <g fill="none" stroke={c.hairHighlight} strokeWidth="2.2" opacity="0.8" strokeLinecap="round">
+                  <path d="M 126 67 Q 146 62 168 68" />
+                  <path d="M 132 77 Q 152 72 174 79" />
+                  <path d="M 138 87 Q 154 83 170 89" />
+                </g>
+              </g>
+            )}
+
+            {/* Hidung Kartun Halus */}
+            <path
+              d="M 137 146 Q 140 151 143 146"
+              fill="none"
+              stroke={c.skinShadow}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+
+            {/* ALIS (Mata & Alis Menyesuaikan Emosi Pose) */}
+            <g id="eyebrows">
+              {activePose === "angry" ? (
+                <>
+                  {/* Alis Menukik Tajam Sangat Marah */}
+                  <path d="M 106 122 L 133 112" stroke={c.outline} strokeWidth="3.6" strokeLinecap="round" />
+                  <path d="M 174 122 L 147 112" stroke={c.outline} strokeWidth="3.6" strokeLinecap="round" />
+                </>
+              ) : activePose === "calming" ? (
+                <>
+                  {/* Alis Lembut Santun Penuh Kasih Sayang */}
+                  <path d="M 108 114 Q 120 110 131 116" fill="none" stroke={c.outline} strokeWidth="2.8" strokeLinecap="round" />
+                  <path d="M 172 114 Q 160 110 149 116" fill="none" stroke={c.outline} strokeWidth="2.8" strokeLinecap="round" />
+                </>
+              ) : activePose === "regret" ? (
+                <>
+                  {/* Alis Canggung / Menyesal Miring ke Luar */}
+                  <path d="M 110 114 L 131 121" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                  <path d="M 170 114 L 149 121" stroke={c.outline} strokeWidth="3.2" strokeLinecap="round" />
+                </>
+              ) : activePose === "alert" ? (
+                <>
+                  <path d="M 108 114 Q 120 102 131 114" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 149 114 Q 160 102 172 114" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                </>
+              ) : activePose === "dizzy" ? (
+                <>
+                  <path d="M 108 120 Q 118 126 131 116" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 149 116 Q 162 126 172 120" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                </>
+              ) : activePose === "curious" ? (
+                <>
+                  <path d="M 108 116 Q 120 120 131 118" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 149 110 Q 160 102 172 110" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                </>
+              ) : (
+                <>
+                  <path d="M 108 118 Q 120 112 131 118" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 149 118 Q 160 112 172 118" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                </>
+              )}
+            </g>
+
+            {/* MATA (Binar Ramah, Bersih, Ekspresi Dinamis Sesuai Pose) */}
+            <g id="eyes">
+              {activePose === "dizzy" ? (
+                <>
+                  <g transform="translate(120, 134) scale(0.6)">
+                    <path d="M 0 0 m -6,0 a 6,6 0 1,0 12,0 a 12,12 0 1,0 -24,0" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                  </g>
+                  <g transform="translate(160, 134) scale(0.6)">
+                    <path d="M 0 0 m -6,0 a 6,6 0 1,0 12,0 a 12,12 0 1,0 -24,0" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                  </g>
+                </>
+              ) : activePose === "peaceful" ? (
+                <>
+                  {/* Mata Tertutup Tenang Khusyuk / Damai */}
+                  <path d="M 112 135 Q 120 144 128 135" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 152 135 Q 160 144 168 135" fill="none" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                </>
+              ) : activePose === "calming" ? (
+                <>
+                  {/* Mata Terbuka Ramah & Penuh Kasih (Menatap Lawan Bicara dengan Empati) */}
+                  <ellipse cx="120" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="122" cy="134" rx="5" ry="5.8" fill="#5A3825" />
+                  <circle cx="122" cy="134" r="2.8" fill={c.outline} />
+                  <circle cx="123.8" cy="131.8" r="1.6" fill="#FFFFFF" />
+                  <circle cx="120" cy="135.5" r="0.8" fill="#FFFFFF" />
+
+                  <ellipse cx="160" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="162" cy="134" rx="5" ry="5.8" fill="#5A3825" />
+                  <circle cx="162" cy="134" r="2.8" fill={c.outline} />
+                  <circle cx="163.8" cy="131.8" r="1.6" fill="#FFFFFF" />
+                  <circle cx="160" cy="135.5" r="0.8" fill="#FFFFFF" />
+                </>
+              ) : activePose === "angry" ? (
+                <>
+                  {/* Mata Melotot Tajam Marah */}
+                  <path d="M 112 128 L 129 135 L 125 142 L 112 138 Z" fill="#FFFFFF" stroke={c.outline} strokeWidth="1.8" />
+                  <circle cx="121" cy="135" r="2.5" fill="#DC2626" />
+                  <circle cx="121" cy="135" r="1.4" fill={c.outline} />
+
+                  <path d="M 168 128 L 151 135 L 155 142 L 168 138 Z" fill="#FFFFFF" stroke={c.outline} strokeWidth="1.8" />
+                  <circle cx="159" cy="135" r="2.5" fill="#DC2626" />
+                  <circle cx="159" cy="135" r="1.4" fill={c.outline} />
+                </>
+              ) : activePose === "regret" ? (
+                <>
+                  {/* Mata Canggung Melirik ke Bawah Malu */}
+                  <ellipse cx="120" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="120.5" cy="137" rx="4.5" ry="4.5" fill="#5A3825" />
+                  <circle cx="120.5" cy="137" r="2.2" fill={c.outline} />
+                  <circle cx="122" cy="135.5" r="1.2" fill="#FFFFFF" />
+
+                  <ellipse cx="160" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="160.5" cy="137" rx="4.5" ry="4.5" fill="#5A3825" />
+                  <circle cx="160.5" cy="137" r="2.2" fill={c.outline} />
+                  <circle cx="162" cy="135.5" r="1.2" fill="#FFFFFF" />
+                </>
+              ) : activePose === "alert" ? (
+                <>
+                  {/* Mata Terbelalak Panik / Waspada */}
+                  <ellipse cx="120" cy="134" rx="8.5" ry="9.5" fill="#FFFFFF" stroke={c.outline} strokeWidth="1.5" />
+                  <ellipse cx="120" cy="134" rx="4.2" ry="5.2" fill="#5A3825" />
+                  <circle cx="120" cy="134" r="2" fill={c.outline} />
+                  <circle cx="121.5" cy="132" r="1.2" fill="#FFFFFF" />
+
+                  <ellipse cx="160" cy="134" rx="8.5" ry="9.5" fill="#FFFFFF" stroke={c.outline} strokeWidth="1.5" />
+                  <ellipse cx="160" cy="134" rx="4.2" ry="5.2" fill="#5A3825" />
+                  <circle cx="160" cy="134" r="2" fill={c.outline} />
+                  <circle cx="161.5" cy="132" r="1.2" fill="#FFFFFF" />
+                </>
+              ) : activePose === "curious" ? (
+                <>
+                  {/* Mata Berpikir / Penasaran */}
+                  <ellipse cx="120" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="122" cy="132.5" rx="5" ry="6" fill="#5A3825" />
+                  <circle cx="122" cy="132.5" r="2.8" fill={c.outline} />
+                  <circle cx="123.8" cy="130.5" r="1.6" fill="#FFFFFF" />
+                  <circle cx="120" cy="134" r="0.8" fill="#FFFFFF" />
+
+                  <ellipse cx="160" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="162" cy="132.5" rx="5" ry="6" fill="#5A3825" />
+                  <circle cx="162" cy="132.5" r="2.8" fill={c.outline} />
+                  <circle cx="163.8" cy="130.5" r="1.6" fill="#FFFFFF" />
+                  <circle cx="160" cy="134" r="0.8" fill="#FFFFFF" />
+                </>
+              ) : isBlinking ? (
+                <>
+                  <path d="M 112 135 L 128 135" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                  <path d="M 152 135 L 168 135" stroke={c.outline} strokeWidth="3" strokeLinecap="round" />
+                </>
+              ) : (
+                <>
+                  {/* Mata Ramah Baku (Default) */}
+                  <ellipse cx="120" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="120.5" cy="134" rx="5" ry="6" fill="#5A3825" />
+                  <circle cx="120.5" cy="134" r="2.8" fill={c.outline} />
+                  <circle cx="122.5" cy="131.5" r="1.6" fill="#FFFFFF" />
+                  <circle cx="118.5" cy="135.5" r="0.8" fill="#FFFFFF" />
+
+                  <ellipse cx="160" cy="134" rx="7.5" ry="8.5" fill="#FFFFFF" />
+                  <ellipse cx="160.5" cy="134" rx="5" ry="6" fill="#5A3825" />
+                  <circle cx="160.5" cy="134" r="2.8" fill={c.outline} />
+                  <circle cx="162.5" cy="131.5" r="1.6" fill="#FFFFFF" />
+                  <circle cx="158.5" cy="135.5" r="0.8" fill="#FFFFFF" />
+                </>
+              )}
+            </g>
+
+            {/* KACAMATA MODERN ELEGANT (Opsional: Host Pakai, Sahabat Kasual Tanpa Kacamata) */}
+            {hasGlasses && (
+              <g id="glasses" fill="none" stroke={c.glasses} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                {/* Lensa Kiri Rounded Pantos */}
+                <rect x="106" y="121" width="28" height="26" rx="8" fill="rgba(255,255,255,0.06)" />
+                {/* Lensa Kanan Rounded Pantos */}
+                <rect x="146" y="121" width="28" height="26" rx="8" fill="rgba(255,255,255,0.06)" />
+                {/* Jembatan Hidung Kacamata */}
+                <path d="M 134 130 Q 140 126 146 130" strokeWidth="2.4" />
+                {/* Tangkai Kacamata ke Telinga */}
+                <line x1="106" y1="130" x2="94" y2="133" strokeWidth="2.2" />
+                <line x1="174" y1="130" x2="186" y2="133" strokeWidth="2.2" />
+                {/* Refleksi Kilau Kaca Bersih */}
+                <line x1="112" y1="126" x2="118" y2="126" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.75" />
+                <line x1="152" y1="126" x2="158" y2="126" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.75" />
+              </g>
+            )}
+
+            {/* MULUT */}
+            <g id="mouth">
+              {activePose === "angry" ? (
+                <g transform="translate(140, 164)">
+                  {/* Mulut Menggeram Gemas Menahan Marah / Menggertak Gigi */}
+                  <rect x="-10" y="-3.5" width="20" height="9" rx="3" fill="#FFFFFF" stroke={c.outline} strokeWidth="2.4" />
+                  <line x1="-10" y1="1" x2="10" y2="1" stroke={c.outline} strokeWidth="1.8" />
+                  <line x1="-3" y1="-3.5" x2="-3" y2="5.5" stroke={c.outline} strokeWidth="1.5" />
+                  <line x1="3" y1="-3.5" x2="3" y2="5.5" stroke={c.outline} strokeWidth="1.5" />
+                </g>
+              ) : activePose === "explaining" || activePose === "pointing" ? (
+                <g transform="translate(140, 163)">
+                  <path d="M -9 0 Q 0 9 9 0 Z" fill="#991B1B" stroke={c.outline} strokeWidth="2.5" strokeLinejoin="round" />
+                  <path d="M -6 0 Q 0 2.5 6 0 Z" fill="#FFFFFF" />
+                </g>
+              ) : activePose === "alert" ? (
+                <ellipse cx="140" cy="165" rx="5.5" ry="7.5" fill="#991B1B" stroke={c.outline} strokeWidth="2.5" />
+              ) : activePose === "dizzy" ? (
+                <path d="M 133 165 Q 137 160 140 165 T 147 163" fill="none" stroke={c.outline} strokeWidth="2.5" strokeLinecap="round" />
+              ) : activePose === "curious" ? (
+                <path d="M 136 163 Q 142 166 146 162" fill="none" stroke={c.outline} strokeWidth="2.6" strokeLinecap="round" />
+              ) : activePose === "regret" ? (
+                <path d="M 134 165 Q 140 160 146 164" fill="none" stroke={c.outline} strokeWidth="2.6" strokeLinecap="round" />
+              ) : (
+                <path
+                  d="M 133 162 Q 140 169 147 162"
+                  fill="none"
+                  stroke={c.outline}
+                  strokeWidth="2.8"
+                  strokeLinecap="round"
+                />
+              )}
+            </g>
           </g>
-
-          {/* Efek Kilau Kaca Kacamata */}
-          <path
-            d="M132 130 Q144 120 158 124"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="3"
-            strokeLinecap="round"
-            opacity=".65"
-          />
-          <path
-            d="M212 130 Q224 120 238 124"
-            fill="none"
-            stroke="#fff"
-            strokeWidth="3"
-            strokeLinecap="round"
-            opacity=".65"
-          />
         </g>
       </svg>
     </div>

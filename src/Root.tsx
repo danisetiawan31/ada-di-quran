@@ -21,6 +21,12 @@ import { EP02_THEME } from "../konten/02-manusia-fomo/theme";
 import { MainVideo as VideoIkanAsin } from "../konten/03-ikan-asin/MainVideo";
 import { EP03_THEME } from "../konten/03-ikan-asin/theme";
 
+// 5. LIVING BENCHMARK: Showcase Karakter Global Baku (Fase 1)
+import { CharacterShowcase as GlobalFoundationShowcase } from "./components/characters/CharacterShowcase";
+import { InteractionShowcase as GlobalInteractionShowcase } from "./components/characters/InteractionShowcase";
+import { TwoCharacterBrightScene } from "./components/characters/TwoCharacterBrightScene";
+import { HairAuditShowcase } from "./components/characters/HairAuditShowcase";
+
 export const RemotionRoot: React.FC = () => {
   return (
     <>
@@ -74,6 +80,58 @@ export const RemotionRoot: React.FC = () => {
         fps={EP03_THEME.dimensions.fps}
         width={EP03_THEME.dimensions.width}
         height={EP03_THEME.dimensions.height}
+      />
+
+      {/* -------------------------------------------------------------
+          5. GLOBAL FOUNDATION BENCHMARK: 8 Poses Full-Body Character
+             ID: GlobalFoundationShowcase
+         ------------------------------------------------------------- */}
+      <Composition
+        id="GlobalFoundationShowcase"
+        component={GlobalFoundationShowcase}
+        durationInFrames={300}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* -------------------------------------------------------------
+          6. MULTI-CHARACTER INTERACTION BENCHMARK: 2 Characters In Scene
+             ID: GlobalInteractionShowcase
+         ------------------------------------------------------------- */}
+      <Composition
+        id="GlobalInteractionShowcase"
+        component={GlobalInteractionShowcase}
+        durationInFrames={300}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* -------------------------------------------------------------
+          7. BRIGHT ROOM EVALUATION: 2 Characters on Warm Light Stage
+             ID: TwoCharacterBrightScene
+         ------------------------------------------------------------- */}
+      <Composition
+        id="TwoCharacterBrightScene"
+        component={TwoCharacterBrightScene}
+        durationInFrames={300}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* -------------------------------------------------------------
+          8. HAIR AUDIT SHOWCASE: Extreme Close-Up on Hair & Head Anatomy
+             ID: HairAuditShowcase
+         ------------------------------------------------------------- */}
+      <Composition
+        id="HairAuditShowcase"
+        component={HairAuditShowcase}
+        durationInFrames={30}
+        fps={30}
+        width={1080}
+        height={1920}
       />
     </>
   );

@@ -19,7 +19,11 @@ export const StoryScenes: React.FC = () => {
       </Sequence>
 
       {/* SCENE 3: Ruang Makan Siang & Pemindai Anatomi Medis Hati/Ginjal (Frame 885 - 1080) */}
-      <Sequence from={885} durationInFrames={195} name="Scene 3: Medical Liver & Kidney">
+      <Sequence
+        from={885}
+        durationInFrames={195}
+        name="Scene 3: Medical Liver & Kidney"
+      >
         <Scene3MedicalLiverKidney />
       </Sequence>
 

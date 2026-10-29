@@ -7,7 +7,10 @@ import {
 import { EP03_THEME } from "../theme";
 import { PopElement } from "../../../src/components/PopElement";
 import { CameraRig } from "../../../src/components/CameraRig";
-import { MainCharacter } from "../../../src/components/characters/MainCharacter";
+import {
+  MainCharacter,
+  CharacterPose,
+} from "../../../src/components/characters/MainCharacter";
 
 export const Scene4HonestMarketToAyah: React.FC = () => {
   const frame = useCurrentFrame();
@@ -39,10 +42,12 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
   const awningWave = Math.sin(frame / 8) * 3;
   const sparklePulse = 0.85 + Math.sin(frame / 4) * 0.25;
 
-  const tableOpacity = interpolate(frame, [130, 145], [1, 0.35], {
+  const charLeft = interpolate(frame, [130, 155], [400, 90], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const hostPose: CharacterPose =
+    frame < 60 ? "sedih" : frame < 135 ? "calming" : "pointing";
 
   return (
     <AbsoluteFill
@@ -135,21 +140,26 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
         </svg>
 
         {/* =========================================================================
-            LAYER 2: MASKOT BERBAJU KOKO MODERN (CENTERED HOST)
+            LAYER 2: MASKOT BERBAJU KOKO MODERN (DYNAMIC HOST POSITION)
            ========================================================================= */}
         <div
           style={{
             position: "absolute",
-            top: 280,
-            left: 340, // Centered horizontally: (1080 - 400) / 2 = 340
-            width: 400,
-            height: 400,
+            top: 755,
+            left: charLeft,
+            width: 280,
+            height: 560,
             zIndex: 10,
           }}
         >
           <MainCharacter
-            pose={frame < 130 ? "sedih" : "senang"}
-            scale={1.85}
+            pose={hostPose}
+            scale={1.70}
+            hairStyle="peci"
+            outfitType="koko"
+            hasGlasses={true}
+            breathe={true}
+            blink={true}
           />
         </div>
 
@@ -163,7 +173,6 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
             left: 0,
             width: "100%",
             zIndex: 15,
-            opacity: tableOpacity,
           }}
         >
           <svg viewBox="0 0 1080 350" width="100%" height="350">
@@ -338,17 +347,16 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
         {/* =========================================================================
             LAYER 5: TRANSISI PREAMBLE AYAT AL-QUR'AN (FRAME 135 - 240)
             "sudah dilarang keras di dalam Al-Qur'an, Surah Asy-Syu'ara ayat 183."
-            Terletak tepat di depan dada bawah (top: 610) sehingga wajah & senyum maskot tampak utuh!
+            Split-Screen di sisi kanan (top: 360, left: 490, width: 550, height: 480)
            ========================================================================= */}
         {frame >= 135 && (
           <div
             style={{
               position: "absolute",
-              top: 700,
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: 780,
-              height: 380,
+              top: 360,
+              left: 490,
+              width: 550,
+              height: 480,
               zIndex: 35,
             }}
           >
@@ -364,32 +372,40 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
                   width: "100%",
                   height: "100%",
                   borderRadius: 32,
-                  background: "linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #064E3B 100%)",
+                  background:
+                    "linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #064E3B 100%)",
                   border: "5px solid #F59E0B",
-                  boxShadow: "0 24px 50px rgba(15, 23, 42, 0.7), 0 0 40px rgba(245, 158, 11, 0.4)",
+                  boxShadow:
+                    "0 24px 50px rgba(15, 23, 42, 0.7), 0 0 40px rgba(245, 158, 11, 0.4)",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  padding: "20px 24px",
+                  padding: "24px 28px",
                   position: "relative",
                   boxSizing: "border-box",
                 }}
               >
                 {/* SVG Pijar Bintang Delapan Rub El Hizb */}
                 <svg
-                  width="120"
-                  height="120"
+                  width="110"
+                  height="110"
                   viewBox="-60 -60 120 120"
                   style={{
                     overflow: "visible",
                     transform: `scale(${sunPulse})`,
-                    marginBottom: 10,
+                    marginBottom: 12,
                   }}
                 >
                   <defs>
                     <filter id="mushafGlow2" x="-50%" y="-50%" width="200%" height="200%">
-                      <feDropShadow dx="0" dy="0" stdDeviation="16" floodColor="#F59E0B" floodOpacity="0.9" />
+                      <feDropShadow
+                        dx="0"
+                        dy="0"
+                        stdDeviation="16"
+                        floodColor="#F59E0B"
+                        floodOpacity="0.9"
+                      />
                     </filter>
                   </defs>
 
@@ -448,12 +464,12 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
                 {/* Teks Preamble Ayat Al-Qur'an (HTML/CSS Bersih) */}
                 <div
                   style={{
-                    fontSize: 19,
+                    fontSize: 18,
                     fontWeight: 700,
                     letterSpacing: 4,
                     color: "#FDE68A",
                     textTransform: "uppercase",
-                    marginBottom: 5,
+                    marginBottom: 8,
                   }}
                 >
                   Peringatan Al-Qur'an
@@ -461,13 +477,13 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
 
                 <div
                   style={{
-                    fontSize: 32,
+                    fontSize: 30,
                     fontWeight: 900,
                     color: "#FFFFFF",
                     textAlign: "center",
                     lineHeight: 1.25,
                     textShadow: "0 4px 12px rgba(0,0,0,0.5)",
-                    marginBottom: 8,
+                    marginBottom: 12,
                   }}
                 >
                   QS. Asy-Syu'ara (26): 183
@@ -476,13 +492,14 @@ export const Scene4HonestMarketToAyah: React.FC = () => {
                 <div
                   style={{
                     display: "inline-block",
-                    padding: "4px 16px",
+                    padding: "6px 20px",
                     borderRadius: 999,
                     backgroundColor: "rgba(245, 158, 11, 0.2)",
                     border: "1.5px solid #F59E0B",
                     fontSize: 15,
                     fontWeight: 600,
                     color: "#FEF3C7",
+                    textAlign: "center",
                   }}
                 >
                   Larangan Merugikan Hak Manusia

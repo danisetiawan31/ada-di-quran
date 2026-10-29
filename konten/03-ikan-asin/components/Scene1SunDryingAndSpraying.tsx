@@ -6,7 +6,6 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { EP03_THEME } from "../theme";
 import { PopElement } from "../../../src/components/PopElement";
 import { CameraRig } from "../../../src/components/CameraRig";
 

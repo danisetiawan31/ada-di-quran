@@ -47,6 +47,8 @@ export interface CharacterColors {
   glasses: string;
   // Aliases untuk backward compatibility jika ada yang memanggil hoodie
   hoodie?: string;
+  hoodieDark?: string;
+  batikGold?: string;
 }
 
 export const DEFAULT_CHARACTER_COLORS: CharacterColors = {
@@ -62,6 +64,8 @@ export const DEFAULT_CHARACTER_COLORS: CharacterColors = {
   kokoButton: "#C2A15A", // Kancing emas serasi kacamata
   outline: "#12233F",
   glasses: "#C2A15A",
+  hoodieDark: "#1E293B",
+  batikGold: "#C2A15A",
 };
 
 export interface MainCharacterProps {

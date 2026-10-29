@@ -6,7 +6,6 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { EP03_THEME } from "../theme";
 import { PopElement } from "../../../src/components/PopElement";
 import { CameraRig } from "../../../src/components/CameraRig";
 
@@ -164,7 +163,7 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
           <g
             id="macro-fish-meat-fibers"
             transform={`scale(${fiberBreathing})`}
-            transformOrigin="540 850"
+            style={{ transformOrigin: "540px 850px" }}
             filter="url(#darkShadow)"
           >
             {/* Irisan Blok Daging Ikan Asin Makro di Tengah Layar (Y: 600 - 1150) */}

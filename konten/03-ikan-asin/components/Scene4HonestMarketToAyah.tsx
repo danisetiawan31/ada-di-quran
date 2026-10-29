@@ -3,7 +3,6 @@ import {
   AbsoluteFill,
   interpolate,
   useCurrentFrame,
-  useVideoConfig,
 } from "remotion";
 import { EP03_THEME } from "../theme";
 import { PopElement } from "../../../src/components/PopElement";
@@ -12,7 +11,6 @@ import { MainCharacter } from "../../../src/components/characters/MainCharacter"
 
 export const Scene4HonestMarketToAyah: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
   const c = EP03_THEME.colors;
 
   // ---------------------------------------------------------------------------

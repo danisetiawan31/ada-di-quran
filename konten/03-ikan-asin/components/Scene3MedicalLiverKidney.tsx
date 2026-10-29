@@ -3,7 +3,6 @@ import {
   AbsoluteFill,
   interpolate,
   useCurrentFrame,
-  useVideoConfig,
 } from "remotion";
 import { EP03_THEME } from "../theme";
 import { PopElement } from "../../../src/components/PopElement";
@@ -12,7 +11,6 @@ import { MainCharacter } from "../../../src/components/characters/MainCharacter"
 
 export const Scene3MedicalLiverKidney: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
   const c = EP03_THEME.colors;
 
   // ---------------------------------------------------------------------------
@@ -338,7 +336,7 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                     stroke="#EF4444"
                     strokeWidth="5"
                     transform={`scale(${organPulse})`}
-                    transformOrigin="20 15"
+                    style={{ transformOrigin: "20px 15px" }}
                   />
                   {/* Bintik-bintik Racun Hijau Tertimbun di Jaringan Hati */}
                   <circle cx="20" cy="-10" r={9 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="2.5" />

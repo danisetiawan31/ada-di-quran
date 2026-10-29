@@ -7,70 +7,79 @@ import {
 } from "remotion";
 import { PopElement } from "../../../src/components/PopElement";
 import { CameraRig } from "../../../src/components/CameraRig";
+import { FONTS } from "../../../src/theme/fonts";
 
 export const Scene2MacroMeatAndResistance: React.FC = () => {
   const frame = useCurrentFrame();
 
   // ---------------------------------------------------------------------------
   // KAMERA & TRANSISI (Frame 0 - 345 lokal | Frame 540 - 885 global)
-  // Sub-Scene 2A (Penetrasi Racun di Talenan): Frame 0 - 220
-  // Sub-Scene 2B (Uji Komparasi Cuci vs Goreng): Frame 220 - 345
+  // Sub-Scene 2A (Penetrasi Racun di Talenan): Frame 0 - 210
+  // Sub-Scene 2B (Dua Panel Komik Aksi Cuci vs Goreng): Frame 210 - 345
   // ---------------------------------------------------------------------------
-  const cameraZoom = interpolate(frame, [205, 235], [1.05, 1.0], {
+  const cameraZoom = interpolate(frame, [205, 230], [1.04, 1.0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const cameraPanY = interpolate(frame, [205, 235], [-20, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  // ---------------------------------------------------------------------------
-  // CONTINUOUS SECONDARY MOTION (Hukum "Layar Tidak Boleh Mati")
-  // ---------------------------------------------------------------------------
-  const breathingBob = Math.sin(frame / 12) * 3;
-  const toxicPulse = 1 + Math.sin(frame / 7) * 0.08;
-  const waterFlowSway = Math.sin(frame / 3) * 12;
-  const flameFlicker = Math.sin(frame * 1.5) * 8;
-
-  // ---------------------------------------------------------------------------
-  // ACT 1: TETESAN & REMBESAN RACUN MENEMBUS IKAN ASIN (Frame 0 - 220)
-  // ---------------------------------------------------------------------------
-  // Tetesan insektisida jatuh dari atas ke badan ikan (Frame 45 - 85)
-  const dropY = interpolate(frame, [45, 80], [380, 800], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const dropOpacity = interpolate(frame, [45, 50, 78, 85], [0, 1, 1, 0], {
+  const cameraPanY = interpolate(frame, [205, 230], [-15, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // Rembesan racun hijau menyebar di daging ikan (Frame 80 - 215)
-  const toxicSpread = interpolate(frame, [80, 160], [0, 1], {
+  // ---------------------------------------------------------------------------
+  // GERAKAN PLAYFUL BERKELANJUTAN (Hukum "Layar Tidak Boleh Mati")
+  // ---------------------------------------------------------------------------
+  const playfulBob = Math.sin(frame / 9) * 4;
+  const wiggleFish = Math.sin(frame / 6) * 3;
+  const waterSplashWobble = Math.sin(frame * 1.8) * 8;
+  const flameDance = Math.sin(frame * 2.2) * 10;
+  const steamRise = (frame * 3.5) % 80;
+
+  // ---------------------------------------------------------------------------
+  // ACT 1: TETESAN & REMBESAN RACUN DI TALENAN DAPUR (Frame 0 - 210)
+  // ---------------------------------------------------------------------------
+  // Tetesan racun hijau jatuh dari atas (Frame 35 - 72)
+  const dropY = interpolate(frame, [35, 72], [360, 800], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const dropScaleY = interpolate(frame, [35, 68, 72], [1.4, 1.2, 0.4], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const dropOpacity = interpolate(frame, [35, 42, 70, 78], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  // Kaca pembesar / lingkaran HUD inspeksi forensik muncul (Frame 95+)
+  // Rembesan racun hijau menyebar di badan ikan (Frame 72 - 205)
+  const toxicSpread = interpolate(frame, [72, 140], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+
+  // Kaca pembesar forensik kartun pop-in (Frame 90+)
   const loupeScale = spring({
-    frame: frame - 95,
+    frame: frame - 90,
     fps: 30,
-    config: { damping: 14, stiffness: 120 },
+    config: { damping: 12, stiffness: 130 },
   });
 
   // ---------------------------------------------------------------------------
-  // ACT 2: DUAL KITCHEN TEST CHAMBERS (Frame 220 - 345)
-  // Sinkron narasi: "Racun ini nggak bakal hilang tuntas cuma dengan dicuci air atau digoreng panas!"
+  // ACT 2: DUAL COMIC ACTION PANELS (Frame 210 - 345)
+  // Masuk dengan spring kekenyalan kartun (squash & stretch)
   // ---------------------------------------------------------------------------
-  const dualChambersIntro = spring({
+  const isAct2 = frame >= 210;
+  const panelSpringLeft = spring({
+    frame: frame - 210,
+    fps: 30,
+    config: { damping: 13, stiffness: 120 },
+  });
+  const panelSpringRight = spring({
     frame: frame - 220,
     fps: 30,
-    config: { damping: 14, stiffness: 110 },
+    config: { damping: 13, stiffness: 120 },
   });
-
-  // Status uji aktif
-  const isAct2 = frame >= 220;
 
   return (
     <AbsoluteFill
@@ -82,7 +91,7 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
       <CameraRig
         zoom={cameraZoom}
         panY={cameraPanY}
-        whooshAtFrames={[0, 220]}
+        whooshAtFrames={[0, 210]}
       >
         <svg
           viewBox="0 0 1080 1920"
@@ -91,233 +100,302 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
           style={{ overflow: "visible" }}
         >
           <defs>
-            {/* Latar Belakang Dapur / Investigasi Forensik Pangan */}
-            <radialGradient id="kitchenBgGrad" cx="50%" cy="45%" r="65%">
+            {/* Latar Belakang Komik Edukasi Dapur */}
+            <radialGradient id="comicBgGrad" cx="50%" cy="45%" r="65%">
               <stop offset="0%" stopColor="#1E293B" />
-              <stop offset="60%" stopColor="#0F172A" />
+              <stop offset="55%" stopColor="#0F172A" />
               <stop offset="100%" stopColor="#020617" />
             </radialGradient>
 
-            {/* Gradasi Kayu Talenan Dapur Estetik (Warm Oak Wood) */}
-            <linearGradient id="cuttingBoardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#92400E" />
-              <stop offset="35%" stopColor="#B45309" />
-              <stop offset="70%" stopColor="#D97706" />
+            {/* Gradasi Talenan Kayu Kartun Bubbly */}
+            <linearGradient id="cartoonWoodGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#D97706" />
+              <stop offset="40%" stopColor="#B45309" />
+              <stop offset="85%" stopColor="#92400E" />
               <stop offset="100%" stopColor="#78350F" />
             </linearGradient>
 
-            {/* Gradasi Ikan Asin Autentik (Belah Punggung Kering Jemur) */}
-            <linearGradient id="fishBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            {/* Gradasi Ikan Asin Kartun Autentik */}
+            <linearGradient id="cartoonFishGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#FFFFFF" />
               <stop offset="30%" stopColor="#F8FAFC" />
-              <stop offset="65%" stopColor="#F1F5F9" />
-              <stop offset="85%" stopColor="#E2E8F0" />
-              <stop offset="100%" stopColor="#CBD5E1" />
+              <stop offset="65%" stopColor="#E2E8F0" />
+              <stop offset="85%" stopColor="#CBD5E1" />
+              <stop offset="100%" stopColor="#94A3B8" />
             </linearGradient>
 
-            {/* Gradasi Rembesan Racun Kimia Neon Berbahaya */}
-            <radialGradient id="toxicInfiltrationGrad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#86EFAC" stopOpacity="0.95" />
-              <stop offset="40%" stopColor="#22C55E" stopOpacity="0.85" />
-              <stop offset="75%" stopColor="#15803D" stopOpacity="0.6" />
-              <stop offset="100%" stopColor="#052E16" stopOpacity="0" />
+            {/* Gradasi Daging Ikan Asin Dalam (Serat Merah Muda Gurih) */}
+            <linearGradient id="fishMeatFibersGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#FCA5A5" />
+              <stop offset="50%" stopColor="#F87171" />
+              <stop offset="100%" stopColor="#EF4444" />
+            </linearGradient>
+
+            {/* Gradasi Panel Komik Kiri (Air Bersih) */}
+            <linearGradient id="panelWaterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0284C7" />
+              <stop offset="45%" stopColor="#0369A1" />
+              <stop offset="100%" stopColor="#075985" />
+            </linearGradient>
+
+            {/* Gradasi Panel Komik Kanan (Minyak Panas) */}
+            <linearGradient id="panelFireGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#9A3412" />
+              <stop offset="45%" stopColor="#7C2D12" />
+              <stop offset="100%" stopColor="#431407" />
+            </linearGradient>
+
+            {/* Gradasi Minyak Goreng Panas Berbusa */}
+            <radialGradient id="oilJacuzziGrad" cx="50%" cy="45%" r="60%">
+              <stop offset="0%" stopColor="#FEF08A" />
+              <stop offset="35%" stopColor="#FACC15" />
+              <stop offset="70%" stopColor="#F59E0B" />
+              <stop offset="100%" stopColor="#B45309" />
             </radialGradient>
 
-            {/* Gradasi Kucuran Air Kran Wastafel */}
-            <linearGradient id="tapWaterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            {/* Gradasi Kucuran Air Kran Kartun */}
+            <linearGradient id="cartoonWaterJet" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.95" />
-              <stop offset="35%" stopColor="#BAE6FD" stopOpacity="0.85" />
-              <stop offset="75%" stopColor="#38BDF8" stopOpacity="0.7" />
-              <stop offset="100%" stopColor="#0284C7" stopOpacity="0.4" />
+              <stop offset="30%" stopColor="#BAE6FD" stopOpacity="0.9" />
+              <stop offset="70%" stopColor="#38BDF8" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#0284C7" stopOpacity="0.75" />
             </linearGradient>
 
-            {/* Gradasi Logam Stainless Steel Kran */}
-            <linearGradient id="faucetSteelGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#64748B" />
-              <stop offset="30%" stopColor="#E2E8F0" />
-              <stop offset="60%" stopColor="#CBD5E1" />
-              <stop offset="100%" stopColor="#475569" />
-            </linearGradient>
-
-            {/* Gradasi Minyak Goreng Panas Mendidih */}
-            <radialGradient id="boilingOilGrad" cx="50%" cy="45%" r="60%">
-              <stop offset="0%" stopColor="#FEF08A" stopOpacity="0.95" />
-              <stop offset="35%" stopColor="#F59E0B" stopOpacity="0.9" />
-              <stop offset="75%" stopColor="#D97706" stopOpacity="0.85" />
-              <stop offset="100%" stopColor="#78350F" stopOpacity="0.9" />
-            </radialGradient>
-
-            {/* Filter Bayangan Halus & Pijar Racun */}
-            <filter id="kitchenShadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="12" stdDeviation="16" floodColor="#000000" floodOpacity="0.55" />
+            {/* Bayangan Blok Stiker Komik Playful */}
+            <filter id="comicStickerShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="8" dy="12" stdDeviation="0" floodColor="#0F172A" floodOpacity="0.8" />
             </filter>
-            <filter id="toxicGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="0" stdDeviation="20" floodColor="#4ADE80" floodOpacity="0.95" />
+            <filter id="toxicBubbleGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="0" stdDeviation="16" floodColor="#4ADE80" floodOpacity="0.95" />
             </filter>
-            <filter id="stampShadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="8" stdDeviation="12" floodColor="#DC2626" floodOpacity="0.45" />
+            <filter id="stampImpactGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="6" stdDeviation="14" floodColor="#EF4444" floodOpacity="0.65" />
             </filter>
           </defs>
 
           {/* =========================================================================
-              LAYER 1: BACKGROUND RUANG DAPUR / INVESTIGASI FORENSIK (Y: 0 - 1920)
+              LAYER 1: BACKGROUND KOMIK EDUKASI (Latar Dapur Gelap Playful)
              ========================================================================= */}
-          {/* Latar Dasar Dapur Elegan */}
-          <rect x="0" y="0" width="1080" height="1920" fill="url(#kitchenBgGrad)" />
+          <rect x="0" y="0" width="1080" height="1920" fill="url(#comicBgGrad)" />
 
-          {/* Ubin Keramik Dinding Dapur Halus (Subtle Kitchen Backsplash Pattern) */}
-          <g opacity="0.08" stroke="#FFFFFF" strokeWidth="2">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <line key={`tile-h-${i}`} x1="0" y1={180 + i * 160} x2="1080" y2={180 + i * 160} />
-            ))}
-            {Array.from({ length: 7 }).map((_, i) => (
-              <line key={`tile-v-${i}`} x1={90 + i * 150} y1="180" x2={90 + i * 150} y2="1320" />
-            ))}
+          {/* Pola Titik Halftone Komik Playful (Pop Art Dots) */}
+          <g opacity="0.08" fill="#38BDF8">
+            {Array.from({ length: 11 }).map((_, r) =>
+              Array.from({ length: 8 }).map((_, col) => (
+                <circle key={`dot-${r}-${col}`} cx={70 + col * 135} cy={200 + r * 110} r="5" />
+              ))
+            )}
           </g>
 
           {/* =========================================================================
-              ACT 1: IKAN ASIN NYATA DI ATAS TALENAN KAYU & PENETRASI RACUN (Frame 0 - 220)
-              Jelas bentuk ikannya! Jelas talenannya! Jelas racun yang merembes ke daging!
+              ACT 1: IKAN ASIN KARTUN DI ATAS TALENAN & PENETRASI RACUN (Frame 0 - 210)
+              Playful, ekspresif, bentuk ikan asin kartun yang langsung dikenali penonton!
              ========================================================================= */}
           {!isAct2 && (
-            <g
-              id="act1-cutting-board-fish"
-              transform={`translate(0, ${breathingBob})`}
-              filter="url(#kitchenShadow)"
-            >
-              {/* Bayangan Meja Dapur */}
-              <ellipse cx="540" cy="1160" rx="440" ry="40" fill="#000000" opacity="0.45" />
-
-              {/* TALENAN KAYU DAPUR ESTETIK (Cutting Board Y: 560 - 1140) */}
-              <g id="cutting-board">
-                {/* Ketebalan Sisi Talenan 3D */}
-                <rect x="130" y="580" width="820" height="540" rx="28" fill="#451A03" />
-                {/* Permukaan Atas Talenan Kayu */}
+            <g id="act1-playful-cutting-board" transform={`translate(0, ${playfulBob})`}>
+              {/* TALENAN KAYU KARTUN BULAT PLAYFUL (Miring Nyeleneh -3°) */}
+              <g
+                id="cartoon-cutting-board"
+                transform="translate(540, 810) rotate(-3)"
+                filter="url(#comicStickerShadow)"
+              >
+                {/* Bayangan Dasar & Ketebalan Kayu 3D */}
+                <rect x="-420" y="-270" width="840" height="540" rx="42" fill="#451A03" />
                 <rect
-                  x="130"
-                  y="560"
-                  width="820"
+                  x="-420"
+                  y="-290"
+                  width="840"
                   height="540"
-                  rx="28"
-                  fill="url(#cuttingBoardGrad)"
-                  stroke="#451A03"
-                  strokeWidth="6"
+                  rx="42"
+                  fill="url(#cartoonWoodGrad)"
+                  stroke="#0F172A"
+                  strokeWidth="8"
                 />
-                {/* Serat Urat Kayu Alami */}
-                <path d="M 180 640 Q 540 620 900 640" stroke="#78350F" strokeWidth="3.5" fill="none" opacity="0.4" />
-                <path d="M 160 780 Q 540 760 920 780" stroke="#78350F" strokeWidth="3" fill="none" opacity="0.35" />
-                <path d="M 180 940 Q 540 920 900 940" stroke="#78350F" strokeWidth="3.5" fill="none" opacity="0.4" />
-                <path d="M 160 1050 Q 540 1030 920 1050" stroke="#78350F" strokeWidth="3" fill="none" opacity="0.35" />
-                {/* Lubang Gantungan Talenan di Kiri */}
-                <circle cx="190" cy="620" r="18" fill="#0F172A" stroke="#451A03" strokeWidth="4" />
+                {/* Gagang Pegangan Talenan di Sebelah Kiri */}
+                <rect x="-530" y="-70" width="130" height="140" rx="30" fill="url(#cartoonWoodGrad)" stroke="#0F172A" strokeWidth="8" />
+                <circle cx="-470" cy="0" r="28" fill="#0F172A" />
+
+                {/* Serat Garis Urat Kayu Kartun Playful */}
+                <path d="M -360 -180 Q 0 -220 360 -180" stroke="#78350F" strokeWidth="6" fill="none" strokeLinecap="round" opacity="0.5" />
+                <path d="M -340 0 Q 0 -40 340 0" stroke="#78350F" strokeWidth="5.5" fill="none" strokeLinecap="round" opacity="0.45" />
+                <path d="M -360 180 Q 0 140 360 180" stroke="#78350F" strokeWidth="6" fill="none" strokeLinecap="round" opacity="0.5" />
               </g>
 
-              {/* IKAN ASIN UTUH BELAH PUNGGUNG (PEDA / LAYANG BESAR & REALISTIS) */}
-              <g id="hero-salted-fish" transform="translate(540, 840)">
+              {/* IKAN ASIN KARTUN PLAYFUL (BELAH PUNGGUNG PEDE / LAYANG) */}
+              <g
+                id="playful-salted-fish"
+                transform={`translate(540, 810) rotate(${wiggleFish})`}
+                filter="url(#comicStickerShadow)"
+              >
                 {/* Bayangan Ikan di Talenan */}
-                <ellipse cx="10" cy="20" rx="330" ry="110" fill="#451A03" opacity="0.4" />
+                <ellipse cx="10" cy="30" rx="340" ry="110" fill="#451A03" opacity="0.35" />
 
-                {/* Ekor Ikan Cabang Dua Khas Ikan Asin */}
+                {/* Ekor Ikan Cabang Dua Kartun */}
                 <polygon
-                  points="-280,0 -340,-60 -310,0 -340,60"
+                  points="-270,0 -350,-70 -310,0 -350,70"
                   fill="#CBD5E1"
-                  stroke="#1E293B"
-                  strokeWidth="5"
-                />
-
-                {/* Badan Ikan Belah Punggung Lebar (Butterfly Cut) */}
-                <path
-                  d="M -280 0 Q -180 -120 40 -120 Q 220 -100 320 -20 Q 340 0 320 20 Q 220 100 40 120 Q -180 120 -280 0 Z"
-                  fill="url(#fishBodyGrad)"
                   stroke="#0F172A"
-                  strokeWidth="6"
+                  strokeWidth="7"
                   strokeLinejoin="round"
                 />
 
-                {/* Rongga Belahan Punggung & Alur Tulang Belakang Ikan Asin */}
+                {/* Sirip Samping Kartun Lucu */}
+                <path d="M -120 -95 Q -60 -140 -20 -95" fill="#E2E8F0" stroke="#0F172A" strokeWidth="6" strokeLinecap="round" />
+                <path d="M -120 95 Q -60 140 -20 95" fill="#E2E8F0" stroke="#0F172A" strokeWidth="6" strokeLinecap="round" />
+
+                {/* Badan Ikan Belah Punggung Gemuk Kartun */}
                 <path
-                  d="M -270 0 Q 30 -5 300 0"
-                  stroke="#334155"
+                  d="M -270 0 Q -170 -125 50 -125 Q 230 -105 320 -20 Q 340 0 320 20 Q 230 105 50 125 Q -170 125 -270 0 Z"
+                  fill="url(#cartoonFishGrad)"
+                  stroke="#0F172A"
                   strokeWidth="8"
+                  strokeLinejoin="round"
+                />
+
+                {/* Alur Tulang Belakang Ikan Asin Tebal Kartun */}
+                <path
+                  d="M -260 0 Q 30 -6 290 0"
+                  stroke="#334155"
+                  strokeWidth="10"
                   fill="none"
                   strokeLinecap="round"
                 />
 
-                {/* Duri-Duri Ikan Halus Menyamping */}
-                {[-180, -120, -60, 0, 60, 120, 180, 240].map((x, idx) => (
-                  <g key={`rib-${idx}`}>
-                    <line x1={x} y1="0" x2={x - 20} y2="-55" stroke="#94A3B8" strokeWidth="4" strokeLinecap="round" />
-                    <line x1={x} y1="0" x2={x - 20} y2="55" stroke="#94A3B8" strokeWidth="4" strokeLinecap="round" />
+                {/* Duri Ikan Kartun Menyamping Lucu */}
+                {[-170, -110, -50, 10, 70, 130, 190, 240].map((x, idx) => (
+                  <g key={`playful-rib-${idx}`}>
+                    <line x1={x} y1="0" x2={x - 22} y2="-55" stroke="#64748B" strokeWidth="5.5" strokeLinecap="round" />
+                    <line x1={x} y1="0" x2={x - 22} y2="55" stroke="#64748B" strokeWidth="5.5" strokeLinecap="round" />
                   </g>
                 ))}
 
-                {/* Taburan Kristal Garam Laut Putih Menempel di Daging */}
-                <circle cx="-140" cy="-35" r="4" fill="#FFFFFF" />
-                <circle cx="-80" cy="45" r="4.5" fill="#FFFFFF" />
-                <circle cx="20" cy="-50" r="4" fill="#FFFFFF" />
-                <circle cx="80" cy="35" r="4.5" fill="#FFFFFF" />
-                <circle cx="160" cy="-30" r="4" fill="#FFFFFF" />
-                <circle cx="220" cy="40" r="4" fill="#FFFFFF" />
+                {/* Mata Ikan Asin Kartun Konyol (Mata Ikan Kering Deadpan X_X) */}
+                <circle cx="280" cy="-8" r="18" fill="#FFFFFF" stroke="#0F172A" strokeWidth="5" />
+                {/* Silang Mata X_X Lucu */}
+                <line x1="272" y1="-16" x2="288" y2="0" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
+                <line x1="288" y1="-16" x2="272" y2="0" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
+                {/* Mulut Ikan Kartun Heran */}
+                <ellipse cx="315" cy="5" rx="6" ry="10" fill="#0F172A" />
 
-                {/* Kepala & Mata Kering Ikan Asin */}
-                <circle cx="295" cy="-8" r="9" fill="#0F172A" />
-                <circle cx="297" cy="-10" r="3" fill="#FFFFFF" />
+                {/* Butiran Garam Laut Bubbly Putih */}
+                <circle cx="-130" cy="-35" r="6" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="2" />
+                <circle cx="-70" cy="45" r="6.5" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="2" />
+                <circle cx="20" cy="-45" r="6" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="2" />
+                <circle cx="90" cy="40" r="6.5" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="2" />
+                <circle cx="170" cy="-30" r="6" fill="#FFFFFF" stroke="#94A3B8" strokeWidth="2" />
 
-                {/* NODA RACUN KIMIA INSEKTISIDA MEREMBES MASUK (Frame 80+) */}
+                {/* NODA RACUN MEREMBES MASUK (Frame 72+) */}
                 {toxicSpread > 0 && (
-                  <g opacity={toxicSpread} filter="url(#toxicGlow)">
-                    {/* Area Rembesan Daging Berubah Kehijauan Beracun */}
-                    <ellipse cx="60" cy="0" rx={180 * toxicSpread} ry={85 * toxicSpread} fill="url(#toxicInfiltrationGrad)" />
-                    {/* Bintik Tetesan Racun Kimia Meresap di Poros Daging */}
-                    <circle cx="40" cy="-20" r={10 * toxicPulse} fill="#86EFAC" stroke="#15803D" strokeWidth="3" />
-                    <circle cx="110" cy="15" r={12 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="3" />
-                    <circle cx="-30" cy="18" r={9 * toxicPulse} fill="#86EFAC" stroke="#15803D" strokeWidth="2.5" />
-                    <circle cx="140" cy="-25" r={8 * toxicPulse} fill="#86EFAC" />
+                  <g opacity={toxicSpread} filter="url(#toxicBubbleGlow)">
+                    {/* Bercak Racun Hijau Neon Bubbly */}
+                    <ellipse cx="60" cy="0" rx={170 * toxicSpread} ry={85 * toxicSpread} fill="#22C55E" opacity="0.65" />
+                    <ellipse cx="60" cy="0" rx={110 * toxicSpread} ry={55 * toxicSpread} fill="#4ADE80" opacity="0.85" />
+
+                    {/* Karakter Racun Hijau Nakal Mengedip di Tengah Ikan */}
+                    <g transform="translate(60, 0)">
+                      <circle cx="0" cy="0" r="28" fill="#15803D" stroke="#0F172A" strokeWidth="4" />
+                      {/* Mata Licik Tengkorak Racun */}
+                      <circle cx="-9" cy="-5" r="6" fill="#FFFFFF" />
+                      <circle cx="-9" cy="-5" r="3" fill="#0F172A" />
+                      <circle cx="9" cy="-5" r="6" fill="#FFFFFF" />
+                      <circle cx="9" cy="-5" r="3" fill="#0F172A" />
+                      {/* Senyum Jahil Racun */}
+                      <path d="M -10 8 Q 0 16 10 8" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
+                    </g>
                   </g>
                 )}
               </g>
 
-              {/* TETESAN CAIRAN RACUN OBAT NYAMUK MENETES KE DAGING (Frame 45 - 85) */}
+              {/* TETESAN RACUN INSEKTISIDA KARTUN JATUH (Frame 35 - 78) */}
               {dropOpacity > 0 && (
-                <g transform={`translate(600, ${dropY})`} opacity={dropOpacity} filter="url(#toxicGlow)">
+                <g
+                  transform={`translate(600, ${dropY}) scale(1.2, ${dropScaleY})`}
+                  opacity={dropOpacity}
+                  filter="url(#toxicBubbleGlow)"
+                >
+                  {/* Bentuk Tetesan Air Kartun Gemuk */}
                   <path
-                    d="M 0 -30 C 14 -10 20 10 20 22 C 20 34 10 44 0 44 C -10 44 -20 34 -20 22 C -20 10 -14 -10 0 -30 Z"
+                    d="M 0 -35 C 16 -12 24 10 24 24 C 24 38 12 50 0 50 C -12 50 -24 38 -24 24 C -24 10 -16 -12 0 -35 Z"
                     fill="#4ADE80"
-                    stroke="#15803D"
-                    strokeWidth="3.5"
+                    stroke="#0F172A"
+                    strokeWidth="4.5"
                   />
-                  <circle cx="-5" cy="15" r="4" fill="#FFFFFF" opacity="0.8" />
+                  {/* Kilauan Putih di Tetesan */}
+                  <ellipse cx="-7" cy="18" rx="6" ry="10" fill="#FFFFFF" opacity="0.9" />
                 </g>
               )}
 
-              {/* LOUPE / KACA PEMBESAR INSPEKSI FORENSIK (Frame 95+) */}
+              {/* KACA PEMBESAR FORENSIK KARTUN LUCU (Frame 90+) */}
               {loupeScale > 0 && (
                 <g
-                  id="forensic-loupe"
-                  transform={`translate(620, 830) scale(${loupeScale})`}
-                  filter="url(#kitchenShadow)"
+                  id="cartoon-loupe"
+                  transform={`translate(620, 810) scale(${loupeScale})`}
+                  filter="url(#comicStickerShadow)"
                 >
-                  {/* Lingkaran Luar Lensa Logam Perak */}
-                  <circle cx="0" cy="0" r="145" fill="none" stroke="#E2E8F0" strokeWidth="16" />
-                  <circle cx="0" cy="0" r="135" fill="none" stroke="#0F172A" strokeWidth="5" />
-                  {/* Gagang Kaca Pembesar Melintang ke Kanan Bawah */}
-                  <path d="M 105 105 L 210 210" stroke="#1E293B" strokeWidth="28" strokeLinecap="round" />
-                  <path d="M 115 115 L 200 200" stroke="#D97706" strokeWidth="18" strokeLinecap="round" />
+                  {/* Gagang Kayu Melintang Tebal */}
+                  <path d="M 110 110 L 220 220" stroke="#0F172A" strokeWidth="36" strokeLinecap="round" />
+                  <path d="M 120 120 L 210 210" stroke="#F59E0B" strokeWidth="22" strokeLinecap="round" />
 
-                  {/* Kaca Transparan dengan Indikator Grid Forensik */}
-                  <circle cx="0" cy="0" r="130" fill="#0A0F1D" fillOpacity="0.4" />
-                  <circle cx="0" cy="0" r="125" fill="none" stroke="#38BDF8" strokeWidth="2" strokeDasharray="6 6" opacity="0.7" />
+                  {/* Bingkai Lensa Logam Tebal Kartun */}
+                  <circle cx="0" cy="0" r="160" fill="none" stroke="#0F172A" strokeWidth="20" />
+                  <circle cx="0" cy="0" r="148" fill="none" stroke="#F8FAFC" strokeWidth="12" />
 
-                  {/* IKON TENGKORAK BAHAYA RACUN DI DALAM DAGING */}
-                  <g transform={`scale(${toxicPulse * 1.35})`} filter="url(#toxicGlow)">
-                    <circle cx="0" cy="-8" r="22" fill="#EF4444" stroke="#0F172A" strokeWidth="3.5" />
-                    <rect x="-12" y="6" width="24" height="14" rx="4" fill="#EF4444" stroke="#0F172A" strokeWidth="3.5" />
-                    <ellipse cx="-7" cy="-8" rx="5.5" ry="7" fill="#0F172A" />
-                    <ellipse cx="7" cy="-8" rx="5.5" ry="7" fill="#0F172A" />
-                    <polygon points="0,-1 -3,5 3,5" fill="#0F172A" />
-                    <line x1="-5" y1="12" x2="-5" y2="18" stroke="#0F172A" strokeWidth="2.5" />
-                    <line x1="0" y1="12" x2="0" y2="18" stroke="#0F172A" strokeWidth="2.5" />
-                    <line x1="5" y1="12" x2="5" y2="18" stroke="#0F172A" strokeWidth="2.5" />
+                  {/* Kaca Lensa Biru Transparan */}
+                  <circle cx="0" cy="0" r="140" fill="#38BDF8" fillOpacity="0.2" />
+
+                  {/* Serat Daging Ikan Merah Muda di Balik Lensa */}
+                  <g opacity="0.85">
+                    {[-90, -50, -10, 30, 70].map((ly, i) => (
+                      <path
+                        key={`meat-fiber-${i}`}
+                        d={`M -120 ${ly} Q 0 ${ly + 25} 120 ${ly}`}
+                        stroke="#FDA4AF"
+                        strokeWidth="14"
+                        strokeLinecap="round"
+                        fill="none"
+                      />
+                    ))}
+                  </g>
+
+                  {/* Kilau Kaca Lensa Miring */}
+                  <path d="M -90 -90 Q -20 -115 50 -90 L -50 30 Z" fill="#FFFFFF" opacity="0.35" />
+
+                  {/* TENGKORAK RACUN KARTUN MENYERINGAI JAHIL MENCENGKRAM DAGING */}
+                  <g transform={`scale(${1.35 + Math.sin(frame / 6) * 0.08})`} filter="url(#toxicBubbleGlow)">
+                    {/* Kepala Tengkorak Merah-Hijau Bubbly */}
+                    <circle cx="0" cy="-8" r="30" fill="#EF4444" stroke="#0F172A" strokeWidth="4.5" />
+                    <rect x="-18" y="8" width="36" height="20" rx="6" fill="#EF4444" stroke="#0F172A" strokeWidth="4.5" />
+                    {/* Mata Hitam Bulat Besar */}
+                    <circle cx="-11" cy="-8" r="9" fill="#0F172A" />
+                    <circle cx="11" cy="-8" r="9" fill="#0F172A" />
+                    <circle cx="-9" cy="-10" r="3" fill="#FFFFFF" />
+                    <circle cx="13" cy="-10" r="3" fill="#FFFFFF" />
+                    {/* Hidung Segitiga */}
+                    <polygon points="0,-2 -4,4 4,4" fill="#0F172A" />
+                    {/* Gigi Tengkorak Kartun */}
+                    <line x1="-8" y1="18" x2="-8" y2="28" stroke="#0F172A" strokeWidth="3.5" />
+                    <line x1="0" y1="18" x2="0" y2="28" stroke="#0F172A" strokeWidth="3.5" />
+                    <line x1="8" y1="18" x2="8" y2="28" stroke="#0F172A" strokeWidth="3.5" />
+                    {/* Tentakel Kait Cengkraman ke Daging */}
+                    <path d="M -24 16 Q -42 30 -30 45" fill="none" stroke="#22C55E" strokeWidth="5" strokeLinecap="round" />
+                    <path d="M 24 16 Q 42 30 30 45" fill="none" stroke="#22C55E" strokeWidth="5" strokeLinecap="round" />
+                  </g>
+
+                  {/* Comic Ribbon Tag: MERESAP KE DAGING */}
+                  <g transform="translate(0, 105)">
+                    <rect x="-135" y="-18" width="270" height="38" rx="12" fill="#FACC15" stroke="#0F172A" strokeWidth="4.5" />
+                    <text
+                      x="0"
+                      y="8"
+                      fill="#0F172A"
+                      fontSize="17"
+                      fontWeight="900"
+                      fontFamily={FONTS.title}
+                      textAnchor="middle"
+                      letterSpacing="0.8"
+                    >
+                      MERESAP KE DAGING! ☠️
+                    </text>
                   </g>
                 </g>
               )}
@@ -325,198 +403,384 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
           )}
 
           {/* =========================================================================
-              ACT 2: DUAL KITCHEN TEST CHAMBERS (Frame 220 - 345)
-              DUA METODE NYATA YANG DILAKUKAN ORANG: DICUCI AIR vs DIGORENG MINYAK PANAS!
-              Dua bilik berdampingan yang sangat konkret, jelas, dan langsung dipahami!
+              ACT 2: DUA PANEL KOMIK AKSI PLAYFUL (Frame 210 - 345)
+              Panel Kiri: Ikan Asin Mandi di Bawah Kran (Tapi Racunnya Memakai Payung! ☔)
+              Panel Kanan: Ikan Asin Masuk Wajan Panas (Tapi Racunnya Pakai Kacamata Hitam! 😎)
              ========================================================================= */}
           {isAct2 && (
-            <g
-              id="act2-dual-kitchen-chambers"
-              transform={`scale(${dualChambersIntro})`}
-              transformOrigin="540 850"
-            >
+            <g id="act2-playful-comic-split">
               {/* =====================================================================
-                  BILIK KIRI (X: 70 - 520, Y: 520 - 1220): UJI CUCI DI WASTAFEL AIR
+                  PANEL KOMIK KIRI (X: 55 - 525, Y: 370 - 1250): UJI CUCI AIR KRAN
                  ===================================================================== */}
-              <g id="chamber-water-wash" transform="translate(70, 520)" filter="url(#kitchenShadow)">
-                {/* Kotak Bilik Wastafel Biru */}
-                <rect x="0" y="0" width="455" height="700" rx="28" fill="#0C4A6E" stroke="#38BDF8" strokeWidth="6" />
-                <rect x="15" y="15" width="425" height="670" rx="20" fill="#082F49" />
+              <g
+                id="comic-panel-water"
+                transform={`translate(55, 370) scale(${panelSpringLeft})`}
+                style={{ transformOrigin: "240px 440px" }}
+                filter="url(#comicStickerShadow)"
+              >
+                {/* Bingkai Panel Komik Biru dengan Outline Kartun Tebal */}
+                <rect x="0" y="0" width="470" height="840" rx="36" fill="url(#panelWaterGrad)" stroke="#0F172A" strokeWidth="8" />
 
-                {/* HEADER LABEL ILMIAH (Path Vektor Tanpa Tag Text) */}
-                {/* Banner Header Biru Air */}
-                <rect x="35" y="35" width="385" height="65" rx="14" fill="#0284C7" stroke="#38BDF8" strokeWidth="3" />
-                {/* Ikon Tetesan Air di Header */}
-                <g transform="translate(70, 68)">
-                  <path d="M 0 -18 C 10 -6 16 6 16 14 C 16 23 9 30 0 30 C -9 30 -16 23 -16 14 C -16 6 -10 -6 0 -18 Z" fill="#FFFFFF" />
+                {/* Banner Label Header Komik (Kuning Cerah Kontras + Judul Jelas!) */}
+                <g transform="translate(30, 28)">
+                  <rect x="0" y="0" width="410" height="82" rx="22" fill="#FACC15" stroke="#0F172A" strokeWidth="6" />
+                  {/* Ikon Tetesan Air Biru di Header */}
+                  <g transform="translate(48, 41)">
+                    <path d="M 0 -22 C 14 -7 20 6 20 18 C 20 29 11 38 0 38 C -11 38 -20 29 -20 18 C -20 6 -14 -7 0 -22 Z" fill="#0284C7" stroke="#0F172A" strokeWidth="3.5" />
+                    <ellipse cx="-5" cy="14" rx="4" ry="7" fill="#FFFFFF" opacity="0.8" />
+                  </g>
+                  {/* Judul Komik Super Jelas dan Mudah Dipahami Penonton */}
+                  <text
+                    x="245"
+                    y="52"
+                    fill="#0F172A"
+                    fontSize="30"
+                    fontWeight="900"
+                    fontFamily={FONTS.title}
+                    textAnchor="middle"
+                    letterSpacing="0.8"
+                  >
+                    1. DICUCI AIR
+                  </text>
                 </g>
-                {/* Garis Simbol Tes Dicuci Air */}
-                <line x1="105" y1="68" x2="380" y2="68" stroke="#FFFFFF" strokeWidth="8" strokeLinecap="round" />
 
-                {/* PIPA KRAN AIR STAINLESS STEEL DI ATAS WASTAFEL */}
-                <g id="kitchen-faucet" transform="translate(225, 120)">
-                  {/* Pipa Melengkung Stainless */}
+                {/* KRAN AIR KARTUN MELENGKUNG (Curved Cartoon Faucet) */}
+                <g id="cartoon-faucet" transform="translate(240, 160)">
+                  {/* Pipa Kran Perak Melengkung Playful */}
                   <path
-                    d="M -120 40 L -60 40 Q 0 40 0 -20 L 0 -40 Q 0 -60 25 -60 L 35 -60 Q 55 -60 55 -40 L 55 10"
+                    d="M -150 55 L -75 55 Q 0 55 0 -20 L 0 -45 Q 0 -75 35 -75 L 55 -75 Q 85 -75 85 -45 L 85 25"
                     fill="none"
-                    stroke="url(#faucetSteelGrad)"
-                    strokeWidth="24"
+                    stroke="#E2E8F0"
+                    strokeWidth="32"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
-                  {/* Ujung Nozel Kran */}
-                  <rect x="42" y="10" width="26" height="16" rx="4" fill="#64748B" stroke="#0F172A" strokeWidth="2.5" />
-                  {/* Pemutar Keran Air */}
-                  <ellipse cx="-120" cy="40" rx="16" ry="24" fill="#94A3B8" stroke="#0F172A" strokeWidth="3" />
-                </g>
-
-                {/* KUCURAN AIR DERAS DARI KRAN KE IKAN (Frame 240+) */}
-                <g id="water-stream" transform={`translate(280, 145)`}>
-                  {/* Pancuran Air Vertikal Bergelombang */}
                   <path
-                    d={`M -15 0 Q ${-20 + waterFlowSway} 120 -40 260 L 40 260 Q ${20 - waterFlowSway} 120 15 0 Z`}
-                    fill="url(#tapWaterGrad)"
-                  />
-                  <path
-                    d={`M -8 10 Q ${-10 + waterFlowSway} 130 -20 250 L 20 250 Q ${10 - waterFlowSway} 130 8 10 Z`}
-                    fill="#FFFFFF"
-                    opacity="0.85"
-                  />
-                  {/* Percikan Air Bawah */}
-                  <circle cx="-50" cy="250" r="8" fill="#BAE6FD" opacity="0.85" />
-                  <circle cx="50" cy="245" r="9" fill="#BAE6FD" opacity="0.85" />
-                  <circle cx="-25" cy="270" r="7" fill="#FFFFFF" />
-                  <circle cx="30" cy="265" r="7" fill="#FFFFFF" />
-                </g>
-
-                {/* POTONGAN IKAN ASIN DI DALAM WASTAFEL AIR */}
-                <g id="fish-in-sink" transform="translate(225, 470)">
-                  <ellipse cx="0" cy="10" rx="160" ry="60" fill="#000000" opacity="0.4" />
-                  <path
-                    d="M -150 0 Q -70 -60 60 -55 Q 150 -40 170 0 Q 150 40 60 55 Q -70 60 -150 0 Z"
-                    fill="url(#fishBodyGrad)"
+                    d="M -150 55 L -75 55 Q 0 55 0 -20 L 0 -45 Q 0 -75 35 -75 L 55 -75 Q 85 -75 85 -45 L 85 25"
+                    fill="none"
                     stroke="#0F172A"
-                    strokeWidth="4.5"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
-                  <path d="M -140 0 Q 0 -3 150 0" stroke="#475569" strokeWidth="5" fill="none" strokeLinecap="round" />
-                  <circle cx="140" cy="-5" r="6" fill="#0F172A" />
+                  {/* Pemutar Kran Merah Lucu */}
+                  <circle cx="-150" cy="55" r="26" fill="#EF4444" stroke="#0F172A" strokeWidth="5.5" />
+                  <rect x="-158" y="35" width="16" height="40" rx="5" fill="#FFFFFF" />
+                  {/* Mulut Nozel Kran */}
+                  <rect x="66" y="25" width="38" height="24" rx="6" fill="#94A3B8" stroke="#0F172A" strokeWidth="4.5" />
+                </g>
 
-                  {/* NODA RACUN HIJAU TETAP MENEMPEL KUAT (GAGAL LUNTUR!) */}
-                  <g filter="url(#toxicGlow)">
-                    <circle cx="0" cy="0" r={32 * toxicPulse} fill="#22C55E" opacity="0.85" />
-                    <circle cx="0" cy="0" r="16" fill="#86EFAC" />
-                    {/* Cakar Racun Mengikat Erat */}
-                    <path d="M -20 -15 L -45 -30 M 20 -15 L 45 -30 M -20 15 L -45 30 M 20 15 L 45 30" stroke="#15803D" strokeWidth="5" strokeLinecap="round" />
+                {/* KUCURAN AIR DERAS & CIPRATAN BUBBLY (Frame 225+) */}
+                <g id="cartoon-water-gush" transform="translate(325, 205)">
+                  {/* Pancuran Air Kerucut Bergelombang Lucu */}
+                  <path
+                    d={`M -24 0 Q ${-30 + waterSplashWobble} 160 -65 330 L 65 330 Q ${30 - waterSplashWobble} 160 24 0 Z`}
+                    fill="url(#cartoonWaterJet)"
+                    stroke="#0F172A"
+                    strokeWidth="6"
+                  />
+                  {/* Garis Aliran Air Putih Berbusa */}
+                  <path d={`M -10 15 Q ${-14 + waterSplashWobble} 170 -35 320`} stroke="#FFFFFF" strokeWidth="8" fill="none" strokeLinecap="round" />
+                  <path d={`M 12 15 Q ${14 - waterSplashWobble} 170 35 320`} stroke="#FFFFFF" strokeWidth="8" fill="none" strokeLinecap="round" />
+
+                  {/* Cipratan Butiran Air Lucu (Splash Drops) */}
+                  <circle cx="-85" cy="305" r="12" fill="#E0F2FE" stroke="#0F172A" strokeWidth="4" />
+                  <circle cx="85" cy="300" r="13" fill="#E0F2FE" stroke="#0F172A" strokeWidth="4" />
+                  <circle cx="-45" cy="345" r="10" fill="#FFFFFF" stroke="#0F172A" strokeWidth="3.5" />
+                  <circle cx="50" cy="340" r="10" fill="#FFFFFF" stroke="#0F172A" strokeWidth="3.5" />
+                </g>
+
+                {/* Comic Onomatopoeia: BYURRR! 💦 */}
+                <g transform="translate(390, 260) rotate(12)">
+                  <rect x="-55" y="-18" width="110" height="36" rx="10" fill="#38BDF8" stroke="#0F172A" strokeWidth="4" />
+                  <text x="0" y="7" fill="#FFFFFF" fontSize="18" fontWeight="900" fontFamily={FONTS.title} textAnchor="middle">
+                    BYUR! 💦
+                  </text>
+                </g>
+
+                {/* IKAN ASIN KARTUN SEDANG DISIRAM AIR */}
+                <g id="fish-getting-washed" transform="translate(235, 540) rotate(-4)">
+                  {/* Badan Ikan Asin Belah Punggung Autentik */}
+                  <path
+                    d="M -165 0 Q -85 -70 65 -65 Q 155 -50 175 0 Q 155 50 65 65 Q -85 70 -165 0 Z"
+                    fill="url(#cartoonFishGrad)"
+                    stroke="#0F172A"
+                    strokeWidth="6.5"
+                  />
+                  {/* Ekor Ikan Cabang Dua */}
+                  <polygon points="-165,0 -205,-38 -188,0 -205,38" fill="#CBD5E1" stroke="#0F172A" strokeWidth="5.5" />
+
+                  {/* Duri Ikan Kartun Biar Langsung Dikenali Sebagai Ikan Asin */}
+                  {[-100, -50, 0, 50, 100].map((dx, i) => (
+                    <line key={`rib-wash-${i}`} x1={dx} y1="-35" x2={dx - 12} y2="35" stroke="#94A3B8" strokeWidth="4" strokeLinecap="round" />
+                  ))}
+
+                  {/* Mata Ikan Pusing Diguyur Air (Spiral @_@) */}
+                  <circle cx="140" cy="-6" r="16" fill="#FFFFFF" stroke="#0F172A" strokeWidth="4.5" />
+                  <path d="M 134 -6 Q 140 -12 146 -6 Q 146 0 140 2" fill="none" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
+                  <ellipse cx="168" cy="4" rx="4" ry="7" fill="#0F172A" />
+
+                  {/* RACUN HIJAU SANTAI MEMEGANG PAYUNG (TIDAK LUNTUR!) */}
+                  <g id="smug-poison-water" transform="translate(-10, -5)" filter="url(#toxicBubbleGlow)">
+                    {/* Payung Kartun Pelindung Air (Visual Humor Playful!) */}
+                    <g transform="translate(0, -32)">
+                      <path d="M -45 0 Q 0 -45 45 0 Z" fill="#EF4444" stroke="#0F172A" strokeWidth="4.5" />
+                      {/* Corak Garis Payung Putih */}
+                      <path d="M -15 0 Q 0 -45 0 -45" stroke="#FFFFFF" strokeWidth="3" fill="none" />
+                      <path d="M 15 0 Q 0 -45 0 -45" stroke="#FFFFFF" strokeWidth="3" fill="none" />
+                      {/* Gagang Payung Hitam */}
+                      <line x1="0" y1="0" x2="0" y2="35" stroke="#0F172A" strokeWidth="4.5" strokeLinecap="round" />
+                      <path d="M 0 35 Q 0 45 -8 45" fill="none" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
+                    </g>
+
+                    {/* Lingkaran Karakter Racun Hijau Neon Bubbly */}
+                    <circle cx="0" cy="5" r="32" fill="#22C55E" stroke="#0F172A" strokeWidth="4.5" />
+                    <circle cx="0" cy="5" r="16" fill="#86EFAC" />
+
+                    {/* Senyum Meledek: "Wleee Gak Luntur 😛" */}
+                    <circle cx="-9" cy="2" r="4.5" fill="#0F172A" />
+                    <circle cx="9" cy="2" r="4.5" fill="#0F172A" />
+                    <path d="M -7 12 Q 0 20 7 12" fill="none" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
+                    {/* Lidah Menjulur Lucu */}
+                    <path d="M -3 15 Q 0 24 3 15 Z" fill="#EF4444" stroke="#0F172A" strokeWidth="2" />
+                  </g>
+
+                  {/* Comic Speech Bubble: Gak Mempan! */}
+                  <g transform="translate(-40, -85)">
+                    <rect x="-65" y="-18" width="130" height="36" rx="10" fill="#FFFFFF" stroke="#0F172A" strokeWidth="4" />
+                    <polygon points="10,18 20,28 25,18" fill="#FFFFFF" />
+                    <line x1="10" y1="18" x2="20" y2="28" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
+                    <line x1="20" y1="28" x2="25" y2="18" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
+                    <text x="0" y="6" fill="#0F172A" fontSize="16" fontWeight="900" fontFamily={FONTS.title} textAnchor="middle">
+                      GAK MEMPAN!
+                    </text>
                   </g>
                 </g>
 
-                {/* STEMPEL MERAH BESAR: AIR GAGAL LUNTUR (Frame 255+) */}
+                {/* STEMPEL CAP MERAH BESAR: AIR GAGAL LUNTUR (Frame 255+) */}
                 {frame >= 255 && (
-                  <PopElement as="g" startFrame={255} sfxType="whip" volume={0.22}>
-                    <g transform="translate(225, 590)" filter="url(#stampShadow)">
-                      <circle cx="0" cy="0" r="72" fill="#0F172A" stroke="#EF4444" strokeWidth="8" />
-                      <circle cx="0" cy="0" r="60" fill="#FEF2F2" />
-                      {/* Ikon Air */}
-                      <path d="M 0 -22 C 10 -6 15 5 15 12 C 15 21 8 26 0 26 C -8 26 -15 21 -15 12 C -15 5 -10 -6 0 -22 Z" fill="#38BDF8" />
-                      {/* SILANG MERAH BESAR (TIDAK LUNTUR!) */}
-                      <line x1="-36" y1="-36" x2="36" y2="36" stroke="#EF4444" strokeWidth="14" strokeLinecap="round" />
-                      <line x1="36" y1="-36" x2="-36" y2="36" stroke="#EF4444" strokeWidth="14" strokeLinecap="round" />
+                  <PopElement as="g" startFrame={255} sfxType="whip" volume={0.25} tilt={-12}>
+                    <g transform="translate(235, 715)" filter="url(#stampImpactGlow)">
+                      {/* Box Cap Merah Stempel Komik */}
+                      <rect x="-170" y="-55" width="340" height="110" rx="18" fill="#EF4444" stroke="#FFFFFF" strokeWidth="6" />
+                      <rect x="-162" y="-47" width="324" height="94" rx="12" fill="none" stroke="#FFFFFF" strokeWidth="3.5" strokeDasharray="8 6" />
+
+                      <text
+                        x="0"
+                        y="-4"
+                        fill="#FFFFFF"
+                        fontSize="38"
+                        fontWeight="900"
+                        fontFamily={FONTS.title}
+                        textAnchor="middle"
+                        letterSpacing="1.2"
+                      >
+                        [X] GAGAL!
+                      </text>
+                      <text
+                        x="0"
+                        y="34"
+                        fill="#FEE2E2"
+                        fontSize="22"
+                        fontWeight="800"
+                        fontFamily={FONTS.body}
+                        textAnchor="middle"
+                        letterSpacing="0.8"
+                      >
+                        TIDAK LUNTUR AIR
+                      </text>
                     </g>
                   </PopElement>
                 )}
               </g>
 
               {/* =====================================================================
-                  BILIK KANAN (X: 555 - 1010, Y: 520 - 1220): UJI GORENG MINYAK PANAS
+                  PANEL KOMIK KANAN (X: 555 - 1025, Y: 370 - 1250): UJI GORENG MINYAK
                  ===================================================================== */}
-              <g id="chamber-hot-oil" transform="translate(555, 520)" filter="url(#kitchenShadow)">
-                {/* Kotak Bilik Penggorengan Oranye */}
-                <rect x="0" y="0" width="455" height="700" rx="28" fill="#451A03" stroke="#F59E0B" strokeWidth="6" />
-                <rect x="15" y="15" width="425" height="670" rx="20" fill="#291404" />
+              <g
+                id="comic-panel-oil"
+                transform={`translate(555, 370) scale(${panelSpringRight})`}
+                style={{ transformOrigin: "240px 440px" }}
+                filter="url(#comicStickerShadow)"
+              >
+                {/* Bingkai Panel Komik Oranye-Merah dengan Outline Kartun Tebal */}
+                <rect x="0" y="0" width="470" height="840" rx="36" fill="url(#panelFireGrad)" stroke="#0F172A" strokeWidth="8" />
 
-                {/* HEADER LABEL ILMIAH (Path Vektor Tanpa Tag Text) */}
-                {/* Banner Header Oranye Minyak */}
-                <rect x="35" y="35" width="385" height="65" rx="14" fill="#D97706" stroke="#F59E0B" strokeWidth="3" />
-                {/* Ikon Api Penggorengan di Header */}
-                <g transform="translate(70, 68)">
-                  <path d="M 0 -18 C 8 -10 14 0 14 10 C 14 20 7 26 0 26 C -7 26 -14 20 -14 10 C -14 3 -9 -4 -3 -9 C -3 -3 2 1 4 1 C 6 1 8 -4 0 -18 Z" fill="#FFFFFF" />
+                {/* Banner Label Header Komik (Kuning Cerah Kontras + Judul Jelas!) */}
+                <g transform="translate(30, 28)">
+                  <rect x="0" y="0" width="410" height="82" rx="22" fill="#FACC15" stroke="#0F172A" strokeWidth="6" />
+                  {/* Ikon Api Penggorengan di Header */}
+                  <g transform="translate(48, 41)">
+                    <path d="M 0 -22 C 12 -11 18 2 18 13 C 18 25 9 33 0 33 C -9 33 -18 25 -18 13 C -18 4 -11 -4 -3 -11 C -3 -3 2 1 4 1 C 8 1 10 -6 0 -22 Z" fill="#EA580C" stroke="#0F172A" strokeWidth="3.5" />
+                  </g>
+                  {/* Judul Komik Super Jelas dan Mudah Dipahami Penonton */}
+                  <text
+                    x="245"
+                    y="52"
+                    fill="#0F172A"
+                    fontSize="29"
+                    fontWeight="900"
+                    fontFamily={FONTS.title}
+                    textAnchor="middle"
+                    letterSpacing="0.8"
+                  >
+                    2. DIGORENG PANAS
+                  </text>
                 </g>
-                <line x1="105" y1="68" x2="380" y2="68" stroke="#FFFFFF" strokeWidth="8" strokeLinecap="round" />
 
-                {/* WAJAN PENGGORENGAN (KATEL HITAM) DENGAN MINYAK MENDIDIH BERBUIH */}
-                <g id="frying-wok" transform="translate(225, 340)">
-                  {/* Lidah Api Kompor Membara di Bawah Wajan */}
-                  <g transform={`translate(0, 115) scale(${1 + Math.sin(frame) * 0.08})`}>
+                {/* WAJAN PENGGORENGAN KARTUN (Wok Pan on Fiery Stove) */}
+                <g id="cartoon-wok" transform="translate(235, 410)">
+                  {/* Lidah Api Kompor Menari Membara di Bawah Wajan */}
+                  <g transform={`translate(0, 140) scale(${1 + Math.sin(frame * 2) * 0.08})`}>
                     <path
-                      d={`M -130 0 Q -65 ${-35 + flameFlicker} 0 0 Q 65 ${-35 - flameFlicker} 130 0 L 110 35 L -110 35 Z`}
+                      d={`M -150 0 Q -75 ${-50 + flameDance} 0 0 Q 75 ${-50 - flameDance} 150 0 L 130 45 L -130 45 Z`}
                       fill="#EF4444"
+                      stroke="#0F172A"
+                      strokeWidth="5.5"
                     />
                     <path
-                      d={`M -90 5 Q -45 ${-25 - flameFlicker} 0 5 Q 45 ${-25 + flameFlicker} 90 5 L 80 30 L -80 30 Z`}
-                      fill="#F59E0B"
+                      d={`M -105 5 Q -50 ${-35 - flameDance} 0 5 Q 50 ${-35 + flameDance} 105 5 L 90 32 L -90 32 Z`}
+                      fill="#FACC15"
                     />
                   </g>
 
-                  {/* Badan Wajan Hitam Cekung */}
-                  <ellipse cx="0" cy="15" rx="190" ry="95" fill="#0F172A" stroke="#334155" strokeWidth="7" />
-                  {/* Gagang Wajan Kiri & Kanan */}
-                  <path d="M -190 10 Q -225 10 -225 -10 Q -225 -25 -190 -10" fill="none" stroke="#64748B" strokeWidth="12" strokeLinecap="round" />
-                  <path d="M 190 10 Q 225 10 225 -10 Q 225 -25 190 -10" fill="none" stroke="#64748B" strokeWidth="12" strokeLinecap="round" />
+                  {/* Badan Wajan Hitam Tebal Kartun */}
+                  <ellipse cx="0" cy="15" rx="205" ry="105" fill="#0F172A" stroke="#334155" strokeWidth="8" />
+                  {/* Gagang Kayu Wajan Kiri & Kanan */}
+                  <path d="M -205 10 Q -245 10 -245 -15 Q -245 -30 -205 -15" fill="#D97706" stroke="#0F172A" strokeWidth="7" strokeLinecap="round" />
+                  <path d="M 205 10 Q 245 10 245 -15 Q 245 -30 195 -15" fill="#D97706" stroke="#0F172A" strokeWidth="7" strokeLinecap="round" />
 
-                  {/* Permukaan Minyak Panas Mendidih Bergolak */}
-                  <ellipse cx="0" cy="15" rx="172" ry="80" fill="url(#boilingOilGrad)" />
+                  {/* Kolam Minyak Mendidih Berbuih Keemasan */}
+                  <ellipse cx="0" cy="15" rx="185" ry="90" fill="url(#oilJacuzziGrad)" stroke="#F59E0B" strokeWidth="5.5" />
 
-                  {/* Gelembung-Gelembung Minyak Panas Mendesis (Sizzling Bubbles) */}
+                  {/* Gelembung Minyak Panas Sizzling Popping */}
                   {Array.from({ length: 14 }).map((_, i) => {
-                    const bX = -120 + ((i * 45) % 240) + Math.sin(frame / 2 + i) * 8;
-                    const bY = -30 + ((frame * 6 + i * 35) % 90);
+                    const bX = -130 + ((i * 42) % 260) + Math.sin(frame / 2 + i) * 6;
+                    const bY = -35 + ((frame * 5 + i * 28) % 95);
                     const bR = 6 + (i % 3) * 5;
                     return (
                       <circle
-                        key={`oil-bubble-${i}`}
+                        key={`sizzle-${i}`}
                         cx={bX}
                         cy={bY}
                         r={bR}
                         fill="#FEF08A"
-                        opacity="0.85"
-                        stroke="#D97706"
-                        strokeWidth="2"
+                        opacity="0.9"
+                        stroke="#B45309"
+                        strokeWidth="2.5"
                       />
                     );
                   })}
 
-                  {/* POTONGAN IKAN ASIN DIGORENG DI DALAM MINYAK PANAS */}
-                  <g id="fish-frying" transform="translate(0, 15)">
-                    <path
-                      d="M -130 0 Q -60 -45 50 -40 Q 130 -30 145 0 Q 130 30 50 40 Q -60 45 -130 0 Z"
-                      fill="#FDE68A"
-                      stroke="#78350F"
-                      strokeWidth="4"
-                    />
-                    <path d="M -120 0 Q 0 -2 130 0" stroke="#B45309" strokeWidth="4.5" fill="none" />
+                  {/* Garis Uap Panas Meliuk (Steam Waves) */}
+                  <path
+                    d={`M -70 -75 Q -60 ${-95 - steamRise} -80 -125`}
+                    fill="none"
+                    stroke="#FEF3C7"
+                    strokeWidth="5.5"
+                    strokeLinecap="round"
+                    opacity="0.75"
+                  />
+                  <path
+                    d={`M 70 -70 Q 80 ${-90 - steamRise} 60 -120`}
+                    fill="none"
+                    stroke="#FEF3C7"
+                    strokeWidth="5.5"
+                    strokeLinecap="round"
+                    opacity="0.75"
+                  />
 
-                    {/* NODA RACUN KIMIA TETAP BERTAHAN (TAHAN PANAS / TIDAK MATI!) */}
-                    <g filter="url(#toxicGlow)">
-                      <circle cx="10" cy="0" r={32 * toxicPulse} fill="#22C55E" opacity="0.9" />
-                      <circle cx="10" cy="0" r="16" fill="#86EFAC" />
-                      {/* Simbol Bahaya Tengkorak Tetap Utuh */}
-                      <circle cx="10" cy="-3" r="7" fill="#0F172A" />
-                      <rect x="7" y="3" width="6" height="4" rx="1" fill="#0F172A" />
+                  {/* Comic Onomatopoeia: SZZZZT! 🔥 */}
+                  <g transform="translate(145, -70) rotate(-10)">
+                    <rect x="-55" y="-18" width="110" height="36" rx="10" fill="#EA580C" stroke="#0F172A" strokeWidth="4" />
+                    <text x="0" y="7" fill="#FFFFFF" fontSize="18" fontWeight="900" fontFamily={FONTS.title} textAnchor="middle">
+                      SZZZT! 🔥
+                    </text>
+                  </g>
+
+                  {/* IKAN ASIN KARTUN SEDANG DIGORENG DI MINYAK */}
+                  <g id="fish-frying-jacuzzi" transform="translate(0, 15)">
+                    {/* Badan Ikan Asin Goreng Keemasan */}
+                    <path
+                      d="M -135 0 Q -65 -45 55 -40 Q 135 -30 150 0 Q 135 30 55 40 Q -65 45 -135 0 Z"
+                      fill="#FDE68A"
+                      stroke="#0F172A"
+                      strokeWidth="5.5"
+                    />
+                    <polygon points="-135,0 -165,-25 -155,0 -165,25" fill="#F59E0B" stroke="#0F172A" strokeWidth="4.5" />
+
+                    {/* Duri Ikan Kartun */}
+                    {[-70, -20, 30, 80].map((dx, i) => (
+                      <line key={`rib-fry-${i}`} x1={dx} y1="-22" x2={dx - 8} y2="22" stroke="#D97706" strokeWidth="3.5" strokeLinecap="round" />
+                    ))}
+
+                    {/* RACUN HIJAU SANTAI PAKAI KACAMATA HITAM & BAN RENANG (TAHAN PANAS!) */}
+                    <g id="smug-poison-fire" transform="translate(10, -5)" filter="url(#toxicBubbleGlow)">
+                      {/* Pelampung Donat Renang Oranye (Humor Kartun!) */}
+                      <ellipse cx="0" cy="18" rx="36" ry="16" fill="#F97316" stroke="#0F172A" strokeWidth="4.5" />
+                      <ellipse cx="0" cy="18" rx="18" ry="8" fill="#FBBF24" />
+
+                      {/* Kepala Karakter Racun Hijau */}
+                      <circle cx="0" cy="0" r="32" fill="#22C55E" stroke="#0F172A" strokeWidth="4.5" />
+                      <circle cx="0" cy="0" r="16" fill="#86EFAC" />
+
+                      {/* Kacamata Hitam Keren Kartun (Playful Cool Sunglasses 😎) */}
+                      <path d="M -16 -8 L -2 -8 L -4 4 L -14 4 Z" fill="#0F172A" />
+                      <path d="M 2 -8 L 16 -8 L 14 4 L 4 4 Z" fill="#0F172A" />
+                      <line x1="-2" y1="-5" x2="2" y2="-5" stroke="#0F172A" strokeWidth="3" />
+                      {/* Kilau Putih di Kacamata */}
+                      <line x1="-12" y1="-5" x2="-8" y2="1" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
+                      <line x1="6" y1="-5" x2="10" y2="1" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
+
+                      {/* Senyum Santai di Minyak Panas: "Masih Kebal Bro 😎" */}
+                      <path d="M -8 11 Q 0 18 8 11" fill="none" stroke="#0F172A" strokeWidth="3.5" strokeLinecap="round" />
+                    </g>
+
+                    {/* Comic Speech Bubble: Masih Kebal! */}
+                    <g transform="translate(50, -75)">
+                      <rect x="-65" y="-18" width="130" height="36" rx="10" fill="#FFFFFF" stroke="#0F172A" strokeWidth="4" />
+                      <polygon points="-10,18 0,28 10,18" fill="#FFFFFF" />
+                      <line x1="-10" y1="18" x2="0" y2="28" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
+                      <line x1="0" y1="28" x2="10" y2="18" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
+                      <text x="0" y="6" fill="#0F172A" fontSize="16" fontWeight="900" fontFamily={FONTS.title} textAnchor="middle">
+                        MASIH KEBAL! 😎
+                      </text>
                     </g>
                   </g>
                 </g>
 
-                {/* STEMPEL MERAH BESAR: MINYAK GORENG TETAP BERACUN (Frame 302+) */}
-                {frame >= 302 && (
-                  <PopElement as="g" startFrame={302} sfxType="whip" volume={0.22}>
-                    <g transform="translate(225, 590)" filter="url(#stampShadow)">
-                      <circle cx="0" cy="0" r="76" fill="#0F172A" stroke="#EF4444" strokeWidth="8" />
-                      <circle cx="0" cy="0" r="64" fill="#FEF2F2" />
-                      {/* Ikon Api */}
-                      <path d="M 0 -24 C 8 -12 14 -2 14 8 C 14 18 7 24 0 24 C -7 24 -14 18 -14 8 C -14 2 -9 -5 -3 -10 C -3 -4 2 0 4 0 C 6 0 8 -5 0 -24 Z" fill="#F59E0B" />
-                      {/* SILANG MERAH BESAR (TETAP BERACUN!) */}
-                      <line x1="-38" y1="-38" x2="38" y2="38" stroke="#EF4444" strokeWidth="14" strokeLinecap="round" />
-                      <line x1="38" y1="-38" x2="-38" y2="38" stroke="#EF4444" strokeWidth="14" strokeLinecap="round" />
+                {/* STEMPEL CAP MERAH BESAR: MINYAK GAGAL MEMATIKAN RACUN (Frame 295+) */}
+                {frame >= 295 && (
+                  <PopElement as="g" startFrame={295} sfxType="whip" volume={0.25} tilt={12}>
+                    <g transform="translate(235, 715)" filter="url(#stampImpactGlow)">
+                      {/* Box Cap Merah Stempel Komik */}
+                      <rect x="-170" y="-55" width="340" height="110" rx="18" fill="#EF4444" stroke="#FFFFFF" strokeWidth="6" />
+                      <rect x="-162" y="-47" width="324" height="94" rx="12" fill="none" stroke="#FFFFFF" strokeWidth="3.5" strokeDasharray="8 6" />
+
+                      <text
+                        x="0"
+                        y="-4"
+                        fill="#FFFFFF"
+                        fontSize="38"
+                        fontWeight="900"
+                        fontFamily={FONTS.title}
+                        textAnchor="middle"
+                        letterSpacing="1.2"
+                      >
+                        [X] KEBAL!
+                      </text>
+                      <text
+                        x="0"
+                        y="34"
+                        fill="#FEE2E2"
+                        fontSize="22"
+                        fontWeight="800"
+                        fontFamily={FONTS.body}
+                        textAnchor="middle"
+                        letterSpacing="0.8"
+                      >
+                        TETAP BERACUN
+                      </text>
                     </g>
                   </PopElement>
                 )}
@@ -533,7 +797,7 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
             y="1320"
             width="1080"
             height="600"
-            fill="url(#kitchenBgGrad)"
+            fill="url(#comicBgGrad)"
             opacity="0.95"
           />
         </svg>

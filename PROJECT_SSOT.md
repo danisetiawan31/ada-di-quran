@@ -167,13 +167,29 @@ D:\Dokumen\yt/
 
 ---
 
-## 6. Protokol Kualitas Lead Animator (7 Standar Emas & Zero-Defect Gate)
+## 6. Protokol Kualitas Lead Animator & Eksekusi Modular Per-Act (Zero-Defect Gate)
 
-Untuk menjamin setiap adegan selalu berkualitas bioskop mini, Antigravity **WAJIB** bertindak mandiri sebagai *Lead Animator* sekaligus *Adversarial Griller*.
+Untuk menjamin setiap adegan selalu berkualitas bioskop mini dan mencegah AI kehabisan *output token* sehingga adegan digambar asal-asalan, Antigravity **WAJIB** bertindak mandiri sebagai *Lead Animator* sekaligus *Adversarial Griller* dengan mematuhi protokol arsitektur dan siklus kerja berikut:
 
-Setiap `Act` atau `Scene` yang dibangun **DILARANG** dikunci sebagai **FINAL** sebelum lulus **7 Standar Emas**:
+### A. Aturan Baku Arsitektur File (Wajib 1 Act = 1 File Terpisah)
+1. **DILARANG KERAS File Raksasa (Monolithic File Anti-Pattern):**  
+   Dilarang keras menulis seluruh adegan atau menggabungkan banyak Act ke dalam satu file tunggal (misal membuat file 1.500+ baris). Menulis adegan sekaligus dalam 1 file menyebabkan AI kehabisan *output token*, menghasilkan detail visual yang malas, dan memicu *context drift*.
+2. **WAJIB Modular 1 Act = 1 File Mandiri:**  
+   Setiap episode wajib dipecah menjadi 3–4 file Act terpisah di dalam folder `components/` (misal: `Act1_*.tsx`, `Act2_*.tsx`, `Act3_*.tsx`, `Act4_*.tsx`). Dengan 1 file per Act, AI dapat mengerahkan 100% kapasitas komputasi dan tokennya untuk mengukir detail mikro, 3-layer shading, dan fisika gerak secara maksimal.
+3. **Penyambungan Antar-Act via "Zoom-Portal / Match-Cut":**  
+   Meskipun kode terpisah bersih per-file, akhir Act N (15 frame terakhir zoom-in scale: 1 $\rightarrow$ 8–12x) dan awal Act N+1 (15 frame pertama zoom-in scale: 0.4 $\rightarrow$ 1.0) wajib disambung secara presisi sehingga di layar penonton terasa sebagai satu perjalanan kamera sinematik tanpa putus.
 
-### Checklist 7 Standar Emas Lead Animator
+### B. Siklus Kerja Mandiri "Sequential Per-Act Loop" (Wajib Berurutan)
+Setiap episode wajib dikerjakan dengan siklus berurutan tuntas:
+1. **Langkah 1 — Pembangunan Act N:** Buat file terpisah `ActN_*.tsx` dan selesaikan detail visualnya sesuai naskah & storyboard di `BRIEF.md`.
+2. **Langkah 2 — Deep Viewer Self-Audit (Render Still):** Render minimal 1–2 frame still kunci (`npx remotion still`) pada momen puncak aksi. Periksa gambar secara visual dengan tool pembaca gambar.
+3. **Langkah 3 — Evaluasi 7 Standar Emas:** Uji hasil render still menggunakan **Checklist 7 Standar Emas** di bawah ini. Jika ada cacat (stiff, kaku, clipping, tidak ada fisika), langsung perbaiki kode saat itu juga.
+4. **Langkah 4 — Lock as FINAL:** Setelah Act N lulus 100% dan dikunci sebagai **FINAL**, barulah Antigravity diizinkan membuat file `Act(N+1)_*.tsx`. **DILARANG membuat file Act berikutnya sebelum Act sebelumnya selesai dan lulus audit!**
+5. **Langkah 5 — Render Gate:** Setelah seluruh Act 1 s/d 4 dan sekuens Ayat/CTA selesai dikunci FINAL, Antigravity **DILARANG** menjalankan render video penuh (`npx remotion render`) sebelum ada instruksi eksplisit dari pengguna.
+
+---
+
+### C. Checklist 7 Standar Emas Lead Animator
 1. **Bebas Pola UI & Bebas Tag `<text>` di SVG (Rule 11):**  
    Apakah adegan 100% bebas dari tabel 2 kolom, kotak kartu presentasi, stempel teks, dan tag `<text>` di dalam SVG? (Semua teks narasi vokal wajib ada di `<DynamicSubtitle />`, dunia ilustrasi murni bercerita lewat aksi visual dan metafora gerak, tanpa kartu teks tambahan kecuali `<AyahCard />` & `<ClosingCta />`).
 2. **Kamera Bergerak Aktif & Sinematik:**  

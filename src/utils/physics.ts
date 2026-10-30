@@ -55,11 +55,11 @@ export const getRecoilImpulse = (
     extrapolateRight: "clamp",
   });
 
-  // Fase 2: Peluruhan kenyal (decay with spring settling back to 0)
+  // Fase 2: Peluruhan kenyal (decay with critically damped spring settling back to 0)
   const springDecay = spring({
     frame: Math.max(0, localFrame - 3),
     fps,
-    config: { damping: 14, stiffness: 160 },
+    config: { damping: 26, stiffness: 160 },
   });
 
   // Pastikan saat spring mencapai 1, decay turun ke 0 tanpa tembus ke negatif liar

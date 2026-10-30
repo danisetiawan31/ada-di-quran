@@ -2,6 +2,7 @@ import React from "react";
 import {
   AbsoluteFill,
   interpolate,
+  spring,
   useCurrentFrame,
 } from "remotion";
 import { EP03_THEME } from "../theme";
@@ -16,15 +17,27 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
   // ---------------------------------------------------------------------------
   // KAMERA & TRANSISI (Frame 885 - 1080 global | Frame 0 - 195 lokal)
   // ---------------------------------------------------------------------------
-  // Subtle camera punch-in when VO reaches the critical organ damage (frame 115+)
-  const cameraZoom = interpolate(frame, [115, 145], [1.0, 1.05], {
+  // Transisi halus intensitas roll & wobble pusing saat narator berucap "memicu mual, pusing" (Frame 65 - 125)
+  const dizzyIntensity = interpolate(frame, [65, 75, 115, 125], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const cameraPanY = interpolate(frame, [115, 145], [0, -15], {
+  // Cinematic camera dizzy roll & wobble: rotate: Math.sin(frame * 0.25) * 4deg
+  const cameraRotation = dizzyIntensity * Math.sin(frame * 0.25) * 4;
+  const dizzyPanX = dizzyIntensity * Math.cos(frame * 0.25) * 6;
+  const dizzyPanY = dizzyIntensity * Math.sin(frame * 0.18) * 4;
+
+  // Zoom punch-in halus: sedikit antisipasi saat pusing lalu merapat saat organ rusak (frame 115+)
+  const cameraZoom = interpolate(frame, [65, 80, 115, 145], [1.0, 1.04, 1.04, 1.06], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const basePanY = interpolate(frame, [115, 145], [0, -15], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const cameraPanY = basePanY + dizzyPanY;
+  const cameraPanX = dizzyPanX;
 
   // ---------------------------------------------------------------------------
   // CONTINUOUS SECONDARY MOTION (Denyut Bahaya Organ & Efek Mual Pusing)
@@ -34,11 +47,34 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
   const sunbeamPulse = 0.22 + Math.sin(frame / 20) * 0.04;
   const charWobbleX = Math.sin(frame * 0.22) * 3.5;
 
-  // Organ critical alert glow increases after frame 115 when VO speaks about organ damage
-  const dangerGlowStd = interpolate(frame, [110, 130], [14, 22], {
+  // ---------------------------------------------------------------------------
+  // PROGRES PENEMPELAN PARTIKEL RACUN & PULSING RED DANGER ALERT GLOW
+  // Toksin mulai mengalir dan menempel ke hati & ginjal (Frame 35 - 75)
+  // ---------------------------------------------------------------------------
+  const toxinAttachProgress = interpolate(frame, [35, 65], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+
+  // Skala penempelan partikel racun elastis saat mendarat
+  const liverParticleScale = spring({
+    frame: frame - 38,
+    fps: 30,
+    config: { damping: 12, stiffness: 140 },
+  });
+  const kidneyParticleScale = spring({
+    frame: frame - 48,
+    fps: 30,
+    config: { damping: 12, stiffness: 140 },
+  });
+
+  // Pulsing red danger alert glow aktif saat partikel racun menempel
+  const dangerAlertPulse = 0.5 + Math.sin(frame * 0.3) * 0.5;
+  const dangerGlowStd = interpolate(frame, [35, 65, 110, 130], [2, 14, 16, 24], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const dangerGlowOpacity = toxinAttachProgress * (0.5 + dangerAlertPulse * 0.45);
 
   // ---------------------------------------------------------------------------
   // KALKULASI TITIK PIJAKAN KARAKTER (R1 & R3)
@@ -61,7 +97,9 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
     >
       <CameraRig
         zoom={cameraZoom}
+        panX={cameraPanX}
         panY={cameraPanY}
+        rotation={cameraRotation}
         whooshAtFrames={[0]} // Transisi mulus masuk dari Scene 2
       >
         {/* =========================================================================
@@ -411,7 +449,6 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 boxSizing: "border-box",
-                transition: "border 0.2s ease, box-shadow 0.2s ease",
               }}
             >
               {/* --- HEADER KARTU: BADGE & JUDUL (HTML/REACT DOM, ZERO SVG TEXT) --- */}
@@ -539,7 +576,7 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                     </linearGradient>
 
                     <filter id="dangerGlowX5" x="-30%" y="-30%" width="160%" height="160%">
-                      <feDropShadow dx="0" dy="0" stdDeviation={dangerGlowStd} floodColor="#EF4444" floodOpacity="0.88" />
+                      <feDropShadow dx="0" dy="0" stdDeviation={dangerGlowStd} floodColor="#EF4444" floodOpacity={dangerGlowOpacity} />
                     </filter>
                   </defs>
 
@@ -573,9 +610,21 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                   </g>
 
                   {/* -----------------------------------------------------------------
-                      ORGAN 1: HATI (LIVER) — DENYUT MERAH DENGAN ENDAPAN TOKSIN HIJAU
+                      ORGAN 1: HATI (LIVER) — PULSING RED DANGER ALERT GLOW & TOXIN
                      ----------------------------------------------------------------- */}
                   <g transform="translate(240, 115)" filter="url(#dangerGlowX5)">
+                    {/* Pulsing Danger Outline Alert Glow saat Racun Menempel */}
+                    {toxinAttachProgress > 0 && (
+                      <path
+                        d="M -115 -25 Q -10 -65 125 -15 Q 175 30 115 65 Q 10 80 -95 45 Q -135 10 -115 -25 Z"
+                        fill="none"
+                        stroke="#EF4444"
+                        strokeWidth={3 + dangerAlertPulse * 3}
+                        opacity={dangerGlowOpacity * 0.85}
+                        transform={`scale(${organPulse * (1 + dangerAlertPulse * 0.03)})`}
+                        style={{ transformOrigin: "10px 15px" }}
+                      />
+                    )}
                     {/* Bentuk Anatomi Organ Hati Manusia */}
                     <path
                       d="M -115 -25 Q -10 -65 125 -15 Q 175 30 115 65 Q 10 80 -95 45 Q -135 10 -115 -25 Z"
@@ -585,19 +634,33 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                       transform={`scale(${organPulse})`}
                       style={{ transformOrigin: "10px 15px" }}
                     />
-                    {/* Partikel Racun Insektisida Hijau Tertimbun di Jaringan Hati */}
-                    <circle cx="15" cy="-8" r={7.5 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
-                    <circle cx="75" cy="12" r={9 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
-                    <circle cx="-45" cy="10" r={7 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
-                    <circle cx="115" cy="20" r={6 * toxicPulse} fill="#86EFAC" />
-                    <circle cx="-85" cy="8" r={6 * toxicPulse} fill="#86EFAC" />
+                    {/* Partikel Racun Insektisida Hijau Menempel di Jaringan Hati */}
+                    {liverParticleScale > 0 && (
+                      <g transform={`scale(${Math.max(0, liverParticleScale) * toxicPulse})`} style={{ transformOrigin: "10px 15px" }}>
+                        <circle cx="15" cy="-8" r="7.5" fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
+                        <circle cx="75" cy="12" r="9" fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
+                        <circle cx="-45" cy="10" r="7" fill="#4ADE80" stroke="#15803D" strokeWidth="2" />
+                        <circle cx="115" cy="20" r="6" fill="#86EFAC" />
+                        <circle cx="-85" cy="8" r="6" fill="#86EFAC" />
+                      </g>
+                    )}
                   </g>
 
                   {/* -----------------------------------------------------------------
-                      ORGAN 2 & 3: SEPASANG GINJAL (KIDNEYS) — BENTUK BIJI KACANG
+                      ORGAN 2 & 3: SEPASANG GINJAL (KIDNEYS) — PULSING RED DANGER ALERT GLOW & TOXIN
                      ----------------------------------------------------------------- */}
                   {/* Ginjal Kiri (Bawah Kiri) */}
                   <g transform="translate(145, 260)" filter="url(#dangerGlowX5)">
+                    {toxinAttachProgress > 0 && (
+                      <path
+                        d="M 0 -34 C 34 -34 44 -8 30 0 C 44 8 34 34 0 34 C -32 34 -40 0 0 -34 Z"
+                        fill="none"
+                        stroke="#EF4444"
+                        strokeWidth={2.5 + dangerAlertPulse * 2.5}
+                        opacity={dangerGlowOpacity * 0.85}
+                        transform={`scale(${organPulse * (1 + dangerAlertPulse * 0.03)})`}
+                      />
+                    )}
                     <path
                       d="M 0 -34 C 34 -34 44 -8 30 0 C 44 8 34 34 0 34 C -32 34 -40 0 0 -34 Z"
                       fill="url(#kidneyGradX5)"
@@ -605,12 +668,26 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                       strokeWidth="3.5"
                       transform={`scale(${organPulse})`}
                     />
-                    <circle cx="8" cy="0" r={6.5 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="1.8" />
-                    <circle cx="-8" cy="10" r={5 * toxicPulse} fill="#86EFAC" />
+                    {kidneyParticleScale > 0 && (
+                      <g transform={`scale(${Math.max(0, kidneyParticleScale) * toxicPulse})`} style={{ transformOrigin: "0 0" }}>
+                        <circle cx="8" cy="0" r="6.5" fill="#4ADE80" stroke="#15803D" strokeWidth="1.8" />
+                        <circle cx="-8" cy="10" r="5" fill="#86EFAC" />
+                      </g>
+                    )}
                   </g>
 
                   {/* Ginjal Kanan (Bawah Kanan) */}
                   <g transform="translate(335, 260)" filter="url(#dangerGlowX5)">
+                    {toxinAttachProgress > 0 && (
+                      <path
+                        d="M 0 -34 C -34 -34 -44 -8 -30 0 C -44 8 -34 34 0 34 C 32 34 40 0 0 -34 Z"
+                        fill="none"
+                        stroke="#EF4444"
+                        strokeWidth={2.5 + dangerAlertPulse * 2.5}
+                        opacity={dangerGlowOpacity * 0.85}
+                        transform={`scale(${organPulse * (1 + dangerAlertPulse * 0.03)})`}
+                      />
+                    )}
                     <path
                       d="M 0 -34 C -34 -34 -44 -8 -30 0 C -44 8 -34 34 0 34 C 32 34 40 0 0 -34 Z"
                       fill="url(#kidneyGradX5)"
@@ -618,8 +695,12 @@ export const Scene3MedicalLiverKidney: React.FC = () => {
                       strokeWidth="3.5"
                       transform={`scale(${organPulse})`}
                     />
-                    <circle cx="-8" cy="0" r={6.5 * toxicPulse} fill="#4ADE80" stroke="#15803D" strokeWidth="1.8" />
-                    <circle cx="8" cy="10" r={5 * toxicPulse} fill="#86EFAC" />
+                    {kidneyParticleScale > 0 && (
+                      <g transform={`scale(${Math.max(0, kidneyParticleScale) * toxicPulse})`} style={{ transformOrigin: "0 0" }}>
+                        <circle cx="-8" cy="0" r="6.5" fill="#4ADE80" stroke="#15803D" strokeWidth="1.8" />
+                        <circle cx="8" cy="10" r="5" fill="#86EFAC" />
+                      </g>
+                    )}
                   </g>
                 </svg>
               </div>

@@ -9,7 +9,7 @@ export const StoryScenes: React.FC = () => {
   return (
     <AbsoluteFill>
       {/* SCENE 1: Penjemuran Pesisir & Oknum Semprot Insektisida (Frame 0 - 540) */}
-      <Sequence from={0} durationInFrames={540} name="Scene 1: Sun Drying & Spraying">
+      <Sequence durationInFrames={540} name="Scene 1: Sun Drying & Spraying">
         <Scene1SunDryingAndSpraying />
       </Sequence>
 

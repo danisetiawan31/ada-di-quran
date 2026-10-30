@@ -10,6 +10,10 @@ import { PopElement } from "../../../src/components/PopElement";
 import { CameraRig } from "../../../src/components/CameraRig";
 import { MainCharacter } from "../../../src/components/characters/MainCharacter";
 import { FONTS } from "../../../src/theme/fonts";
+import {
+  getRecoilImpulse,
+  getSquashAndStretch,
+} from "../../../src/utils/physics";
 
 export const Scene1SunDryingAndSpraying: React.FC = () => {
   const frame = useCurrentFrame();
@@ -54,9 +58,6 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
     ? interpolate(frame, [18, 28, 195, 225], [0, 0.95, 0.95, 0])
     : 0;
 
-  // Getaran recoil kaleng akibat tekanan jet aerosol
-  const sprayRecoil = isSprayingA ? Math.sin(frame * 2.5) * 3 : 0;
-
   // Kilauan bersih palsu pada ikan asin (Frame 180 - 240 saat narasi "awet dan bersih")
   const fakeCleanGleam = spring({
     frame: frame - 180,
@@ -80,6 +81,18 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
   const repelSprayOpacity = isSprayingB
     ? interpolate(frame, [384, 400, 450, 490], [0, 0.95, 0.95, 0])
     : 0;
+
+  // ---------------------------------------------------------------------------
+  // FISIKA RECOIL REALISTIS MENGGUNAKAN getRecoilImpulse() DARI physics.ts
+  // Recoil saat kaleng aerosol pertama kali menyemprot di frame 18 & frame 384
+  // ---------------------------------------------------------------------------
+  const recoilImpulseA = getRecoilImpulse(frame, 18, fps, 26);
+  const recoilImpulseB = getRecoilImpulse(frame, 384, fps, 26);
+  const continuousHissVibration =
+    isSprayingA || isSprayingB ? Math.sin(frame * 2.8) * 2.2 : 0;
+  // Hentakan balik horizontal ke arah kiri (-X) & hentakan vertikal mendongak (-Y)
+  const sprayRecoilX = -(recoilImpulseA * 22 + recoilImpulseB * 18) + continuousHissVibration;
+  const sprayRecoilY = -(recoilImpulseA * 7 + recoilImpulseB * 6);
 
   return (
     <AbsoluteFill
@@ -475,7 +488,7 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
             left: 0,
             top: 740,
             zIndex: 10,
-            transform: `translate(${sprayRecoil}px, ${stealthBob}px)`,
+            transform: `translate(${sprayRecoilX}px, ${stealthBob + sprayRecoilY}px)`,
           }}
         >
           <MainCharacter
@@ -582,8 +595,33 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
                 const flyAngle = isRepelled ? (frame * 24) % 360 : Math.sin(frame / 6) * 20;
                 const wingFlap = Math.sin(frame * 1.8) * 18;
 
+                // Squash & stretch benturan kabut racun menggunakan getSquashAndStretch()
+                const impactFrame1 = frame - 384;
+                let deform1 = 0;
+                if (impactFrame1 >= 0 && impactFrame1 <= 26) {
+                  if (impactFrame1 < 3) {
+                    // Fase 1: Gepeng terhantam semprotan (Squash)
+                    deform1 = interpolate(impactFrame1, [0, 3], [0, 0.40], { extrapolateRight: "clamp" });
+                  } else if (impactFrame1 < 8) {
+                    // Fase 2: Meregang melesat terpental mundur (Stretch)
+                    deform1 = interpolate(impactFrame1, [3, 8], [0.40, -0.32], { extrapolateRight: "clamp" });
+                  } else {
+                    // Fase 3: Pegas kenyal kembali normal (Settle)
+                    const settle1 = spring({
+                      frame: impactFrame1 - 8,
+                      fps,
+                      config: { damping: 10, stiffness: 140 },
+                    });
+                    deform1 = interpolate(settle1, [0, 1], [-0.32, 0]);
+                  }
+                }
+                const flyScale1 = getSquashAndStretch(deform1);
+
                 return (
-                  <g transform={`translate(${flyX}, ${flyY}) rotate(${flyAngle})`} filter="url(#softShadowFg)">
+                  <g
+                    transform={`translate(${flyX}, ${flyY}) rotate(${flyAngle}) scale(${flyScale1.scaleX}, ${flyScale1.scaleY})`}
+                    filter="url(#softShadowFg)"
+                  >
                     <ellipse cx="-12" cy={-16 + wingFlap} rx="16" ry="9" fill="#E0F2FE" opacity="0.85" stroke="#38BDF8" strokeWidth="2.5" />
                     <ellipse cx="12" cy={-16 - wingFlap} rx="16" ry="9" fill="#E0F2FE" opacity="0.85" stroke="#38BDF8" strokeWidth="2.5" />
                     <ellipse cx="0" cy="0" rx="18" ry="13" fill="#1E293B" stroke="#0F172A" strokeWidth="3.5" />
@@ -622,8 +660,30 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
                 const flyAngle = isRepelled ? -(frame * 22) % 360 : -Math.sin(frame / 6) * 18;
                 const wingFlap = Math.cos(frame * 1.8) * 18;
 
+                // Squash & stretch benturan kabut racun Lalat 2
+                const impactFrame2 = frame - 386;
+                let deform2 = 0;
+                if (impactFrame2 >= 0 && impactFrame2 <= 26) {
+                  if (impactFrame2 < 3) {
+                    deform2 = interpolate(impactFrame2, [0, 3], [0, 0.36], { extrapolateRight: "clamp" });
+                  } else if (impactFrame2 < 8) {
+                    deform2 = interpolate(impactFrame2, [3, 8], [0.36, -0.28], { extrapolateRight: "clamp" });
+                  } else {
+                    const settle2 = spring({
+                      frame: impactFrame2 - 8,
+                      fps,
+                      config: { damping: 10, stiffness: 140 },
+                    });
+                    deform2 = interpolate(settle2, [0, 1], [-0.28, 0]);
+                  }
+                }
+                const flyScale2 = getSquashAndStretch(deform2);
+
                 return (
-                  <g transform={`translate(${flyX}, ${flyY}) rotate(${flyAngle})`} filter="url(#softShadowFg)">
+                  <g
+                    transform={`translate(${flyX}, ${flyY}) rotate(${flyAngle}) scale(${flyScale2.scaleX}, ${flyScale2.scaleY})`}
+                    filter="url(#softShadowFg)"
+                  >
                     <ellipse cx="-11" cy={-15 + wingFlap} rx="15" ry="8" fill="#E0F2FE" opacity="0.85" stroke="#38BDF8" strokeWidth="2" />
                     <ellipse cx="11" cy={-15 - wingFlap} rx="15" ry="8" fill="#E0F2FE" opacity="0.85" stroke="#38BDF8" strokeWidth="2" />
                     <ellipse cx="0" cy="0" rx="16" ry="12" fill="#1E293B" stroke="#0F172A" strokeWidth="3" />
@@ -653,7 +713,7 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
           {/* Semburan 1A: Hook Semprot Ikan Asin (Frame 18 - 225) */}
           {sprayCloudOpacity > 0 && (
             <g
-              transform={`translate(${sprayRecoil}, ${stealthBob})`}
+              transform={`translate(${sprayRecoilX}, ${stealthBob + sprayRecoilY})`}
               opacity={sprayCloudOpacity}
               filter="url(#glowToxicFg)"
             >
@@ -678,7 +738,7 @@ export const Scene1SunDryingAndSpraying: React.FC = () => {
           {/* Semburan 1B: Mengusir Lalat saat Narasi Belatung (Frame 384 - 490) */}
           {repelSprayOpacity > 0 && (
             <g
-              transform={`translate(${sprayRecoil}, ${stealthBob})`}
+              transform={`translate(${sprayRecoilX}, ${stealthBob + sprayRecoilY})`}
               opacity={repelSprayOpacity}
               filter="url(#glowToxicFg)"
             >

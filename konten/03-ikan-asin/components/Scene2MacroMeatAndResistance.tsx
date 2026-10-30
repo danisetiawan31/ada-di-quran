@@ -5,7 +5,6 @@ import {
   spring,
   useCurrentFrame,
 } from "remotion";
-import { PopElement } from "../../../src/components/PopElement";
 import { CameraRig } from "../../../src/components/CameraRig";
 import { FONTS } from "../../../src/theme/fonts";
 import {
@@ -89,16 +88,20 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
     config: { damping: 13, stiffness: 120 },
   });
 
-  // Comedic tactile camera shake saat stempel merah menghantam (Frame 255 & 295)
-  const stamp1Shake = interpolate(frame, [255, 258, 270], [0, 8, 0], {
+  // Action shake responsif saat kucuran air deras menghantam (Frame 225) & wajan mendesis (Frame 240)
+  const waterImpactShake = interpolate(frame, [225, 228, 240], [0, 5, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const stamp2Shake = interpolate(frame, [295, 298, 310], [0, 8, 0], {
+  const sizzleImpactShake = interpolate(frame, [240, 244, 255], [0, 4, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const cameraShake = Math.max(stamp1Shake, stamp2Shake);
+  const cameraShake = Math.max(waterImpactShake, sizzleImpactShake);
+
+  // Sekunder mikro-aktor racun: goyang mengejek air & mengapung di minyak 200°C
+  const poisonWaterTaunt = Math.sin(frame * 0.35) * 4;
+  const floatBob = Math.sin(frame * 0.18) * 3.5;
 
   // Dinamika Pose Host Peci Hitam
   const hostPose: CharacterPose =
@@ -208,9 +211,6 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
             </filter>
             <filter id="toxicBubbleGlow" x="-30%" y="-30%" width="160%" height="160%">
               <feDropShadow dx="0" dy="0" stdDeviation="16" floodColor="#4ADE80" floodOpacity="0.95" />
-            </filter>
-            <filter id="stampImpactGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="6" stdDeviation="14" floodColor="#EF4444" floodOpacity="0.65" />
             </filter>
           </defs>
 
@@ -474,7 +474,7 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                 {/* PIPA KRAN AIR KARTUN MELENGKUNG REROUTED (Clearance 60px di Bawah Header) */}
                 <g id="cartoon-faucet" transform="translate(190, 210)">
                   <path
-                    d="M -130 30 L -50 30 Q -10 30 -10 -15 Q -10 -40 25 -40 L 45 -40 Q 75 -40 75 -15 L 75 35"
+                    d="M -130 25 L -75 25 Q -55 25 -55 5 L -55 -20 Q -55 -40 -30 -40 L -20 -40 Q 0 -40 0 -15 L 0 35"
                     fill="none"
                     stroke="#E2E8F0"
                     strokeWidth="28"
@@ -482,7 +482,7 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                     strokeLinejoin="round"
                   />
                   <path
-                    d="M -130 30 L -50 30 Q -10 30 -10 -15 Q -10 -40 25 -40 L 45 -40 Q 75 -40 75 -15 L 75 35"
+                    d="M -130 25 L -75 25 Q -55 25 -55 5 L -55 -20 Q -55 -40 -30 -40 L -20 -40 Q 0 -40 0 -15 L 0 35"
                     fill="none"
                     stroke="#0F172A"
                     strokeWidth="7"
@@ -490,14 +490,14 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                     strokeLinejoin="round"
                   />
                   {/* Pemutar Kran Merah */}
-                  <circle cx="-130" cy="30" r="22" fill="#EF4444" stroke="#0F172A" strokeWidth="4.5" />
-                  <rect x="-136" y="14" width="12" height="32" rx="4" fill="#FFFFFF" />
-                  {/* Mulut Nozel Kran */}
-                  <rect x="58" y="28" width="34" height="20" rx="5" fill="#94A3B8" stroke="#0F172A" strokeWidth="4" />
+                  <circle cx="-130" cy="25" r="22" fill="#EF4444" stroke="#0F172A" strokeWidth="4.5" />
+                  <rect x="-136" y="9" width="12" height="32" rx="4" fill="#FFFFFF" />
+                  {/* Mulut Nozel Kran (Tepat di Center X: 0 / Panel X: 190) */}
+                  <rect x="-17" y="28" width="34" height="20" rx="5" fill="#94A3B8" stroke="#0F172A" strokeWidth="4" />
                 </g>
 
-                {/* KUCURAN AIR DERAS & CIPRATAN BUBBLY */}
-                <g id="cartoon-water-gush" transform="translate(265, 255)">
+                {/* KUCURAN AIR DERAS & CIPRATAN BUBBLY (Tepat di Center Panel X: 190) */}
+                <g id="cartoon-water-gush" transform="translate(190, 255)">
                   <path
                     d={`M -20 0 Q ${-26 + waterSplashWobble} 140 -50 280 L 50 280 Q ${26 - waterSplashWobble} 140 20 0 Z`}
                     fill="url(#cartoonWaterJet)"
@@ -513,7 +513,7 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                 </g>
 
                 {/* IKAN ASIN KARTUN SEDANG DISIRAM AIR */}
-                <g id="fish-getting-washed" transform="translate(190, 540) scale(0.85) rotate(-4)">
+                <g id="fish-getting-washed" transform="translate(190, 560) scale(0.95) rotate(-3)">
                   <path
                     d="M -165 0 Q -85 -70 65 -65 Q 155 -50 175 0 Q 155 50 65 65 Q -85 70 -165 0 Z"
                     fill="url(#cartoonFishGrad)"
@@ -528,21 +528,36 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                   <path d="M 134 -6 Q 140 -12 146 -6 Q 146 0 140 2" fill="none" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
                   <ellipse cx="168" cy="4" rx="4" ry="7" fill="#0F172A" />
 
-                  {/* RACUN HIJAU MEMEGANG PAYUNG (TIDAK LUNTUR!) */}
-                  <g id="smug-poison-water" transform="translate(-10, -5)" filter="url(#toxicBubbleGlow)">
+                  {/* RACUN HIJAU MEMEGANG PAYUNG & MENGEJEK AIR (MENCENGKERAM DAGING KUAT-KUAT) */}
+                  <g id="smug-poison-water" transform={`translate(0, -5) rotate(${poisonWaterTaunt})`} filter="url(#toxicBubbleGlow)">
+                    {/* Tangan / Tentakel Mencengkeram Serat Daging Ikan Kuat-Kuat */}
+                    <path d="M -16 22 Q -30 38 -16 50" fill="none" stroke="#15803D" strokeWidth="6" strokeLinecap="round" />
+                    <circle cx="-16" cy="50" r="4.5" fill="#15803D" />
+                    <path d="M 16 22 Q 30 38 16 50" fill="none" stroke="#15803D" strokeWidth="6" strokeLinecap="round" />
+                    <circle cx="16" cy="50" r="4.5" fill="#15803D" />
+
+                    {/* Payung Merah Menahan Guyuran Air */}
                     <g transform="translate(0, -32)">
                       <path d="M -45 0 Q 0 -45 45 0 Z" fill="#EF4444" stroke="#0F172A" strokeWidth="4.5" />
                       <path d="M -15 0 Q 0 -45 0 -45" stroke="#FFFFFF" strokeWidth="3" fill="none" />
                       <path d="M 15 0 Q 0 -45 0 -45" stroke="#FFFFFF" strokeWidth="3" fill="none" />
                       <line x1="0" y1="0" x2="0" y2="35" stroke="#0F172A" strokeWidth="4.5" strokeLinecap="round" />
-                      <path d="M 0 35 Q 0 45 -8 45" fill="none" stroke="#0F172A" strokeWidth="4" strokeLinecap="round" />
+                      <path d="M 0 35 Q 0 45 -8 45" fill="none" stroke="#0F172A" strokeWidth="4.5" strokeLinecap="round" />
+                      {/* Cipratan Air Membal dari Kubah Payung */}
+                      <circle cx="-32" cy="-18" r="4" fill="#BAE6FD" stroke="#0284C7" strokeWidth="1.5" />
+                      <circle cx="34" cy="-16" r="4" fill="#BAE6FD" stroke="#0284C7" strokeWidth="1.5" />
                     </g>
+
+                    {/* Tubuh Karakter Racun Hijau */}
                     <circle cx="0" cy="5" r="32" fill="#22C55E" stroke="#0F172A" strokeWidth="4.5" />
                     <circle cx="0" cy="5" r="16" fill="#86EFAC" />
-                    <circle cx="-9" cy="2" r="4.5" fill="#0F172A" />
-                    <circle cx="9" cy="2" r="4.5" fill="#0F172A" />
-                    <path d="M -7 12 Q 0 20 7 12" fill="none" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
-                    <path d="M -3 15 Q 0 24 3 15 Z" fill="#EF4444" stroke="#0F172A" strokeWidth="2" />
+
+                    {/* Wajah Mengejek Jahil: Mata Mengedip Nakal & Lidah Melet */}
+                    <path d="M -13 2 L -5 2" stroke="#0F172A" strokeWidth="3.5" strokeLinecap="round" />
+                    <circle cx="9" cy="2" r="5" fill="#0F172A" />
+                    <circle cx="11" cy="0" r="2" fill="#FFFFFF" />
+                    <path d="M -9 12 Q 0 20 9 12" fill="none" stroke="#0F172A" strokeWidth="3" strokeLinecap="round" />
+                    <path d="M -4 15 Q 0 26 4 15 Z" fill="#EF4444" stroke="#0F172A" strokeWidth="2" />
                   </g>
                 </g>
               </g>
@@ -568,8 +583,8 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                   </g>
                 </g>
 
-                {/* WAJAN PENGGORENGAN KARTUN */}
-                <g id="cartoon-wok" transform="translate(190, 420) scale(0.82)">
+                {/* WAJAN PENGGORENGAN KARTUN MENDIDIH 200°C */}
+                <g id="cartoon-wok" transform="translate(190, 480) scale(0.92)">
                   {/* Api Kompor */}
                   <g transform={`translate(0, 140) scale(${1 + Math.sin(frame * 2) * 0.08})`}>
                     <path
@@ -589,13 +604,24 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                   <path d="M -205 10 Q -245 10 -245 -15 Q -245 -30 -205 -15" fill="#D97706" stroke="#0F172A" strokeWidth="7" strokeLinecap="round" />
                   <path d="M 205 10 Q 245 10 245 -15 Q 245 -30 195 -15" fill="#D97706" stroke="#0F172A" strokeWidth="7" strokeLinecap="round" />
 
-                  {/* Kolam Minyak Mendidih */}
+                  {/* Kolam Minyak Mendidih Panas */}
                   <ellipse cx="0" cy="15" rx="185" ry="90" fill="url(#oilJacuzziGrad)" stroke="#F59E0B" strokeWidth="5.5" />
 
-                  {/* Gelembung Minyak Panas */}
-                  {Array.from({ length: 14 }).map((_, i) => {
-                    const bX = -130 + ((i * 42) % 260) + Math.sin(frame / 2 + i) * 6;
-                    const bY = -35 + ((frame * 5 + i * 28) % 95);
+                  {/* Termometer Kartun Tertancap di Pinggir Wajan Mengukur Panas 200°C */}
+                  <g id="wok-thermometer" transform="translate(-140, -30) rotate(-18)">
+                    <rect x="-8" y="-70" width="16" height="85" rx="8" fill="#F8FAFC" stroke="#0F172A" strokeWidth="3.5" />
+                    <rect x="-4" y="-62" width="8" height="70" rx="4" fill="#EF4444" />
+                    <circle cx="0" cy="14" r="14" fill="#EF4444" stroke="#0F172A" strokeWidth="3.5" />
+                    <circle cx="-3" cy="11" r="4" fill="#FCA5A5" />
+                    {[-50, -40, -30, -20, -10].map((ty) => (
+                      <line key={`scale-${ty}`} x1="4" y1={ty} x2="7" y2={ty} stroke="#0F172A" strokeWidth="2" />
+                    ))}
+                  </g>
+
+                  {/* Gelembung Minyak Panas Mendidih */}
+                  {Array.from({ length: 16 }).map((_, i) => {
+                    const bX = -130 + ((i * 38) % 260) + Math.sin(frame / 2 + i) * 6;
+                    const bY = -35 + ((frame * 5 + i * 26) % 95);
                     const bR = 6 + (i % 3) * 5;
                     return (
                       <circle
@@ -611,9 +637,9 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                     );
                   })}
 
-                  {/* Garis Uap Panas */}
+                  {/* Garis Uap Panas Mendidih Membubung */}
                   <path
-                    d={`M -70 -75 Q -60 ${-95 - steamRise} -80 -125`}
+                    d={`M -70 -75 Q -60 ${-95 - steamRise} -80 -130`}
                     fill="none"
                     stroke="#FEF3C7"
                     strokeWidth="5.5"
@@ -621,12 +647,20 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                     opacity="0.75"
                   />
                   <path
-                    d={`M 70 -70 Q 80 ${-90 - steamRise} 60 -120`}
+                    d={`M 70 -70 Q 80 ${-90 - steamRise} 60 -125`}
                     fill="none"
                     stroke="#FEF3C7"
                     strokeWidth="5.5"
                     strokeLinecap="round"
                     opacity="0.75"
+                  />
+                  <path
+                    d={`M 0 -80 Q 15 ${-105 - steamRise} -10 -140`}
+                    fill="none"
+                    stroke="#FEF3C7"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                    opacity="0.65"
                   />
 
                   {/* IKAN ASIN DIGORENG DI MINYAK */}
@@ -642,18 +676,36 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                       <line key={`rib-fry-${i}`} x1={dx} y1="-22" x2={dx - 8} y2="22" stroke="#D97706" strokeWidth="3.5" strokeLinecap="round" />
                     ))}
 
-                    {/* RACUN HIJAU SANTAI PAKAI KACAMATA HITAM & BAN RENANG */}
-                    <g id="smug-poison-fire" transform="translate(10, -5)" filter="url(#toxicBubbleGlow)">
-                      <ellipse cx="0" cy="18" rx="36" ry="16" fill="#F97316" stroke="#0F172A" strokeWidth="4.5" />
-                      <ellipse cx="0" cy="18" rx="18" ry="8" fill="#FBBF24" />
+                    {/* RACUN HIJAU SANTAI DI PELAMPUNG DENGAN MINUMAN KELAPA (KEBAL 200°C!) */}
+                    <g id="smug-poison-fire" transform={`translate(10, ${-5 + floatBob})`} filter="url(#toxicBubbleGlow)">
+                      {/* Ban Pelampung Donat Oranye */}
+                      <ellipse cx="0" cy="18" rx="38" ry="17" fill="#F97316" stroke="#0F172A" strokeWidth="4.5" />
+                      <ellipse cx="0" cy="18" rx="20" ry="9" fill="#FBBF24" />
+
+                      {/* Tubuh Racun Hijau Kenyal */}
                       <circle cx="0" cy="0" r="32" fill="#22C55E" stroke="#0F172A" strokeWidth="4.5" />
                       <circle cx="0" cy="0" r="16" fill="#86EFAC" />
+
+                      {/* Lengan Bersandar Santai di Atas Pelampung */}
+                      <path d="M -22 8 Q -34 14 -26 22" fill="none" stroke="#15803D" strokeWidth="5.5" strokeLinecap="round" />
+                      <path d="M 22 8 Q 34 14 26 22" fill="none" stroke="#15803D" strokeWidth="5.5" strokeLinecap="round" />
+
+                      {/* Minuman Kelapa Tropis dengan Sedotan di Tangan Kanan */}
+                      <g transform="translate(30, 8) scale(0.85)">
+                        <ellipse cx="0" cy="6" rx="9" ry="8" fill="#78350F" stroke="#0F172A" strokeWidth="2.5" />
+                        <line x1="0" y1="2" x2="6" y2="-10" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" />
+                        <path d="M 3 -14 L 11 -8" stroke="#FACC15" strokeWidth="2" strokeLinecap="round" />
+                      </g>
+
+                      {/* Kacamata Hitam Modis Cool */}
                       <path d="M -16 -8 L -2 -8 L -4 4 L -14 4 Z" fill="#0F172A" />
                       <path d="M 2 -8 L 16 -8 L 14 4 L 4 4 Z" fill="#0F172A" />
                       <line x1="-2" y1="-5" x2="2" y2="-5" stroke="#0F172A" strokeWidth="3" />
                       <line x1="-12" y1="-5" x2="-8" y2="1" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
                       <line x1="6" y1="-5" x2="10" y2="1" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" />
-                      <path d="M -8 11 Q 0 18 8 11" fill="none" stroke="#0F172A" strokeWidth="3.5" strokeLinecap="round" />
+
+                      {/* Senyum Santai / Menikmati Panas 200°C */}
+                      <path d="M -8 11 Q 0 19 8 11" fill="none" stroke="#0F172A" strokeWidth="3.5" strokeLinecap="round" />
                     </g>
                   </g>
                 </g>
@@ -799,109 +851,6 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                 </div>
               </div>
 
-              {/* TAG #4: SPEECH BUBBLE "GAK MEMPAN! 😛" */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: 440,
-                  left: 28,
-                }}
-              >
-                <div
-                  style={{
-                    backgroundColor: "#FFFFFF",
-                    border: "4px solid #0F172A",
-                    borderRadius: 12,
-                    padding: "5px 14px",
-                    boxShadow: "3px 4px 0px #0F172A",
-                    fontSize: 16,
-                    fontWeight: 900,
-                    fontFamily: FONTS.title,
-                    color: "#0F172A",
-                    whiteSpace: "nowrap",
-                    position: "relative",
-                  }}
-                >
-                  GAK MEMPAN! 😛
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: -10,
-                      right: 18,
-                      width: 0,
-                      height: 0,
-                      borderLeft: "8px solid transparent",
-                      borderRight: "8px solid transparent",
-                      borderTop: "10px solid #0F172A",
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* TAG #5 & #6: STEMPEL MERAH "[X] GAGAL! TIDAK LUNTUR AIR" (Frame 255+) */}
-              {frame >= 255 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 660,
-                    left: 25,
-                    width: 330,
-                  }}
-                >
-                  <PopElement
-                    startFrame={255}
-                    sfxType="whip"
-                    volume={0.25}
-                    tilt={-10}
-                    style={{ width: "100%" }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        backgroundColor: "#EF4444",
-                        border: "5px solid #FFFFFF",
-                        borderRadius: 16,
-                        padding: "12px 10px",
-                        boxShadow: "0 8px 24px rgba(239, 68, 68, 0.6), 4px 6px 0px #0F172A",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxSizing: "border-box",
-                        outline: "2.5px dashed #FFFFFF",
-                        outlineOffset: "-8px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: 32,
-                          fontWeight: 900,
-                          fontFamily: FONTS.title,
-                          color: "#FFFFFF",
-                          letterSpacing: "1px",
-                          lineHeight: 1.1,
-                          textShadow: "0 2px 8px rgba(0,0,0,0.4)",
-                        }}
-                      >
-                        [X] GAGAL!
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 19,
-                          fontWeight: 800,
-                          fontFamily: FONTS.body,
-                          color: "#FEE2E2",
-                          letterSpacing: "0.8px",
-                          marginTop: 4,
-                          textShadow: "0 1px 4px rgba(0,0,0,0.3)",
-                        }}
-                      >
-                        TIDAK LUNTUR AIR
-                      </div>
-                    </div>
-                  </PopElement>
-                </div>
-              )}
             </div>
 
             {/* ---------------------------------------------------------------------
@@ -975,109 +924,32 @@ export const Scene2MacroMeatAndResistance: React.FC = () => {
                 </div>
               </div>
 
-              {/* TAG #9: SPEECH BUBBLE "MASIH KEBAL! 😎" (Top: 390, Left: 35) */}
+              {/* BADGE SUHU "200°C 🔥" (Visualisasi Suhu Panas Mendidih) */}
               <div
                 style={{
                   position: "absolute",
-                  top: 390,
-                  left: 35,
+                  top: 245,
+                  left: 20,
+                  transform: `rotate(${Math.sin(frame * 0.25) * 4}deg)`,
                 }}
               >
                 <div
                   style={{
-                    backgroundColor: "#FFFFFF",
-                    border: "4px solid #0F172A",
-                    borderRadius: 12,
-                    padding: "5px 14px",
+                    backgroundColor: "#DC2626",
+                    border: "3.5px solid #0F172A",
+                    borderRadius: 10,
+                    padding: "4px 12px",
                     boxShadow: "3px 4px 0px #0F172A",
                     fontSize: 16,
                     fontWeight: 900,
                     fontFamily: FONTS.title,
-                    color: "#0F172A",
-                    whiteSpace: "nowrap",
-                    position: "relative",
+                    color: "#FFFFFF",
+                    letterSpacing: "0.5px",
                   }}
                 >
-                  MASIH KEBAL! 😎
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: -10,
-                      left: 18,
-                      width: 0,
-                      height: 0,
-                      borderLeft: "8px solid transparent",
-                      borderRight: "8px solid transparent",
-                      borderTop: "10px solid #0F172A",
-                    }}
-                  />
+                  200°C 🔥
                 </div>
               </div>
-
-              {/* TAG #10 & #11: STEMPEL MERAH "[X] KEBAL! TETAP BERACUN" (Frame 295+) */}
-              {frame >= 295 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 660,
-                    left: 25,
-                    width: 330,
-                  }}
-                >
-                  <PopElement
-                    startFrame={295}
-                    sfxType="whip"
-                    volume={0.25}
-                    tilt={10}
-                    style={{ width: "100%" }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        backgroundColor: "#EF4444",
-                        border: "5px solid #FFFFFF",
-                        borderRadius: 16,
-                        padding: "12px 10px",
-                        boxShadow: "0 8px 24px rgba(239, 68, 68, 0.6), 4px 6px 0px #0F172A",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        boxSizing: "border-box",
-                        outline: "2.5px dashed #FFFFFF",
-                        outlineOffset: "-8px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: 32,
-                          fontWeight: 900,
-                          fontFamily: FONTS.title,
-                          color: "#FFFFFF",
-                          letterSpacing: "1px",
-                          lineHeight: 1.1,
-                          textShadow: "0 2px 8px rgba(0,0,0,0.4)",
-                        }}
-                      >
-                        [X] KEBAL!
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 19,
-                          fontWeight: 800,
-                          fontFamily: FONTS.body,
-                          color: "#FEE2E2",
-                          letterSpacing: "0.8px",
-                          marginTop: 4,
-                          textShadow: "0 1px 4px rgba(0,0,0,0.3)",
-                        }}
-                      >
-                        TETAP BERACUN
-                      </div>
-                    </div>
-                  </PopElement>
-                </div>
-              )}
             </div>
           </>
         )}

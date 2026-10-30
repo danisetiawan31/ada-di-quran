@@ -28,6 +28,10 @@ export interface CameraRigProps {
    */
   panY?: number;
   /**
+   * Rotasi kamera (dalam derajat, misal efek miring, mual, atau dizzy roll)
+   */
+  rotation?: number;
+  /**
    * Intensitas guncangan kamera (0 = tenang, 5-10 = getaran gempa/benturan)
    */
   shake?: number;
@@ -47,6 +51,7 @@ export const CameraRig: React.FC<CameraRigProps> = ({
   zoom = 1,
   panX = 0,
   panY = 0,
+  rotation = 0,
   shake = 0,
   whooshAtFrames = [],
   whooshVolume = 0.18,
@@ -76,14 +81,24 @@ export const CameraRig: React.FC<CameraRigProps> = ({
 
       <AbsoluteFill
         style={{
-          transformOrigin: "center center",
-          transform: `scale(${zoom}) translate(${finalPanX}px, ${finalPanY}px)`,
-          transition: "transform 0.1s ease-out",
           overflow: "hidden",
-          ...style,
         }}
       >
-        {children}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            transformOrigin: "center center",
+            transform: `scale(${zoom}) rotate(${rotation}deg) translate(${finalPanX}px, ${finalPanY}px)`,
+            overflow: "visible",
+            ...style,
+          }}
+        >
+          {children}
+        </div>
       </AbsoluteFill>
     </CameraContext.Provider>
   );

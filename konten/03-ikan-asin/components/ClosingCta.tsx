@@ -201,7 +201,6 @@ export const ClosingCta: React.FC = () => {
                 ? "0 10px 30px rgba(16, 185, 129, 0.5), 0 0 25px rgba(52, 211, 153, 0.4)"
                 : "0 10px 25px rgba(245, 158, 11, 0.45), 0 4px 10px rgba(0,0,0,0.5)",
               border: isTapped ? "2px solid #A7F3D0" : "1.5px solid #FDE68A",
-              transition: "background 0.2s ease, border 0.2s ease",
             }}
           >
             <span

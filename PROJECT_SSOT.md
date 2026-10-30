@@ -4,7 +4,7 @@
 **Tech Stack:** Remotion (React/TypeScript), Antigravity (AI Coding & Auto-Proportional Subtitle), Google AI Studio (Voiceover), Git  
 **Sumber Audio & Gambar Ayat:** EveryAyah.com (`Abu_Bakr_Ash-Shaatree_128kbps` & `images_png`)  
 **Sumber Terjemahan:** Mushaf Standar Kementerian Agama RI (Kemenag)  
-**Pedoman Seni & Animasi:** `ANIMATION_POSTMORTEM_AND_GUIDELINES.md` (Lead Animator & Cinematic Standard)
+**Standar Seni & Animasi:** Cinematic 2D Living Physics & Lead Animator Standards (Bagian 4 & Bagian 6)
 
 ---
 
@@ -121,7 +121,6 @@ Channel "Ada di Quran" memiliki standar konsistensi visual dua persona:
 ```text
 D:\Dokumen\yt/
 ├── PROJECT_SSOT.md                          # Dokumen acuan utama proyek (file ini)
-├── ANIMATION_POSTMORTEM_AND_GUIDELINES.md   # Pedoman bedah animasi & standar lead animator
 ├── scripts/                                 # Script utilitas (fetch-ayah.mjs, dll.)
 │
 ├── konten/                                  # 📦 SETIAP KONTEN HANYA 1 FOLDER MANDIRI

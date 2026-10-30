@@ -78,6 +78,11 @@ Seluruh adegan harus dibangun dengan filosofi **Film Animasi Pendek**, bukan sek
 3. **DILARANG Gerakan Linier Tanpa Fisika & Massa:**
    - Dilarang menggunakan `interpolate()` linier polos untuk gerakan masuk, keluar, atau benturan.
    - Semua pergerakan dinamis wajib memiliki **Anticipation (ancang-ancang 4–6f)**, **Fast Action (8–10f)**, **Overshoot & Squash/Stretch (6–8f)**, dan **Settle/Hold (15–25f)**.
+   - **Wajib menggunakan mesin fisika terpusat di `src/utils/physics.ts`**:
+     - `getAnticipationSpring()` untuk ancang-ancang mundur sebelum melesat.
+     - `getRecoilImpulse()` untuk efek hentakan balik semprotan/benturan.
+     - `getSquashAndStretch()` untuk elastisitas volume kenyal ($X \times Y = 1.0$).
+     - `getContinuousWave()` untuk gelombang organik (uap, riak air, gelembung).
 4. **DILARANG Lingkungan yang "Mati" (Zero Environmental Reaction):**
    - Setiap tindakan objek utama wajib memicu **reaksi fisik pada lingkungan dan objek target**:
      - Jika ada benturan/hantaman $\rightarrow$ partikel memercik, ada gelombang kejut (*shockwave*), atau permukaan bergetar.
@@ -101,20 +106,28 @@ Seluruh adegan harus dibangun dengan filosofi **Film Animasi Pendek**, bukan sek
 3. **Bahasa Visual & Larangan Kosakata Web Developer:**
    Storyboard dan dokumen perencanaan dilarang menggunakan kata `Card`, `Badge`, `Panel`, atau `Indikator UI`. Gunakan istilah sinematografi: *Macro Close-Up*, *Mikro-Aktor*, *Aliran Fluida*, *Partikel Menyerbu*, *Ledakan Asap*, *Match-Cut*.
 4. **Transisi "Zoom-Portal / Match-Cut" Antar Act:**
-   Perpindahan antar-act di dalam video tidak boleh terasa seperti pergantian slide PowerPoint. Akhir dari Act N melakukan *Extreme Zoom-In* atau *Pan-Wipe* menembus salah satu elemen, yang langsung menjadi pintu masuk adegan Act N+1.
+   Perpindahan antar-act di dalam video tidak boleh terasa seperti pergantian slide PowerPoint. 
+   - Pada 15 frame terakhir Act N, kamera melakukan **Extreme Camera Zoom-In (scale: 1 $\rightarrow$ 8–12x)** tepat ke objek target (misal: pori-pori/serat mikro atau wadah).
+   - Pada 15 frame pertama Act N+1, kamera mulai dari dalam dunia mikroskopis tersebut (**scale: 0.4 $\rightarrow$ 1.0**) diiringi foley *whoosh* lembut (volume: 0.18–0.22).
+   Dengan teknik ini, kode tetap terpisah rapi per file (`Act1.tsx`, `Act2.tsx`), namun di mata penonton terlihat sebagai satu perjalanan kamera sinematik tanpa putus!
 
 ---
 
-### C. Konsistensi Dual Persona Karakter
-Channel "Ada di Quran" memiliki standar konsistensi visual dua persona:
+### C. Konsistensi Karakter & Batasan Penggunaan (`MainCharacter.tsx`)
+Channel "Ada di Quran" memiliki standar konsistensi visual persona manusia:
 * **Character A (Host / Narator Resmi):**
   - Mengenakan **Peci Hitam Nasional** modern (potongan ramping, pas di dahi, headroom lapang minimal 200px di bawah safe zone atas).
   - Baju koko modern putih/krem bersih, celana chinos gelap, kacamata hitam wireframe, dan telinga tampak rapi utuh.
-  - Bersikap tenang, santun, ilmiah, dan berwibawa saat menyampaikan fakta serta dalil Al-Qur'an.
+  - **Peruntukan Khusus:** Dipakai HANYA sebagai presenter narasi resmi dan pengantar ayat suci di akhir video (Preamble Ayat).
 * **Character B (Sahabat / Aktor Reaktif):**
   - Rambut gaya *modern textured messy fringe* (rapi dan kasual, tanpa spike batwing tajam).
   - Kaos t-shirt kasual / jaket santai.
-  - Berperan sebagai representasi rasa ingin tahu penonton: kaget, heran, mual/pusing saat sakit, atau tertawa.
+  - Dipakai saat menggambarkan reaksi manusia di dunia nyata (kaget, heran, mual/pusing di ruang makan).
+* **BATASAN MUTLAK (Anti-Paper Doll pada Adegan Aksi Sains):**
+  - **DILARANG** memaksakan memasukkan patung full-body `MainCharacter` berdiri kaku di panggung adegan aksi fisik (seperti proses penjemuran, memasak, atau reaksi zat kimia).
+  - Pada adegan aksi fisik, **WAJIB** beralih ke:
+    1. **Articulated Close-Ups:** Sorot anggota tubuh berengsel (lengan berotot yang menekan kaleng, tangan yang menuang cairan) dengan titik engsel sendi yang jelas.
+    2. **Living Micro-Actors:** Berikan fokus cerita kepada objek sains (lalat, ikan, molekul racun, sel darah, organ tubuh) yang diberi kepribadian dan mata hidup.
 
 ---
 
@@ -145,7 +158,7 @@ D:\Dokumen\yt/
 ├── src/                                     # ⚙️ BASE ENGINE (Reusable Infrastructure)
 │   ├── components/                          # AyahCard, CameraRig, DynamicSubtitle, MainCharacter
 │   ├── theme/                               # Typography & tokens netral
-│   ├── utils/                               # subtitleTiming (Auto-proportional)
+│   ├── utils/                               # physics.ts (Anticipation, Recoil, Squash-Stretch, Wave), subtitleTiming.ts
 │   ├── Root.tsx                             # Registrasi Composition Remotion
 │   └── index.ts                             # Entry point
 │
@@ -162,7 +175,7 @@ Setiap `Act` atau `Scene` yang dibangun **DILARANG** dikunci sebagai **FINAL** s
 
 ### Checklist 7 Standar Emas Lead Animator
 1. **Bebas Pola UI & Bebas Tag `<text>` di SVG (Rule 11):**  
-   Apakah adegan 100% bebas dari tabel 2 kolom, kotak kartu presentasi, dan teks/stempel di dalam SVG? (Semua teks narasi ada di `<DynamicSubtitle />` atau kartu HTML terisolasi, ilustrasi murni visual).
+   Apakah adegan 100% bebas dari tabel 2 kolom, kotak kartu presentasi, stempel teks, dan tag `<text>` di dalam SVG? (Semua teks narasi vokal wajib ada di `<DynamicSubtitle />`, dunia ilustrasi murni bercerita lewat aksi visual dan metafora gerak, tanpa kartu teks tambahan kecuali `<AyahCard />` & `<ClosingCta />`).
 2. **Kamera Bergerak Aktif & Sinematik:**  
    Apakah kamera menjelajah ruang dengan *crane dive*, *macro zoom*, *panning*, atau *camera shake* pada momen benturan (bukan terpaku di zoom 1.0)?
 3. **Mikro-Aktor Ekspresif & Artikulasi Karakter:**  

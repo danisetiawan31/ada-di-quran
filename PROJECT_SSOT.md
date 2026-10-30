@@ -73,32 +73,33 @@ Seluruh adegan harus dibangun dengan filosofi **Film Animasi Pendek**, bukan sek
    - Dilarang menggerakkan karakter manusia atau maskot sebagai satu balok SVG utuh yang hanya digeser koordinat globalnya (`translate(X, Y)`) lalu digoyang tipis dengan `Math.sin(frame)`.
    - Karakter wajib memiliki **artikulasi sendi**: kepala yang menoleh mengikuti fokus adegan, mata dengan pupil hidup yang melirik ke arah aksi/ancaman, lengan dengan titik engsel bahu dan siku saat beraksi, serta perpindahan bobot tubuh (*weight shift*).
 2. **DILARANG "Slide Presentasi / UI Dashboard" (Bukan Adegan Film):**
-   - Dilarang keras menyajikan penjelasan perbandingan (misal: dicuci air vs digoreng minyak panas) dengan membuat **2 kotak kolom berdampingan** seperti tabel website lalu menempelkan stempel teks `[X] GAGAL!` dan `[X] KEBAL!`.
-   - Seluruh perbandingan wajib divisualisasikan sebagai **Adegan Sinematik Berkesinambungan**: kamera menyorot aksi fisik satu per satu secara dramatis (contoh: air deras mengguyur $\rightarrow$ kamera beralih ke minyak mendidih meletup-letup dengan karakter molekul racun yang kebal dan santai).
+   - Dilarang keras menyajikan penjelasan perbandingan dua kondisi atau dua fenomena dengan membuat **2 kotak kolom berdampingan** seperti tabel website lalu menempelkan stempel teks seperti `[X] GAGAL!` atau kartu perbandingan UI.
+   - Seluruh perbandingan fenomena wajib divisualisasikan sebagai **Adegan Sinematik Berkesinambungan**: kamera menyorot aksi fisik pertama secara utuh dan dramatis, lalu berpindah/bertransisi aktif (*whip-pan / macro zoom*) ke aksi fisik kedua yang memperlihatkan kontrasnya secara visual.
 3. **DILARANG Gerakan Linier Tanpa Fisika & Massa:**
    - Dilarang menggunakan `interpolate()` linier polos untuk gerakan masuk, keluar, atau benturan.
    - Semua pergerakan dinamis wajib memiliki **Anticipation (ancang-ancang 4–6f)**, **Fast Action (8–10f)**, **Overshoot & Squash/Stretch (6–8f)**, dan **Settle/Hold (15–25f)**.
 4. **DILARANG Lingkungan yang "Mati" (Zero Environmental Reaction):**
    - Setiap tindakan objek utama wajib memicu **reaksi fisik pada lingkungan dan objek target**:
-     - Jika menyemprot $\rightarrow$ target basah berkilau, ada kabut bervolume, partikel aerosol menyebar.
-     - Jika memasak $\rightarrow$ minyak mendidih meletupkan percikan, daging menciut mendesis, asap mengepul.
-     - Jika cuaca terik $\rightarrow$ ada uap panas (*heatwave shimmer*), ombak memecah pasir.
+     - Jika ada benturan/hantaman $\rightarrow$ partikel memercik, ada gelombang kejut (*shockwave*), atau permukaan bergetar.
+     - Jika ada fluida/cairan mengalir $\rightarrow$ ada percikan tetesan, busa, dan riak permukaan air.
+     - Jika ada suhu panas/api $\rightarrow$ ada uap/asap mengepul dinamis dan distorsi udara panas (*heatwave shimmer*).
+     - Jika ada zat/partikel menempel $\rightarrow$ permukaan target berubah warna atau basah berkilau (*wet sheen*).
 5. **DILARANG Kamera Pasif "Sudut Pandang CCTV":**
    - Dilarang mengunci kamera di posisi datar `zoom: 1.0` dari awal hingga akhir scene.
-   - Kamera adalah partisipan aktif: *crane dive* dari atas ke bawah, *extreme macro zoom-in* ke pori-pori/serat mikro, *panning* mengikuti objek lari, serta *camera shake / dutch tilt* saat terjadi benturan atau kepanikan.
+   - Kamera adalah partisipan aktif: *crane dive* dari atas ke bawah, *extreme macro zoom-in* ke struktur mikroskopis, *panning* dinamis mengikuti arah aksi, serta *camera shake / dutch tilt* saat terjadi benturan atau kepanikan.
 
 ---
 
 ### B. Prinsip Seni Visual Vektor (Kurzgesagt-Grade Art Direction)
 1. **Personifikasi Objek Sains (Memberi Jiwa pada Objek Tak Bernyawa):**
-   Objek ilmiah yang menjadi pokok cerita (molekul zat kimia, racun insektisida, lalat, organ tubuh, sel darah) **wajib diberi kepribadian**: memiliki mata bulat ekspresif (*dot eyes*), pupil yang melirik, serta gestur emosional (tersenyum licik, kelelahan, panik, pusing).
+   Objek ilmiah mikroskopis atau tak bernyawa yang menjadi fokus cerita (molekul zat, partikel kimia, sel tubuh, bakteri, organ tubuh) **wajib diberi kepribadian**: memiliki mata bulat ekspresif (*dot eyes*), pupil yang melirik, serta gestur emosional (tersenyum licik, kelelahan, panik, pusing) agar penonton memiliki ikatan empati.
 2. **3 Tonal Shading Layers (Anti-Ugly Programmer Art):**
    Setiap objek utama dan mikro-aktor dilarang digambar dengan satu warna flat polos. Wajib memiliki 3 tingkatan warna:
    - *Layer 1 — Base Silhouette:* Warna lokal objek.
    - *Layer 2 — Inner Shadow / Curvature Depth:* Memberi ilusi kelengkungan dan volume 3D.
    - *Layer 3 — Bright Rim Highlight:* Garis kilau tipis di tepi objek (`stroke` atau *gradient* halus dengan opasitas ~35%) untuk memisahkannya secara tegas dari latar belakang.
 3. **Bahasa Visual & Larangan Kosakata Web Developer:**
-   Storyboard dan perencanaan dilarang menggunakan kata `Card`, `Badge`, `Panel`, atau `Indikator UI`. Gunakan istilah sinematografi: *Close-Up Wajan*, *Mikro-Aktor Racun*, *Aliran Fluida*, *Partikel Menyerbu*, *Ledakan Asap*.
+   Storyboard dan dokumen perencanaan dilarang menggunakan kata `Card`, `Badge`, `Panel`, atau `Indikator UI`. Gunakan istilah sinematografi: *Macro Close-Up*, *Mikro-Aktor*, *Aliran Fluida*, *Partikel Menyerbu*, *Ledakan Asap*, *Match-Cut*.
 4. **Transisi "Zoom-Portal / Match-Cut" Antar Act:**
    Perpindahan antar-act di dalam video tidak boleh terasa seperti pergantian slide PowerPoint. Akhir dari Act N melakukan *Extreme Zoom-In* atau *Pan-Wipe* menembus salah satu elemen, yang langsung menjadi pintu masuk adegan Act N+1.
 
